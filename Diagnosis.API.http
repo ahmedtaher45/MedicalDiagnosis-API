@@ -1,0 +1,6 @@
+@Diagnosis.API_HostAddress = http://localhost:5198
+
+GET {{Diagnosis.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
