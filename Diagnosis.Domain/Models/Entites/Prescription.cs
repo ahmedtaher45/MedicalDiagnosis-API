@@ -16,6 +16,8 @@ namespace Diagnosis.Domain.Entites
         public string DiagnosisName { get; set; }
         public string Severity { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int DoctorId { get; set; }
+        public Doctor Doctor { get; set; }
         public Appointment Appointment { get; set; }
         public ICollection<PrescriptionItem> PrescriptionItems { get; set; }
     }

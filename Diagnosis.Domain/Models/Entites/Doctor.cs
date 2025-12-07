@@ -1,4 +1,5 @@
-﻿using Diagnosis.Domain.Shared;
+﻿using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace Diagnosis.Domain.Entites
 {
     public class Doctor: BaseEntity
     {
-        
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
         public string FName { get; set; }
         public string LName { get; set; }
         public string Specialization { get; set; }

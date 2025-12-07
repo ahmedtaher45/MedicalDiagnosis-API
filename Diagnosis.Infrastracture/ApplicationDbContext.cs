@@ -1,10 +1,13 @@
 ﻿// Data/ApplicationDbContext.cs
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
-public class ApplicationDbContext : DbContext
+using Diagnosis.Domain.Entites;
+using Diagnosis.Domain.Models.Entites;
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
@@ -40,5 +43,23 @@ public class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ReviewConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
         modelBuilder.ApplyConfiguration(new RequestConfiguration());
+
+        modelBuilder.Entity<ApplicationUser>()
+        .HasOne(u => u.Doctor)
+        .WithOne(d => d.User)
+        .HasForeignKey<Doctor>(d => d.UserId)
+        .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne(u => u.Patient)
+            .WithOne(p => p.User)
+            .HasForeignKey<Patient>(p => p.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.Notifications)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

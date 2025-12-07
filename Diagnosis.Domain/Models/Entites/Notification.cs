@@ -1,4 +1,5 @@
-﻿using Diagnosis.Domain.Shared;
+﻿using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace Diagnosis.Domain.Entites
     }
     public class Notification:BaseEntity
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
         public string UserType { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
