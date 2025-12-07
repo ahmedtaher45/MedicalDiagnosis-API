@@ -1,5 +1,8 @@
 
+using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Infrastracture.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -17,6 +20,9 @@ namespace Diagnosis.API
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(ConnectionString));
             builder.Services.AddDataProtection();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<RegisterUseCase>();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {

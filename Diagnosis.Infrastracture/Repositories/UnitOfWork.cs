@@ -18,7 +18,7 @@ namespace Diagnosis.Infrastracture.Repositories
         {
             _userManager = userManager;
             _context = context;
-            Auth = new AuthRepository();
+            Auth = new AuthRepository(_userManager);
         }
 
         public IAuth Auth { get; private set; }
