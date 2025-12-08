@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Diagnosis.Infrastracture.Identity;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
@@ -13,12 +14,15 @@ namespace Diagnosis.Infrastracture.Repositories
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private IJwtTokenGenerator _jwtTokenGenerator;
+        
 
-        public UnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public UnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IJwtTokenGenerator jwtTokenGenerator)
         {
             _userManager = userManager;
             _context = context;
-            Auth = new AuthRepository(_userManager);
+            _jwtTokenGenerator = jwtTokenGenerator;
+            Auth = new AuthRepository(_userManager, _jwtTokenGenerator );
         }
 
         public IAuth Auth { get; private set; }
