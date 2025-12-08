@@ -6,6 +6,7 @@ using Diagnosis.Infrastracture.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Diagnosis.Infrastracture.Identity;
 
 namespace Diagnosis.API
 {
@@ -23,6 +24,9 @@ namespace Diagnosis.API
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
+            builder.Services.AddScoped<LoginUseCase>();
+            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            builder.Services.AddScoped<IAuth, AuthRepository>();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {

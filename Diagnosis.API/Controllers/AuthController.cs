@@ -17,5 +17,18 @@ namespace Diagnosis.API.Controllers
             
             return Ok();
         }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(
+            [FromBody] LoginDTO loginDTO,
+            [FromServices] LoginUseCase loginUseCase)
+        {
+            var result = await loginUseCase.Login(loginDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            return Ok(result);
+        }
     }
 }
