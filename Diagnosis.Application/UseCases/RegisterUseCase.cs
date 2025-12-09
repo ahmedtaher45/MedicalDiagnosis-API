@@ -17,9 +17,9 @@ namespace Diagnosis.Application.UseCases
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<string> Register(RegisterDTO registerDTO)
-        {
-            return "";
+        public async Task<RegisterResponse> ExcuteAsync(RegisterDTO registerDTO)
+        {             
+            return await unitOfWork.Auth.RegisterAsync(registerDTO); ;
         }
     }
 }
