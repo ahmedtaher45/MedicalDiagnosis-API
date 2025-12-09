@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class AuthRepository: IAuth
+    public class AuthRepository : IAuth
     {
         private readonly UserManager<ApplicationUser> userManager;
 
@@ -22,5 +22,22 @@ namespace Diagnosis.Infrastracture.Repositories
         {
             return "aa";
         }
+
+        public async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+            }
+
+            return await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        }
+
+        public async Task<ApplicationUser> GetUserByIdAsync(string userId)
+        {
+            return await userManager.FindByIdAsync(userId);
+        }
+
     }
 }

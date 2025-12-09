@@ -21,6 +21,8 @@ namespace Diagnosis.API
             options.UseSqlServer(ConnectionString));
             builder.Services.AddDataProtection();
 
+            builder.Services.AddScoped<ChangePasswordUseCase>();
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
 
