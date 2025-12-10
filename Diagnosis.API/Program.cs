@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
+using Diagnosis.API.Middleware;
 
 
 
@@ -88,6 +89,7 @@ namespace Diagnosis.API
                 app.MapScalarApiReference();
             }
 
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();

@@ -28,11 +28,6 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
-	
-
-  <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Application\Diagnosis.Application.csproj" />

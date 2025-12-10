@@ -11,16 +11,6 @@ namespace Diagnosis.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly RegisterUseCase registerUseCase;
-        private readonly ChangePasswordUseCase changePasswordUseCase;
-
-        public AuthController(
-            ChangePasswordUseCase changePasswordUseCase)
-        {
-            this.registerUseCase = registerUseCase;
-            this.changePasswordUseCase = changePasswordUseCase;
-        }
-
         [HttpPost("register")]
         public async Task<IActionResult> Register(
             [FromBody] RegisterDTO registerDTO,
@@ -41,7 +31,9 @@ namespace Diagnosis.API.Controllers
         /// <returns>Success or error response</returns>
         [Authorize]
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDto)
+        public async Task<IActionResult> ChangePassword(
+            [FromBody] ChangePasswordDTO changePasswordDto,
+            [FromServices] ChangePasswordUseCase changePasswordUseCase)
         {
             if (!ModelState.IsValid)
             {

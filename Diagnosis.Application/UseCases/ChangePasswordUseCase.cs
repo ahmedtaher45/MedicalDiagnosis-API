@@ -39,13 +39,14 @@ namespace Diagnosis.Application.UseCases
                 // Change password
                 var result = await unitOfWork.Auth.ChangePasswordAsync(
                     userId,
-                    changePasswordDto.CurrentPassword,
-                    changePasswordDto.NewPassword
+                    changePasswordDto.CurrentPassword!,
+                    changePasswordDto.NewPassword!
                 );
 
                 if (result.Succeeded)
                 {
-                    await unitOfWork.CompleteAsync();
+                   // await unitOfWork.CompleteAsync();
+
                     logger.LogInformation($"Password changed successfully for user {userId}");
 
                     return new ChangePasswordResponse

@@ -126,8 +126,9 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<ApplicationUser> GetUserByIdAsync(string userId)
         {
-            return await userManager.FindByIdAsync(userId);
+            var result = await userManager.FindByIdAsync(userId!);
+            if (result == null) throw new ArgumentNullException("Invalid userId");
+            return result;
         }
-
     }
 }
