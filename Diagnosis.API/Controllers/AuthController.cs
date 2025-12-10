@@ -9,13 +9,13 @@ namespace Diagnosis.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(
             [FromBody] RegisterDTO registerDTO,
             [FromServices] RegisterUseCase registerUseCase)
         {
-            
-            return Ok();
+            var result = await registerUseCase.ExcuteAsync(registerDTO);
+            return Ok(result);
         }
 
         [HttpPost("Login")]

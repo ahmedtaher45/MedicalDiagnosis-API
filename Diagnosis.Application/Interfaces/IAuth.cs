@@ -1,4 +1,5 @@
-﻿using Diagnosis.Domain.Models.Entites;
+﻿using Diagnosis.Application.DTOs;
+using Diagnosis.Domain.Models.Entites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IAuth
     {
-        Task<string> RegisterAsync(ApplicationUser user);
+        Task<RegisterResponse> RegisterAsync(ApplicationUser user);
         Task<LoginResponseDTO> LoginAsync(string email, string password, string role);
     }
 }

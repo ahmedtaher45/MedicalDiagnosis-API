@@ -68,6 +68,7 @@ namespace Diagnosis.API
 
             app.MapControllers();
 
+
             app.Run();
         }
     }
