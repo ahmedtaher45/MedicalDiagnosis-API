@@ -1,8 +1,10 @@
 
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Repositories;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -17,6 +19,16 @@ namespace Diagnosis.API
 
             // Add services to the container.
             var ConnectionString = builder.Configuration.GetConnectionString("Diagnosis");
+            var emailConfig = builder.Configuration.GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            builder.Services.AddSingleton(emailConfig);
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.Configure<FormOptions>(O =>
+            {
+                O.ValueLengthLimit = int.MaxValue;
+                O.MultipartBodyLengthLimit = int.MaxValue;
+                O.MemoryBufferThreshold = int.MaxValue;
+            });
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(ConnectionString));
             builder.Services.AddDataProtection();
@@ -43,6 +55,8 @@ namespace Diagnosis.API
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(opt => 
+            opt.TokenLifespan = TimeSpan.FromHours(2));
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

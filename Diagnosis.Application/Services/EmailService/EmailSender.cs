@@ -1,0 +1,84 @@
+﻿using MimeKit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Diagnosis.Application.Services.EmailService
+{
+    public class EmailSender : IEmailSender
+    {
+        private readonly EmailConfiguration _emailConfig;
+        public EmailSender(EmailConfiguration emailConfig)
+        {
+            _emailConfig = emailConfig;
+        }
+        public void SendEmail(Message message)
+        {
+            var emailMessage = CreateEmailMessage(message);
+            Send(emailMessage);
+        }
+
+        private MimeMessage CreateEmailMessage(Message message)
+        {
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(MailboxAddress.Parse(_emailConfig.From));
+            emailMessage.To.AddRange(message.To);
+            emailMessage.Subject = message.Subject;
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = $"<h2 style='color:red'>{message.Content}</h2>"
+            };
+
+            if (message.Attachments != null && message.Attachments.Any())
+            {
+                foreach (var attachment in message.Attachments)
+                {
+                    using var ms = new MemoryStream();
+                    attachment.CopyTo(ms);
+                    ms.Position = 0;
+                    var fileBytes = ms.ToArray();
+
+                    var contentType = string.IsNullOrWhiteSpace(attachment.ContentType)
+                        ? ContentType.Parse("application/octet-stream")
+                        : ContentType.Parse(attachment.ContentType);
+
+                    bodyBuilder.Attachments.Add(attachment.FileName, fileBytes, contentType);
+                }
+            }
+
+            emailMessage.Body = bodyBuilder.ToMessageBody();
+
+            return emailMessage;
+        }
+
+        private void Send (MimeMessage mailMessage)
+        {
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    client.Connect(_emailConfig.SmtpServer, 587, SecureSocketOptions.StartTls);
+                    client.AuthenticationMechanisms.Remove("XOAUTH2");
+                    client.Authenticate(_emailConfig.Username, _emailConfig.Password);
+
+                    client.Send(mailMessage);
+
+                }
+                catch 
+                {
+                    throw;
+                }
+                finally
+                {
+                    client.Disconnect(true);
+                    client.Dispose();
+                }
+            }
+        }
+    }
+}
