@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Diagnosis.Application.UseCases
 {
     public class RegisterUseCase
@@ -17,9 +18,9 @@ namespace Diagnosis.Application.UseCases
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<string> Register(RegisterDTO registerDTO)
-        {
-            return "";
+        public async Task<RegisterResponse> ExcuteAsync(RegisterDTO registerDTO)
+        {             
+            return await unitOfWork.Auth.RegisterAsync(registerDTO); ;
         }
     }
 }
