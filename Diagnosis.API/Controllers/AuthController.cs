@@ -15,19 +15,23 @@ namespace Diagnosis.API.Controllers
         private readonly ChangePasswordUseCase changePasswordUseCase;
 
         public AuthController(
-            RegisterUseCase registerUseCase,
             ChangePasswordUseCase changePasswordUseCase)
         {
             this.registerUseCase = registerUseCase;
             this.changePasswordUseCase = changePasswordUseCase;
         }
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(
             [FromBody] RegisterDTO registerDTO,
             [FromServices] RegisterUseCase registerUseCase)
         {
-            return Ok();
+            var result = await registerUseCase.ExcuteAsync(registerDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            return Ok(result);
         }
 
         /// <summary>
@@ -74,6 +78,20 @@ namespace Diagnosis.API.Controllers
             }
 
             return BadRequest(result);
+            
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(
+            [FromBody] LoginDTO loginDTO,
+            [FromServices] LoginUseCase loginUseCase)
+        {
+            var result = await loginUseCase.Login(loginDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            return Ok(result);
         }
     }
 }

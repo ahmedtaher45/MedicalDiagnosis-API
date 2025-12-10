@@ -1,6 +1,12 @@
 @Diagnosis.API_HostAddress = http://localhost:5198
 
-GET {{Diagnosis.API_HostAddress}}/weatherforecast/
+
+POST {{Diagnosis.API_HostAddress}}/Auth/Login
 Accept: application/json
+{
+    "email": "",
+    "password" : "",
+    "role" : //Patient, Doctor, Admin
+}
 
 ###
