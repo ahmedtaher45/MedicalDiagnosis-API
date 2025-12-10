@@ -9,14 +9,16 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IRepository<TEntity>
     {
-        IQueryable<TEntity> GetAll();
-        HashSet<TEntity> GetAllPaged(int count, int PageNumber);
+        IQueryable<TEntity> Query(); 
+        Task<List<TEntity>> GetAllAsync();
+        Task<HashSet<TEntity>> GetAllPagedAsync(int pageSize, int pageNumber, Expression<Func<TEntity, object>> orderBy);
 
-        IQueryable<TEntity> GetMany(Expression<Func<TEntity, bool>> where);
-        TEntity Get(Expression<Func<TEntity, bool>> where);
-        TEntity GetById(params object[] id);
-        void Add(TEntity entity);
+        Task<List<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity?> GetByIdAsync(object[] keyValues);
+
+        Task AddAsync(TEntity entity);
         void Update(TEntity entity);
-        void Delete(params object[] id);
+        Task<bool> DeleteAsync(params object[] id);
     }
 }
