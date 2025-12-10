@@ -24,9 +24,22 @@ namespace Diagnosis.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var ConnectionString = builder.Configuration.GetConnectionString("Diagnosis");
+            //var ConnectionString = builder.Configuration.GetConnectionString("Diagnosis");
+            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            //options.UseSqlServer(ConnectionString));
+            var connectionString = builder.Configuration.GetConnectionString("Diagnosis");
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(ConnectionString));
+                options.UseSqlServer(connectionString, sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null
+                    );
+                })
+            );
+
             builder.Services.AddDataProtection();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
