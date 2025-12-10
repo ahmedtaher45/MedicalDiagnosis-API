@@ -33,12 +33,14 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Invalid Email"
                 };
             }
+
             ApplicationUser newUser = new ApplicationUser
             {
                 Email = registerDTO.Email,
                 UserName = registerDTO.UserName,
                 PhoneNumber = registerDTO.PhoneNumber
             };
+
             var result = await userManager.CreateAsync(newUser, registerDTO.Password!);
 
             if (!result.Succeeded)
@@ -47,6 +49,20 @@ namespace Diagnosis.Infrastracture.Repositories
                 {
                     Success = false,
                     ErrorMessage = "Error occured while creating user"
+                };
+            }
+
+            try
+            {
+                await userManager.AddToRoleAsync(newUser, registerDTO.Role!);
+            }
+            catch (Exception ex)
+            {
+
+                return new RegisterResponse
+                {
+                    Success = false,
+                    ErrorMessage= "Error with assigning role: " +ex.Message
                 };
             }
             return new RegisterResponse

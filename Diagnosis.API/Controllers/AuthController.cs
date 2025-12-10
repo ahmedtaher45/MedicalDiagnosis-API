@@ -15,6 +15,10 @@ namespace Diagnosis.API.Controllers
             [FromServices] RegisterUseCase registerUseCase)
         {
             var result = await registerUseCase.ExcuteAsync(registerDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
             return Ok(result);
         }
 

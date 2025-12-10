@@ -20,8 +20,9 @@ namespace Diagnosis.Application.DTOs
         [Required(ErrorMessage = "password is required")]
         [DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]",
-         ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$",
+         ErrorMessage = "Password must contain uppercase, lowercase, digit, special character and be at least 8 characters long.")]
+
         public string? Password { get; set; }
 
         [Required(ErrorMessage = "Password confirmation is required")]
@@ -30,6 +31,9 @@ namespace Diagnosis.Application.DTOs
 
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
+
+        [Required(ErrorMessage = "User Role is required")]
+        public string? Role { get; set; }
     }
 
     public class RegisterResponse
