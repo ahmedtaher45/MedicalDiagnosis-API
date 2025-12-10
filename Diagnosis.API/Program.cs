@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Diagnosis.Infrastracture.Identity;
+using System.Threading.Tasks;
 
 namespace Diagnosis.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +69,11 @@ namespace Diagnosis.API
 
             app.MapControllers();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                await IdentitySeeder.SeedRoles(roleManager);
+            }
 
             app.Run();
         }
