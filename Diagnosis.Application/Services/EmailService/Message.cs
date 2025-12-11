@@ -13,14 +13,14 @@ namespace Diagnosis.Application.Services.EmailService
         public List<MailboxAddress> To {  get; set; }
         public string Subject { get; set; }
         public string Content { get; set; }
-        public IFormFileCollection Attachments { get; set; }
-        public Message(IEnumerable<String> to , string subject , string content , IFormFileCollection attachments) 
+        
+        public Message(IEnumerable<String> to , string subject , string content, object value) 
         {
             To = new List<MailboxAddress>();
             To.AddRange(to.Select(x =>  MailboxAddress.Parse(x)));
             Subject = subject ;
             Content = content ;
-            Attachments = attachments ;
+            
         }
     }
 }

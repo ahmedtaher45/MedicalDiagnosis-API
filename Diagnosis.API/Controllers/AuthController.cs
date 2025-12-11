@@ -89,6 +89,26 @@ namespace Diagnosis.API.Controllers
             }
             return Ok(result);
         }
-       
+        [HttpPost("Forgot-Password")]
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordDTO forgotPasswordDTO , [FromServices]ForgotPasswordUseCase forgotPasswordUseCase)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await forgotPasswordUseCase.ForgotPasswordAsync(forgotPasswordDTO);
+            return Ok(result);
+        }
+        [HttpPost("Reset-Password")]
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDTO resetPasswordDTO, [FromServices] ResetPasswordUseCase resetPasswordUseCase)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await resetPasswordUseCase.ResetPasswordAsync(resetPasswordDTO);
+            return Ok(result);
+        }
+
     }
 }

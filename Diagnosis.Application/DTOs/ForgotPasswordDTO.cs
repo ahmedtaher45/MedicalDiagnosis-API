@@ -15,4 +15,14 @@ namespace Diagnosis.Application.DTOs
         [Required]
         public string? ClientUri { get; set; }
     }
+    public class ForgotPasswordResponseDTO
+    {
+        public EmailInfo Email { get; set; }
+    }
+    public class EmailInfo
+    {
+        public string Address { get; set; }
+        public string Token { get; set; }
+    }
+   
 }

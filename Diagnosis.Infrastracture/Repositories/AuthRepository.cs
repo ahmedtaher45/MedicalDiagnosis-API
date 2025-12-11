@@ -1,13 +1,17 @@
 ﻿using Diagnosis.Application.DTOs;
+using Diagnosis.Application.DTOs;
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Diagnosis.Application.DTOs;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
@@ -15,11 +19,13 @@ namespace Diagnosis.Infrastracture.Repositories
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IJwtTokenGenerator jwtTokenGenerator;
+        private readonly Application.Services.EmailService.IEmailSender emailSender;
 
-        public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator)
+        public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.jwtTokenGenerator = jwtTokenGenerator;
+            this.emailSender = emailSender;
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterDTO registerDTO)
@@ -62,7 +68,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 return new RegisterResponse
                 {
                     Success = false,
-                    ErrorMessage= "Error with assigning role: " +ex.Message
+                    ErrorMessage = "Error with assigning role: " + ex.Message
                 };
             }
             return new RegisterResponse
@@ -75,7 +81,7 @@ namespace Diagnosis.Infrastracture.Repositories
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
             {
-               return (new LoginResponseDTO
+                return (new LoginResponseDTO
                 {
                     Success = false,
                     ErrorMessage = "Invalid email or password"
@@ -86,31 +92,31 @@ namespace Diagnosis.Infrastracture.Repositories
             if (!isPasswordValid)
             {
                 return (new LoginResponseDTO
-                 {
-                      Success = false,
-                      ErrorMessage = "Invalid email or password"
-                 });
+                {
+                    Success = false,
+                    ErrorMessage = "Invalid email or password"
+                });
             }
 
             var roles = await userManager.GetRolesAsync(user);
             if (!roles.Contains(role))
             {
                 return (new LoginResponseDTO
-                 {
-                      Success = false,
-                      ErrorMessage = "User does not have the required role"
-                 });
+                {
+                    Success = false,
+                    ErrorMessage = "User does not have the required role"
+                });
             }
             var (token, expiresAt) = await jwtTokenGenerator.GenerateTokenAsync(user, roles);
 
-            
+
 
             return new LoginResponseDTO
             {
                 Token = token,
                 ExpiresAt = expiresAt
             };
-    
+
         }
 
         public async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
@@ -129,6 +135,109 @@ namespace Diagnosis.Infrastracture.Repositories
             var result = await userManager.FindByIdAsync(userId!);
             if (result == null) throw new ArgumentNullException("Invalid userId");
             return result;
+        }
+
+        public async Task<ForgotPasswordResponseDTO> ForgotPasswordAsync(ForgotPasswordDTO forgotPasswordDTO)
+        {
+            var user = await userManager.FindByEmailAsync(forgotPasswordDTO.Email);
+            if (user == null)
+            {
+                throw new Exception($"User with email {forgotPasswordDTO.Email} not found");
+            }
+
+            
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            
+            var response = new ForgotPasswordResponseDTO
+            {
+                Email = new EmailInfo
+                {
+                    Address = forgotPasswordDTO.Email!,
+                    Token = token
+                }
+            };
+
+            
+            if (!string.IsNullOrEmpty(forgotPasswordDTO.ClientUri))
+            {
+                var param = new Dictionary<string, string?>
+        {
+            { "token", token },
+            { "email", forgotPasswordDTO.Email! }
+        };
+
+                string callbackUrl = QueryHelpers.AddQueryString(forgotPasswordDTO.ClientUri, param);
+
+                if (emailSender != null)
+                {
+                    var message = new Message(
+                        new string[] { user.Email },
+                        "Reset Password Token",
+                        $"Click the link to reset your password: {callbackUrl}",
+                        null
+                    );
+
+                    emailSender.SendEmail(message);
+                }
+            }
+
+            return response;
+        }
+
+
+        public async Task<ResetPasswordResponseDTO> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
+        {
+            
+            var user = await userManager.FindByEmailAsync(resetPasswordDTO.Email);
+            if (user == null)
+            {
+                return new ResetPasswordResponseDTO
+                {
+                    Success = false,
+                    Message = "User not found.",
+                    Errors = new List<string> { "Invalid email." }
+                };
+            }
+
+            
+            if (string.IsNullOrEmpty(resetPasswordDTO.Token))
+            {
+                return new ResetPasswordResponseDTO
+                {
+                    Success = false,
+                    Message = "Token is required.",
+                    Errors = new List<string> { "Token cannot be empty." }
+                };
+            }
+
+            
+            string token = resetPasswordDTO.Token;
+
+            
+            var resetPassResult = await userManager.ResetPasswordAsync(
+                user,
+                token,
+                resetPasswordDTO.Password
+            );
+
+            
+            if (!resetPassResult.Succeeded)
+            {
+                return new ResetPasswordResponseDTO
+                {
+                    Success = false,
+                    Message = "Failed to reset password.",
+                    Errors = resetPassResult.Errors.Select(e => e.Description).ToList()
+                };
+            }
+
+            
+            return new ResetPasswordResponseDTO
+            {
+                Success = true,
+                Message = "Password has been reset successfully."
+            };
         }
     }
 }

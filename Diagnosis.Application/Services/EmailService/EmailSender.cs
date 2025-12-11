@@ -28,35 +28,14 @@ namespace Diagnosis.Application.Services.EmailService
             emailMessage.From.Add(MailboxAddress.Parse(_emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-
-            var bodyBuilder = new BodyBuilder
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
             {
-                HtmlBody = $"<h2 style='color:red'>{message.Content}</h2>"
+                Text = message.Content
             };
-
-            if (message.Attachments != null && message.Attachments.Any())
-            {
-                foreach (var attachment in message.Attachments)
-                {
-                    using var ms = new MemoryStream();
-                    attachment.CopyTo(ms);
-                    ms.Position = 0;
-                    var fileBytes = ms.ToArray();
-
-                    var contentType = string.IsNullOrWhiteSpace(attachment.ContentType)
-                        ? ContentType.Parse("application/octet-stream")
-                        : ContentType.Parse(attachment.ContentType);
-
-                    bodyBuilder.Attachments.Add(attachment.FileName, fileBytes, contentType);
-                }
-            }
-
-            emailMessage.Body = bodyBuilder.ToMessageBody();
-
             return emailMessage;
         }
 
-        private void Send (MimeMessage mailMessage)
+        private void Send(MimeMessage mailMessage)
         {
             using (var client = new SmtpClient())
             {
@@ -64,12 +43,12 @@ namespace Diagnosis.Application.Services.EmailService
                 {
                     client.Connect(_emailConfig.SmtpServer, 587, SecureSocketOptions.StartTls);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    client.Authenticate(_emailConfig.Username, _emailConfig.Password);
+                    client.Authenticate(_emailConfig.Username,_emailConfig.Password);
 
                     client.Send(mailMessage);
 
                 }
-                catch 
+                catch
                 {
                     throw;
                 }

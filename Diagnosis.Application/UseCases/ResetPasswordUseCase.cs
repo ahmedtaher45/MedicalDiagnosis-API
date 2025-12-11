@@ -6,22 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Diagnosis.Application.UseCases
 {
-    public class RegisterUseCase
+    public class ResetPasswordUseCase
     {
         private readonly IUnitOfWork unitOfWork;
-
-        public RegisterUseCase(IUnitOfWork unitOfWork)
+        public ResetPasswordUseCase(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
-
-        public async Task<RegisterResponse> ExcuteAsync(RegisterDTO registerDTO)
-        {             
-            return await unitOfWork.Auth.RegisterAsync(registerDTO); ;
+        public async Task<ResetPasswordResponseDTO> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
+        {
+            return await unitOfWork.Auth.ResetPasswordAsync(resetPasswordDTO);
         }
-
     }
 }

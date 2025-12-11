@@ -16,4 +16,10 @@ namespace Diagnosis.Application.DTOs
         public string? Email { get; set; }
         public string? Token { get; set; }
     }
+    public class ResetPasswordResponseDTO
+    {
+        public  bool Success { get; set; }
+        public string Message { get; set; }    
+        public List<String>? Errors { get; set; }
+    }
 }
