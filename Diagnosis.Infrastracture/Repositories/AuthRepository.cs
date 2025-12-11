@@ -4,12 +4,12 @@ using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
-//using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -76,7 +76,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 Success = true
             };
         }
-        public async Task<LoginResponseDTO> LoginAsync(string email, string password, string role)
+        public async Task<LoginResponseDTO> LoginAsync(string email, string password)
         {
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
@@ -99,16 +99,8 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             var roles = await userManager.GetRolesAsync(user);
-            if (!roles.Contains(role))
-            {
-                return (new LoginResponseDTO
-                {
-                    Success = false,
-                    ErrorMessage = "User does not have the required role"
-                });
-            }
+     
             var (token, expiresAt) = await jwtTokenGenerator.GenerateTokenAsync(user, roles);
-
 
 
             return new LoginResponseDTO
@@ -139,7 +131,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<ForgotPasswordResponseDTO> ForgotPasswordAsync(ForgotPasswordDTO forgotPasswordDTO)
         {
-            var user = await userManager.FindByEmailAsync(forgotPasswordDTO.Email);
+            var user = await userManager.FindByEmailAsync(forgotPasswordDTO.Email!);
             if (user == null)
             {
                 throw new Exception($"User with email {forgotPasswordDTO.Email} not found");
@@ -149,47 +141,64 @@ namespace Diagnosis.Infrastracture.Repositories
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
             
-            var response = new ForgotPasswordResponseDTO
-            {
-                Email = new EmailInfo
-                {
-                    Address = forgotPasswordDTO.Email!,
-                    Token = token
-                }
-            };
+            //var response = new ForgotPasswordResponseDTO
+            //{
+            //    Email = new EmailInfo
+            //    {
+            //        Address = forgotPasswordDTO.Email!,
+            //        Token = token
+            //    }
+            //};
 
             
             if (!string.IsNullOrEmpty(forgotPasswordDTO.ClientUri))
             {
                 var param = new Dictionary<string, string?>
-        {
-            { "token", token },
-            { "email", forgotPasswordDTO.Email! }
-        };
+                {
+                    { "token", token },
+                    { "email", forgotPasswordDTO.Email! }
+                };
 
                 string callbackUrl = QueryHelpers.AddQueryString(forgotPasswordDTO.ClientUri, param);
 
-                if (emailSender != null)
-                {
+                #region Read Html file
+                var assembly = Assembly.Load("Diagnosis.Application");
+                using var stream = assembly.GetManifestResourceStream("Diagnosis.Application.Template.ResetEmail.html");
+
+                if (stream == null) throw new Exception("stream file of Email template is not correct");
+
+                using var reader = new StreamReader(stream);
+                var htmlTemplate = await reader.ReadToEndAsync();
+                #endregion
+
+                var html = htmlTemplate.Replace("{{CallbackUrl}}", callbackUrl);
+
                     var message = new Message(
-                        new string[] { user.Email },
+                        new string[] { user.Email! },
                         "Reset Password Token",
-                        $"Click the link to reset your password: {callbackUrl}",
-                        null
+                        html
                     );
 
-                    emailSender.SendEmail(message);
-                }
+                await emailSender.SendEmailAsync(message);
+
+                return new ForgotPasswordResponseDTO
+                {
+                    Success = true
+                };
             }
 
-            return response;
+            return new ForgotPasswordResponseDTO
+            {
+                Success = false,
+                Message = "Email with reset token hasn't sent"
+            };
         }
 
 
         public async Task<ResetPasswordResponseDTO> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
         {
             
-            var user = await userManager.FindByEmailAsync(resetPasswordDTO.Email);
+            var user = await userManager.FindByEmailAsync(resetPasswordDTO.Email!);
             if (user == null)
             {
                 return new ResetPasswordResponseDTO
@@ -218,7 +227,7 @@ namespace Diagnosis.Infrastracture.Repositories
             var resetPassResult = await userManager.ResetPasswordAsync(
                 user,
                 token,
-                resetPasswordDTO.Password
+                resetPasswordDTO.Password!
             );
 
             

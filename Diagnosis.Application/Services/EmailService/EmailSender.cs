@@ -16,10 +16,10 @@ namespace Diagnosis.Application.Services.EmailService
         {
             _emailConfig = emailConfig;
         }
-        public void SendEmail(Message message)
+        public async Task SendEmailAsync(Message message)
         {
             var emailMessage = CreateEmailMessage(message);
-            Send(emailMessage);
+            await Send(emailMessage);
         }
 
         private MimeMessage CreateEmailMessage(Message message)
@@ -28,33 +28,37 @@ namespace Diagnosis.Application.Services.EmailService
             emailMessage.From.Add(MailboxAddress.Parse(_emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
+
+            var emailContent = new BodyBuilder
             {
-                Text = message.Content
+                HtmlBody = message.Content,
+                TextBody = "Please view this email in HTML mode."
             };
+            emailMessage.Body = emailContent.ToMessageBody();
+
             return emailMessage;
         }
 
-        private void Send(MimeMessage mailMessage)
+        private async Task Send(MimeMessage mailMessage)
         {
             using (var client = new SmtpClient())
             {
                 try
                 {
-                    client.Connect(_emailConfig.SmtpServer, 587, SecureSocketOptions.StartTls);
+                    await client.ConnectAsync(_emailConfig.SmtpServer, 587, SecureSocketOptions.StartTls);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    client.Authenticate(_emailConfig.Username,_emailConfig.Password);
+                    await client.AuthenticateAsync(_emailConfig.Username,_emailConfig.Password);
 
-                    client.Send(mailMessage);
+                    await client.SendAsync(mailMessage);
 
                 }
-                catch
+                catch(Exception ex) 
                 {
-                    throw;
+                    throw new Exception("Email send Failed", ex);
                 }
                 finally
                 {
-                    client.Disconnect(true);
+                    await client.DisconnectAsync(true);
                     client.Dispose();
                 }
             }

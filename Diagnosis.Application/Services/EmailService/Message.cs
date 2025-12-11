@@ -14,7 +14,7 @@ namespace Diagnosis.Application.Services.EmailService
         public string Subject { get; set; }
         public string Content { get; set; }
         
-        public Message(IEnumerable<String> to , string subject , string content, object value) 
+        public Message(IEnumerable<String> to , string subject , string content) 
         {
             To = new List<MailboxAddress>();
             To.AddRange(to.Select(x =>  MailboxAddress.Parse(x)));

@@ -17,12 +17,15 @@ namespace Diagnosis.Application.DTOs
     }
     public class ForgotPasswordResponseDTO
     {
-        public EmailInfo Email { get; set; }
-    }
-    public class EmailInfo
-    {
-        public string Address { get; set; }
-        public string Token { get; set; }
+        //    public EmailInfo Email { get; set; }
+        //}
+        //public class EmailInfo
+        //{
+        //    public string Address { get; set; }
+        //    public string Token { get; set; }
+
+        public bool Success { get; set; }
+        public string? Message { get; set; }
     }
    
 }

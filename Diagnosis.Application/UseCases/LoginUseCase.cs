@@ -23,7 +23,7 @@ namespace Diagnosis.Application.UseCases
 
         public async Task<LoginResponseDTO> Login(LoginDTO loginDTO)
         {
-            return await auth.LoginAsync(loginDTO.Email, loginDTO.Password, loginDTO.Role);
+            return await auth.LoginAsync(loginDTO.Email, loginDTO.Password);
 
            
             

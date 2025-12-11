@@ -14,7 +14,7 @@ namespace Diagnosis.Application.Interfaces
     public interface IAuth
     {
         Task<RegisterResponse> RegisterAsync(RegisterDTO registerDTO);
-        Task<LoginResponseDTO> LoginAsync(string email, string password, string role);
+        Task<LoginResponseDTO> LoginAsync(string email, string password);
 
         Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
         Task<ApplicationUser> GetUserByIdAsync(string userId);
