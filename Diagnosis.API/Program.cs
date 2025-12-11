@@ -26,7 +26,7 @@ namespace Diagnosis.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var ConnectionString = builder.Configuration.GetConnectionString("Diagnosis");
+            var connectionString = builder.Configuration.GetConnectionString("Diagnosis");
             var emailConfig = builder.Configuration.GetSection("EmailConfiguration")
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
@@ -38,15 +38,7 @@ namespace Diagnosis.API
                 O.MemoryBufferThreshold = int.MaxValue;
             });
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString, sqlOptions =>
-                {
-                    sqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(10),
-                        errorNumbersToAdd: null
-                    );
-                })
-            );
+                options.UseSqlServer(connectionString));
 
             builder.Services.AddDataProtection();
 
