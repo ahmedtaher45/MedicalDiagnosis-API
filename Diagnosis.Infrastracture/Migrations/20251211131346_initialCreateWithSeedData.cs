@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Diagnosis.Infrastracture.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialCreateWithSeedData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -459,23 +461,23 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "Prescriptions",
                 columns: table => new
                 {
-                    PrescriptionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppointmentId = table.Column<int>(type: "int", nullable: false),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
                     Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DiagnosisName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Severity = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DoctorId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Prescriptions", x => x.PrescriptionId);
+                    table.PrimaryKey("PK_Prescriptions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Prescriptions_Appointments_AppointmentId",
                         column: x => x.AppointmentId,
@@ -487,8 +489,8 @@ namespace Diagnosis.Infrastracture.Migrations
                         principalTable: "Doctors",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Prescriptions_Patients_Id",
-                        column: x => x.Id,
+                        name: "FK_Prescriptions_Patients_PatientId",
+                        column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id");
                 });
@@ -533,23 +535,106 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "PrescriptionItems",
                 columns: table => new
                 {
-                    ItemId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    PrescriptionId = table.Column<int>(type: "int", nullable: false),
                     MedicineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrescriptionItems", x => x.ItemId);
+                    table.PrimaryKey("PK_PrescriptionItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PrescriptionItems_Prescriptions_Id",
-                        column: x => x.Id,
+                        name: "FK_PrescriptionItems_Prescriptions_PrescriptionId",
+                        column: x => x.PrescriptionId,
                         principalTable: "Prescriptions",
-                        principalColumn: "PrescriptionId");
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "role-doctor", null, "Doctor", "DOCTOR" },
+                    { "role-patient", null, "Patient", "PATIENT" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "user-1", 0, "05709cf5-9620-4050-8c56-1a14bad2174d", "doctor@test.com", true, false, null, "DOCTOR@TEST.COM", "DOCTOR@TEST.COM", "", null, false, "stamp1", false, "doctor@test.com" },
+                    { "user-2", 0, "5499f57b-3f1a-4eba-828e-f262e105b762", "patient@test.com", true, false, null, "PATIENT@TEST.COM", "PATIENT@TEST.COM", "", null, false, "stamp2", false, "patient@test.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Clinics",
+                columns: new[] { "Id", "Address", "City", "CreatedOn", "Description", "IsDeleted", "Latitude", "Longitude", "ModifiedOn", "Name", "Phone" },
+                values: new object[] { -1, "Main Street", "Cairo", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "General medical services", false, 30.05m, 31.23m, null, "Downtown Clinic", "01012345789" });
+
+            migrationBuilder.InsertData(
+                table: "Doctors",
+                columns: new[] { "Id", "Bio", "CreatedOn", "ExperienceYears", "FName", "IsDeleted", "LName", "LicenseNumber", "ModifiedOn", "ProfileImageUrl", "Rating", "Specialization", "UpdatedAt", "UserId" },
+                values: new object[] { -1, "Skin specialist", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 8, "Ahmed", false, "Mahmoud", "LIC-001", null, "", 4.7m, "Dermatology", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "user-1" });
+
+            migrationBuilder.InsertData(
+                table: "Notifications",
+                columns: new[] { "Id", "CreatedOn", "IsDeleted", "IsRead", "Message", "ModifiedOn", "NotificationType", "ReadAt", "RelatedId", "RelatedType", "Title", "UserId", "UserType" },
+                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, "Your appointment is confirmed.", null, "Appointment", null, -1, "Appointment", "Appointment Confirmed", "user-2", "Patient" });
+
+            migrationBuilder.InsertData(
+                table: "Patients",
+                columns: new[] { "Id", "Address", "Allergies", "BloodType", "CreatedOn", "DateOfBirth", "FName", "Gender", "IsDeleted", "IsNewPatient", "IsUrgent", "LName", "ModifiedOn", "ProfileImageUrl", "UpdatedAt", "UserId" },
+                values: new object[] { -1, "Cairo", "None", "A+", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1996, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sara", "Female", false, true, false, "Ali", null, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "user-2" });
+
+            migrationBuilder.InsertData(
+                table: "Appointments",
+                columns: new[] { "Id", "AppointmentDateTime", "AppointmentType", "ConsultationType", "CreatedOn", "DoctorId", "IsDeleted", "ModifiedOn", "Notes", "PatientId", "Status", "UpdatedAt" },
+                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "InPerson", "General", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, false, null, "Initial Checkup", -1, "Confirmed", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+
+            migrationBuilder.InsertData(
+                table: "Billings",
+                columns: new[] { "Id", "AmountPaid", "AppointmentDate", "CreatedAt", "CreatedOn", "IsDeleted", "ModifiedOn", "PatientId", "PatientName" },
+                values: new object[] { -1, 250m, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, -1, "Hager" });
+
+            migrationBuilder.InsertData(
+                table: "DoctorClinics",
+                columns: new[] { "Id", "ClinicId", "ConsultationFees", "CreatedOn", "DoctorId", "FollowUpFees", "IsDeleted", "ModifiedOn" },
+                values: new object[] { -1, -1, 300m, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, 150m, false, null });
+
+            migrationBuilder.InsertData(
+                table: "LabResults",
+                columns: new[] { "Id", "CreatedAt", "CreatedOn", "DoctorId", "FileUrl", "IsDeleted", "LabNotes", "ModifiedOn", "PatientId", "ResultStatus", "ResultValue", "TestDate", "TestName" },
+                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, "", false, "Good condition", null, -1, "Completed", "Normal", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Blood Test" });
+
+            migrationBuilder.InsertData(
+                table: "Requests",
+                columns: new[] { "Id", "CreatedOn", "DoctorId", "IsDeleted", "Message", "ModifiedOn", "PatientId", "Priority", "RequestDate", "RequestType", "Status" },
+                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, false, "Need urgent follow-up.", null, -1, "High", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "FollowUp", "Pending" });
+
+            migrationBuilder.InsertData(
+                table: "Payments",
+                columns: new[] { "Id", "Amount", "AppointmentId", "CreatedOn", "DoctorId", "IsDeleted", "ModifiedOn", "Notes", "PaymentDate", "PaymentMethod", "PaymentStatus" },
+                values: new object[] { -1, 300m, -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, false, null, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cash", "Paid" });
+
+            migrationBuilder.InsertData(
+                table: "Prescriptions",
+                columns: new[] { "Id", "AppointmentId", "CreatedAt", "CreatedOn", "DiagnosisName", "DoctorId", "IsDeleted", "ModifiedOn", "Notes", "PatientId", "Severity", "Specialization" },
+                values: new object[] { -1, -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Skin Irritation", -1, false, null, "Use cream twice daily", -1, "Mild", "Dermatology" });
+
+            migrationBuilder.InsertData(
+                table: "Reviews",
+                columns: new[] { "Id", "AppointmentId", "CreatedOn", "DoctorId", "IsDeleted", "ModifiedOn", "PatientId", "RatingValue", "ReviewText" },
+                values: new object[] { -1, -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, false, null, -1, 5m, "Excellent doctor!" });
+
+            migrationBuilder.InsertData(
+                table: "PrescriptionItems",
+                columns: new[] { "Id", "CreatedOn", "IsDeleted", "MedicineName", "ModifiedOn", "PrescriptionId" },
+                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Skin Cream", null, -1 });
 
             migrationBuilder.CreateIndex(
                 name: "idx_appointment_date",
@@ -679,9 +764,9 @@ namespace Diagnosis.Infrastracture.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionItems_Id",
+                name: "IX_PrescriptionItems_PrescriptionId",
                 table: "PrescriptionItems",
-                column: "Id");
+                column: "PrescriptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_AppointmentId",
@@ -695,9 +780,9 @@ namespace Diagnosis.Infrastracture.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prescriptions_Id",
+                name: "IX_Prescriptions_PatientId",
                 table: "Prescriptions",
-                column: "Id");
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Requests_DoctorId",

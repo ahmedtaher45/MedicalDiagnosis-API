@@ -9,8 +9,8 @@ namespace Diagnosis.Domain.Entites
 {
     public class Prescription: BaseEntity
     {
-        public int PrescriptionId { get; set; }
         public int AppointmentId { get; set; }
+        public int PatientId { get; set; }
         public string Specialization { get; set; }
         public string Notes { get; set; }
         public string DiagnosisName { get; set; }
@@ -19,6 +19,7 @@ namespace Diagnosis.Domain.Entites
         public int DoctorId { get; set; }
         public Doctor Doctor { get; set; }
         public Appointment Appointment { get; set; }
+        public Patient Patient { get; set; }
         public ICollection<PrescriptionItem> PrescriptionItems { get; set; }
     }
 }

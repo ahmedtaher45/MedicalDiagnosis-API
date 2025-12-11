@@ -6,31 +6,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Diagnosis.Infrastracture.Identity;
+using Diagnosis.Application.Services.EmailService;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class UnitOfWork: IUnitOfWork
+    public class UnitOfWork: IUnitOfWork, IDisposable
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly IEmailSender _emailSender;
+        
 
-        public UnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public UnitOfWork(
+            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context,
+            IJwtTokenGenerator jwtTokenGenerator,
+            IEmailSender emailSender
+            )
         {
             _userManager = userManager;
             _context = context;
-            Auth = new AuthRepository(_userManager);
+            _jwtTokenGenerator = jwtTokenGenerator;
+            _emailSender = emailSender;
+
+            Auth = new AuthRepository(_userManager, _jwtTokenGenerator , _emailSender);
         }
 
         public IAuth Auth { get; private set; }
 
-        public Task<int> CompleteAsync()
+        public async Task<int> CompleteAsync()
         {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync();
         }
 
-        public Task SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+        }
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }
