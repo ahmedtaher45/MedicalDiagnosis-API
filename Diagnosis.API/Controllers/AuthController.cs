@@ -1,9 +1,13 @@
 ﻿using Diagnosis.Application.DTOs;
+using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.UseCases;
+using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Diagnosis.API.Controllers
 {
@@ -73,7 +77,7 @@ namespace Diagnosis.API.Controllers
             
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(
             [FromBody] LoginDTO loginDTO,
             [FromServices] LoginUseCase loginUseCase)
@@ -85,5 +89,38 @@ namespace Diagnosis.API.Controllers
             }
             return Ok(result);
         }
+        [HttpPost("forget-password")]
+        public async Task<IActionResult> ForgotPassword(
+            [FromBody]ForgotPasswordDTO forgotPasswordDTO, 
+            [FromServices]ForgotPasswordUseCase forgotPasswordUseCase)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await forgotPasswordUseCase.ForgotPasswordAsync(forgotPasswordDTO);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(
+            [FromBody]ResetPasswordDTO resetPasswordDTO, 
+            [FromServices] ResetPasswordUseCase resetPasswordUseCase)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await resetPasswordUseCase.ResetPasswordAsync(resetPasswordDTO);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
     }
 }

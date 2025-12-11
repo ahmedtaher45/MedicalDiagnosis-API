@@ -1,8 +1,10 @@
 
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Repositories;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -24,11 +26,17 @@ namespace Diagnosis.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            //var ConnectionString = builder.Configuration.GetConnectionString("Diagnosis");
-            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            //options.UseSqlServer(ConnectionString));
-            var connectionString = builder.Configuration.GetConnectionString("Diagnosis");
-
+            var ConnectionString = builder.Configuration.GetConnectionString("Diagnosis");
+            var emailConfig = builder.Configuration.GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            builder.Services.AddSingleton(emailConfig);
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.Configure<FormOptions>(O =>
+            {
+                O.ValueLengthLimit = int.MaxValue;
+                O.MultipartBodyLengthLimit = int.MaxValue;
+                O.MemoryBufferThreshold = int.MaxValue;
+            });
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString, sqlOptions =>
                 {
@@ -47,6 +55,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<LoginUseCase>();
+            builder.Services.AddScoped<ForgotPasswordUseCase>();
+            builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuth, AuthRepository>();
 
@@ -69,6 +79,8 @@ namespace Diagnosis.API
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(opt => 
+            opt.TokenLifespan = TimeSpan.FromHours(2));
 
             builder.Services.AddAuthentication("Bearer")
             .AddJwtBearer(options =>
