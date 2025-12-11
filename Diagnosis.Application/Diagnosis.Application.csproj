@@ -17,12 +17,9 @@
 	</ItemGroup>
 	
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Mapping\" />
     <Folder Include="Template\" />
     <Folder Include="Services\" />
-    <Folder Include="UseCases\" />
   </ItemGroup>
 
   <ItemGroup>
