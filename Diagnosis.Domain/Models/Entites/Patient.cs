@@ -18,6 +18,7 @@ namespace Diagnosis.Domain.Entites
         public string Gender { get; set; }
         public string Address { get; set; }
         public string BloodType { get; set; }
+        public DateTime BirthDate { get; set; }
         public string Allergies { get; set; }
         public string ProfileImageUrl { get; set; }
         public bool IsNewPatient { get; set; }
@@ -31,6 +32,7 @@ namespace Diagnosis.Domain.Entites
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Billing> Billings { get; set; }
         public ICollection<Request> Requests { get; set; }
+        public ICollection<Consultation>? Consultations { get; set; }
 
     }
 }
