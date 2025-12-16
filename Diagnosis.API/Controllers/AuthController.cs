@@ -27,7 +27,19 @@ namespace Diagnosis.API.Controllers
             }
             return Ok(result);
         }
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(
+            [FromServices] ConfirmEmailUseCase confirmEmailUseCase,
+            [FromBody] ConfirmEmailDTO confirmEmailDTO)
+        {
+            var result = await confirmEmailUseCase.ExcuteAsync(confirmEmailDTO);
 
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
         /// <summary>
         /// Change user password - requires authentication
         /// </summary>

@@ -15,7 +15,8 @@ namespace Diagnosis.Application.Interfaces
     {
         Task<RegisterResponse> RegisterAsync(RegisterDTO registerDTO);
         Task<LoginResponseDTO> LoginAsync(string email, string password);
-
+        Task SendConfirmationEmail(ApplicationUser user, string clientUri);
+        Task<RegisterResponse> ConfirmEmailAsync(ConfirmEmailDTO confirmEmailDTO);
         Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
         Task<ApplicationUser> GetUserByIdAsync(string userId);
         Task<ForgotPasswordResponseDTO> ForgotPasswordAsync(ForgotPasswordDTO forgotPasswordDTO);

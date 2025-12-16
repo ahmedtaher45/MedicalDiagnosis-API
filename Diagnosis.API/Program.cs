@@ -49,6 +49,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<LoginUseCase>();
             builder.Services.AddScoped<ForgotPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
+            builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuth, AuthRepository>();
 
@@ -91,7 +92,12 @@ namespace Diagnosis.API
                         Encoding.UTF8.GetBytes(jwtConfig["Key"])
                     )
                 };
-            });    
+            });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy",policy =>
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -108,6 +114,8 @@ namespace Diagnosis.API
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
+
+            app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -117,7 +125,7 @@ namespace Diagnosis.API
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                await IdentitySeeder.SeedRoles(roleManager);
+                await IdentitySeeder.SeedAdminRole(roleManager);
             }
 
             app.Run();
