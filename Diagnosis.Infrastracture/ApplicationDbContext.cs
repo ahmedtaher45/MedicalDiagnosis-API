@@ -26,6 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Request> Requests { get; set; }
+    public DbSet<Consultation> Consultations { get; set; }
 
     //var seedDate = new DateTime(2024, 01, 01);
 
@@ -358,6 +359,53 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 IsDeleted = false
             }
         );
+        // ----------------------
+        // Consultation
+        // ----------------------
+        modelBuilder.Entity<Consultation>().HasData(
+            new Consultation
+            {
+                Id = 1,
+                PatientId = 101,
+                DoctorId = 15,
+                Symptoms = "Headache, fever, and fatigue.",
+                Notes = "Patient reports symptoms for 3 days.",
+                Status = ConsultationStatus.Pending,
+                Type = ConsultationType.Inquiry,
+                Date = new DateTime(2025, 1, 1),
+                ConfidenceLevel = 0,
+                Description = "General inquiry about symptoms"
+            },
+            new Consultation
+            {
+                Id = 2,
+                PatientId = 102,
+                DoctorId = 16,
+                Symptoms = "Chest pain and shortness of breath.",
+                Notes = "Pain increases with movement.",
+                Status = ConsultationStatus.Accepted,
+                Type = ConsultationType.AIDiagnosis,
+                Date = new DateTime(2025, 1, 2),
+                ConfidenceLevel = 87,
+                Description = "AI reviewed and doctor confirmed diagnosis"
+            },
+            new Consultation
+            {
+                Id = 3,
+                PatientId = 103,
+                DoctorId = 15,
+                Symptoms = "Skin irritation and redness.",
+                Notes = "Symptoms started after using new cream.",
+                Status = ConsultationStatus.Rejected,
+                Type = ConsultationType.Inquiry,
+                Date = new DateTime(2025, 1, 3),
+                ConfidenceLevel = 60,
+                RejectReason = "Information incomplete",
+                RejectNotes = "Provide additional medical history.",
+                Description = "Rejected due to missing medical data"
+            }
+        );
+
 
 
     }

@@ -17,24 +17,30 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly ApplicationDbContext _context;
         private IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IEmailSender _emailSender;
+        private IConsultationRepository _consultationRepository;
         
 
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
             IJwtTokenGenerator jwtTokenGenerator,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            IConsultationRepository consultationRepository
+            
             )
         {
             _userManager = userManager;
             _context = context;
             _jwtTokenGenerator = jwtTokenGenerator;
             _emailSender = emailSender;
+           // _consultationRepository = consultationRepository;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator , _emailSender);
+            Consultation = new ConsultationRepository(_context);
         }
 
         public IAuth Auth { get; private set; }
+        public IConsultationRepository Consultation { get; private set; }
 
         public async Task<int> CompleteAsync()
         {
