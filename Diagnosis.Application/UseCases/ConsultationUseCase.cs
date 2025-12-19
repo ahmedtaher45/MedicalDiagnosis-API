@@ -25,7 +25,8 @@ namespace Diagnosis.Application.UseCases
             {
                 Id = c.Id,
                 PatientName = c.Patient.FName+ " " + c.Patient.LName,
-                PatientBirthDate = c.Patient.BirthDate,
+                PatientGender = c.Patient.Gender,
+                PatientBirthDate = c.Patient.DateOfBirth,
                 Type = c.Type.ToString(),
                 Symptoms = c.Symptoms,
                 Response = c.Notes,
@@ -46,9 +47,13 @@ namespace Diagnosis.Application.UseCases
         {
             return await _consultationRepository.GetModifyDataAsync(consultationId);
         }
-        public async Task<string> ModifyConsultationAsync(ModifyConsultationDTO dto, int consultationId)
+        public async Task<ModifyConsultationResponseDTO> ModifyConsultationAsync(ModifyConsultationRequestDTO dto, int consultationId)
         {
             return await _consultationRepository.ModifyConsultationAsync(dto, consultationId);
+        }
+        public async Task<ConsultationDetailsDTO> GetConsultationDetailsAsync(int consultationId)
+        {
+            return await _consultationRepository.GetConsultationDetailsAsync(consultationId);
         }
 
     }

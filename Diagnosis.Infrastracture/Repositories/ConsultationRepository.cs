@@ -86,7 +86,7 @@ namespace Diagnosis.Infrastracture.Repositories
             {
                 Id = consultation.Id,
                 PatientName = consultation.Patient.FName + " " + consultation.Patient.LName,
-                PatientBirthDate = consultation.Patient.BirthDate,
+                PatientBirthDate = consultation.Patient.DateOfBirth,
                 PatientGender = consultation.Patient.Gender,
                 Notes = consultation.Notes,
                 Attachments = consultation.FileUrls.ToList(),
@@ -94,7 +94,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 Symptoms = consultation.Symptoms,
                 Response = consultation.Notes,
                 
-                RquestDate = consultation.Date,
+                RequestDate = consultation.Date,
                 Success = true
             };
         }
@@ -125,7 +125,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<ModifyConsultationDTO> GetModifyDataAsync(int consultationId)
         {
-            var consultation = await _context.Consultations.FindAsync(consultationId);
+            var consultation = await _context.Consultations.Include(c => c.Patient).FirstOrDefaultAsync(c => c.Id == consultationId);
             if (consultation == null)
             {
                 return new ModifyConsultationDTO
@@ -144,12 +144,16 @@ namespace Diagnosis.Infrastracture.Repositories
                 Success = true
             };
         }
-        public async Task<string> ModifyConsultationAsync(ModifyConsultationDTO dto, int consultationId)
+        public async Task<ModifyConsultationResponseDTO> ModifyConsultationAsync(ModifyConsultationRequestDTO dto, int consultationId)
         {
             var consultation = await _context.Consultations.FindAsync(consultationId);
             if (consultation == null)
             {
-                throw new Exception("Consultation not found");
+                return new ModifyConsultationResponseDTO
+                {
+                    Success = false,
+                    ErrorMessage = "Consultation not found"
+                };
             }
 
            
@@ -157,7 +161,11 @@ namespace Diagnosis.Infrastracture.Repositories
             consultation.Notes = dto.Notes;
 
             _context.Consultations.Update(consultation);
-            return "Consultation modified successfully";
+            await _context.SaveChangesAsync();
+            return new ModifyConsultationResponseDTO
+            {
+                Success = true
+            };
         }
         //accept consultation
         public async Task<ConsultationResponseDTO> AcceptConsultationAsync(int consultationId)

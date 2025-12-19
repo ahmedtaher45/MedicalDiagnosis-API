@@ -45,22 +45,22 @@ namespace Diagnosis.API.Controllers
        [Authorize(Roles = "Doctor")]
        [HttpPost("modify/{consultationId}")]
        public async Task<IActionResult> ModifyConsultation(
-           [FromBody] ModifyConsultationDTO modifyConsultationDTO,
+           [FromBody] ModifyConsultationRequestDTO modifyConsultationDTO,
            [FromRoute] int consultationId)
        {
            var result = await _consultationUseCase.ModifyConsultationAsync(modifyConsultationDTO, consultationId);
-           if (!result.Equals("Consultation modified successfully"))
-               return BadRequest();
+           if (!result.Success)
+               return BadRequest(result.ErrorMessage);
 
            return Ok(result);
-       }
-       
+
+       }       
        [Authorize(Roles = "Doctor")]
        [HttpGet("details/{consultationId}")]
        public async Task<IActionResult> GetConsultationDetails(
            [FromRoute] int consultationId)
        {
-           var result = await _consultationUseCase.GetModifyDataAsync(consultationId);
+           var result = await _consultationUseCase.GetConsultationDetailsAsync(consultationId);
            if (!result.Success)
                return BadRequest(result.ErrorMessage);
 

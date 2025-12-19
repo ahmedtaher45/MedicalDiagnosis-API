@@ -21,7 +21,7 @@ namespace Diagnosis.Application.Interfaces
         Task<ConsultationDetailsDTO> GetConsultationDetailsAsync(int consultationId);
         Task<ConsultationResponseDTO> RejectConsultation(RejectConsultationDTO rejectConsultationDTO, int consultationId);
         Task<ModifyConsultationDTO> GetModifyDataAsync(int consultationId);
-        Task<string> ModifyConsultationAsync(ModifyConsultationDTO dto, int consultationId);
+        Task<ModifyConsultationResponseDTO> ModifyConsultationAsync(ModifyConsultationRequestDTO dto, int consultationId);
         Task<ConsultationResponseDTO> AcceptConsultationAsync(int consultationId);
     }
 }
