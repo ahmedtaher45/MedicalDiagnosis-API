@@ -14,6 +14,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
+using Diagnosis.Infrastructure.Providers;
 
 
 
@@ -52,6 +53,11 @@ namespace Diagnosis.API
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuth, AuthRepository>();
             builder.Services.AddScoped<ConsultationUseCase>();
+            builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
+            builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]);
+            });
 
 
 
