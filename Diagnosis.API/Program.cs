@@ -16,6 +16,7 @@ using Diagnosis.API.Middleware;
 using Diagnosis.Infrastructure.Providers;
 using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.DrugChecker;
 
 
 
@@ -58,6 +59,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ModifyConsultationsUseCase>();
             builder.Services.AddScoped<RejectConsultationsUseCase>();
             builder.Services.AddScoped<AcceptConsultationsUseCase>();
+            builder.Services.AddScoped<DrugCheckerUseCase>();
+            builder.Services.AddScoped<DrugSuggestionUseCase>();
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]);
