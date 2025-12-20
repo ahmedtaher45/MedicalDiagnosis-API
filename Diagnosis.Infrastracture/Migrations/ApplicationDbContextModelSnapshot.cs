@@ -984,7 +984,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "345e8a67-00b1-4ba0-8e36-7f6e1227b8b8",
+                            ConcurrencyStamp = "05709cf5-9620-4050-8c56-1a14bad2174d",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1000,7 +1000,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0a7b9b16-7c14-4c5e-ba7e-5c8673b306db",
+                            ConcurrencyStamp = "5499f57b-3f1a-4eba-828e-f262e105b762",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
