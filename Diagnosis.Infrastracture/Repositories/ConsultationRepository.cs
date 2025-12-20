@@ -98,7 +98,7 @@ namespace Diagnosis.Infrastracture.Repositories
             };
         }
 
-        public async Task<ConsultationResponseDTO> RejectConsultation(RejectConsultationDTO dto , int consultationId)
+        public async Task<ConsultationResponseDTO> RejectConsultationAsync(RejectConsultationDTO dto , int consultationId)
         {
             var consultation = await _context.Consultations.FindAsync(consultationId); ;
             if (consultation == null)

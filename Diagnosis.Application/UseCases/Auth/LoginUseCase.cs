@@ -12,18 +12,19 @@ namespace Diagnosis.Application.UseCases.Auth
     public class LoginUseCase
     {
          
-         private readonly IAuth auth;
+         private readonly IUnitOfWork _unitOfWork;
 
-        public LoginUseCase( IAuth auth)
+        public LoginUseCase(IUnitOfWork unitOfWork)
         {
            
-            this.auth = auth;
+            _unitOfWork = unitOfWork;
+        
 
         }
 
         public async Task<LoginResponseDTO> Login(LoginDTO loginDTO)
         {
-            return await auth.LoginAsync(loginDTO.Email, loginDTO.Password);
+            return await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password);
 
            
             

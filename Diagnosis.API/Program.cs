@@ -52,9 +52,12 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ForgotPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-            builder.Services.AddScoped<IAuth, AuthRepository>();
-            builder.Services.AddScoped<ConsultationUseCase>();
-            builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
+            builder.Services.AddScoped<GetDoctorConsultationsUseCase>();
+            builder.Services.AddScoped<GetConsultationDetailsUseCase>();
+            builder.Services.AddScoped<GetModifyConsultationDataUseCase>();
+            builder.Services.AddScoped<ModifyConsultationsUseCase>();
+            builder.Services.AddScoped<RejectConsultationsUseCase>();
+            builder.Services.AddScoped<AcceptConsultationsUseCase>();
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]);

@@ -15,18 +15,14 @@ namespace Diagnosis.API.Controllers
     [ApiController]
     public class ConsultationController : ControllerBase
     {
-        private readonly ConsultationUseCase _consultationUseCase;
-
-        public ConsultationController(ConsultationUseCase consultationUseCase)
-        {
-            _consultationUseCase = consultationUseCase;
-        }
+       
         [Authorize(Roles = "Doctor")]
         [HttpGet("doctor/{doctorId}")]
         public async Task<IActionResult> GetConsultationsByDoctorId(
-            [FromRoute] int doctorId)
+            [FromRoute] int doctorId,
+            [FromServices] GetDoctorConsultationsUseCase _getDoctorConsultationsUseCase)
         {
-            var consultations = await _consultationUseCase.GetDoctorConsultations(doctorId);
+            var consultations = await _getDoctorConsultationsUseCase.GetDoctorConsultations(doctorId);
             return Ok(consultations);
         }
 
@@ -34,9 +30,10 @@ namespace Diagnosis.API.Controllers
        [HttpPost("reject/{consultationId}")]
        public async Task<IActionResult> RejectConsultation(
            [FromBody] RejectConsultationDTO rejectConsultationDTO,
-              [FromRoute] int consultationId)
+              [FromRoute] int consultationId,
+              [FromServices] RejectConsultationsUseCase _rejectConsultationUseCase)
        {
-           var result = await _consultationUseCase.RejectConsultation(rejectConsultationDTO, consultationId);
+           var result = await _rejectConsultationUseCase.RejectConsultation(consultationId, rejectConsultationDTO);
            if (!result.Success)
                return BadRequest(result.ErrorMessage);
 
@@ -46,9 +43,10 @@ namespace Diagnosis.API.Controllers
        [HttpPost("modify/{consultationId}")]
        public async Task<IActionResult> ModifyConsultation(
            [FromBody] ModifyConsultationRequestDTO modifyConsultationDTO,
-           [FromRoute] int consultationId)
+           [FromRoute] int consultationId,
+           [FromServices] ModifyConsultationsUseCase _modifyConsultationUseCase)
        {
-           var result = await _consultationUseCase.ModifyConsultationAsync(modifyConsultationDTO, consultationId);
+           var result = await _modifyConsultationUseCase.ModifyConsultation(consultationId, modifyConsultationDTO);
            if (!result.Success)
                return BadRequest(result.ErrorMessage);
 
@@ -58,9 +56,10 @@ namespace Diagnosis.API.Controllers
        [Authorize(Roles = "Doctor")]
        [HttpGet("details/{consultationId}")]
        public async Task<IActionResult> GetConsultationDetails(
-           [FromRoute] int consultationId)
+           [FromRoute] int consultationId,
+           [FromServices] GetConsultationDetailsUseCase _getConsultationDetailsUseCase)
        {
-           var result = await _consultationUseCase.GetConsultationDetailsAsync(consultationId);
+           var result = await _getConsultationDetailsUseCase.GetConsultationDetails(consultationId);
            if (!result.Success)
                return BadRequest(result.ErrorMessage);
 
@@ -69,9 +68,10 @@ namespace Diagnosis.API.Controllers
        [Authorize(Roles = "Doctor")]
        [HttpPost("accept/{consultationId}")]
        public async Task<IActionResult> AcceptConsultation(
-           [FromRoute] int consultationId)
+           [FromRoute] int consultationId,
+           [FromServices] AcceptConsultationsUseCase _acceptConsultationUseCase)
        {
-          var result = await _consultationUseCase.AcceptConsultation(consultationId);
+          var result = await _acceptConsultationUseCase.AcceptConsultation(consultationId);
            if (!result.Success)
                return BadRequest(result.ErrorMessage);
 
@@ -81,9 +81,10 @@ namespace Diagnosis.API.Controllers
        [Authorize(Roles = "Doctor")]
        [HttpPost("modify-data/{consultationId}")]
        public async Task<IActionResult> GetModifyData(
-           [FromRoute] int consultationId)
+           [FromRoute] int consultationId,
+           [FromServices] GetModifyConsultationDataUseCase _getModifyConsultationDataUseCase)
        {
-           var result = await _consultationUseCase.GetModifyDataAsync(consultationId);
+           var result = await _getModifyConsultationDataUseCase.GetModifyConsultationData(consultationId);
            if (!result.Success)
                return BadRequest(result.ErrorMessage);
 
