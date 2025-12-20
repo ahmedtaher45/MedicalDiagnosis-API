@@ -1,5 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
-using Diagnosis.Application.DTOs;
+﻿using Diagnosis.Application.DTOs.Auth;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;

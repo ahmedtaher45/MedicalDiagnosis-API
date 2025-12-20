@@ -1,5 +1,3 @@
-using Diagnosis.Application.DTOs;
-using Diagnosis.Application.DTOs;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
@@ -14,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Diagnosis.Application.DTOs.Consultation;
 
 namespace Diagnosis.Infrastracture.Repositories
 {

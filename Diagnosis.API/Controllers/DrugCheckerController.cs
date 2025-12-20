@@ -1,4 +1,3 @@
-using Diagnosis.Application.DTOs;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.WebUtilities;
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.DTOs.DrugChecker;
 
 namespace Diagnosis.API.Controllers
 {

@@ -1,6 +1,4 @@
-using Diagnosis.Application.DTOs;
 using Diagnosis.Application.Services.EmailService;
-using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.WebUtilities;
+using Diagnosis.Application.DTOs.Consultation;
+using Diagnosis.Application.UseCases.Consultation;
 
 namespace Diagnosis.API.Controllers
 {

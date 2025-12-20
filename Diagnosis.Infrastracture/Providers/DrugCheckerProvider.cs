@@ -1,4 +1,4 @@
-using Diagnosis.Application.DTOs;
+using Diagnosis.Application.DTOs.DrugChecker;
 using Diagnosis.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;

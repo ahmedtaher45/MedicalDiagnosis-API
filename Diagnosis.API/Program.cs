@@ -1,7 +1,6 @@
 
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
-using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Repositories;
 using Microsoft.AspNetCore.Http.Features;
@@ -15,6 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
 using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases.Consultation;
 
 
 
