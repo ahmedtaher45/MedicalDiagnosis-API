@@ -1,4 +1,4 @@
-
+﻿
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.UseCases;
@@ -51,6 +51,12 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuth, AuthRepository>();
+            ////
+            // تسجيل UseCases
+            builder.Services.AddScoped<GetAllTreatmentsUseCase>();
+            builder.Services.AddScoped<GetTreatmentByIdUseCase>();
+            builder.Services.AddScoped<CreateTreatmentUseCase>();
+            builder.Services.AddScoped<GetActiveTreatmentsUseCase>();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {

@@ -5,6 +5,7 @@ using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Diagnosis.Infrastracture.Configurations;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
 
@@ -26,6 +27,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Request> Requests { get; set; }
+    public DbSet<Treatment> Treatments { get; set; }    
+    public DbSet<SideEffect> SideEffects { get; set; }
 
     //var seedDate = new DateTime(2024, 01, 01);
 
@@ -47,6 +50,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new ReviewConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
         modelBuilder.ApplyConfiguration(new RequestConfiguration());
+        modelBuilder.ApplyConfiguration(new TreatmentConfiguration());
+        //modelBuilder.ApplyConfiguration(new SideEffectConfiguration());
 
         modelBuilder.Entity<ApplicationUser>()
         .HasOne(u => u.Doctor)
@@ -64,6 +69,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(u => u.Notifications)
             .WithOne(p => p.User)
             .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Patient>()
+            .HasMany(u => u.Treatments)
+            .WithOne(p => p.Patient)
+            .HasForeignKey(p => p.PatientId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Treatment>()
+            .HasMany(u => u.SideEffects)
+            .WithOne(p => p.Treatment)
+            .HasForeignKey(p => p.TreatmentId)
             .OnDelete(DeleteBehavior.NoAction);
 
 
@@ -336,6 +353,24 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 AppointmentId = -1,
                 RatingValue = 5,
                 ReviewText = "Excellent doctor!",
+                ModifiedOn = null,
+                IsDeleted = false
+            }
+        );
+        // ----------------------
+        //treatment
+        modelBuilder.Entity<Treatment>().HasData(
+            new Treatment
+            {
+                Id = -1,
+                Name = "Physical Therapy",
+                Dosage = "N/A",
+                Method = "In-person sessions",
+                Frequency = "3 times a week",
+                TotalDuration = "6 weeks",
+                Alternatives = "Home exercises",
+                IsActive = true,
+                PatientId = -1,
                 ModifiedOn = null,
                 IsDeleted = false
             }

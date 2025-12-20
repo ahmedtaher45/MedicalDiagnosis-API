@@ -31,6 +31,7 @@ namespace Diagnosis.Domain.Entites
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Billing> Billings { get; set; }
         public ICollection<Request> Requests { get; set; }
+        public ICollection<Treatment> Treatments { get; set; }  
 
     }
 }
