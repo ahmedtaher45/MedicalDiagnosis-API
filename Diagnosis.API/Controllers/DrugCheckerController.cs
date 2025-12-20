@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.WebUtilities;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.DTOs.DrugChecker;
+using Diagnosis.Application.UseCases.DrugChecker;
 
 namespace Diagnosis.API.Controllers
 {
@@ -16,19 +17,14 @@ namespace Diagnosis.API.Controllers
     [ApiController]
     public class DrugCheckerController : ControllerBase
     {
-        private readonly IDrugCheckerProvider _drugCheckerProvider;
-
-        public DrugCheckerController(IDrugCheckerProvider drugCheckerProvider)
-        {
-            _drugCheckerProvider = drugCheckerProvider;
-        }
 
         [Authorize(Roles = "Patient")]
         [HttpGet("check")]
         public async Task<IActionResult> CheckDrug(
-            [FromBody] DrugCheckerRequestDTO requestDTO)
+            [FromBody] DrugCheckerRequestDTO requestDTO,
+            [FromServices] DrugCheckerUseCase _drugCheckerUseCase)
         {
-            var result = await _drugCheckerProvider.CheckDrugAsync(requestDTO);
+            var result = await _drugCheckerUseCase.CheckDrugAsync(requestDTO);
             if (result == null || !result.Success)
             {
                 return BadRequest(result?.ErrorMessage ?? "Error checking drug");
@@ -38,9 +34,11 @@ namespace Diagnosis.API.Controllers
         [Authorize(Roles = "Patient")]
         [HttpGet("suggestions")]
         public async Task<IActionResult> GetSearchSuggestions(
-            [FromQuery] string keyword)
+            [FromQuery] string keyword,
+            [FromServices] DrugSuggestionUseCase _drugSuggestionUseCase
+            )
         {
-            var result = await _drugCheckerProvider.GetSuggestionsAsync(keyword);
+            var result = await _drugSuggestionUseCase.GetSuggestionsAsync(keyword);
             if (result == null || !result.Any())
             {
                 return NotFound("No suggestions found");
