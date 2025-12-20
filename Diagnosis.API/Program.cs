@@ -14,6 +14,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
+using Diagnosis.Application.Services.FileService;
 
 
 
@@ -31,6 +32,7 @@ namespace Diagnosis.API
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.Configure<FormOptions>(O =>
             {
                 O.ValueLengthLimit = int.MaxValue;
@@ -52,7 +54,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuth, AuthRepository>();
-
+            builder.Services.AddScoped<IDiagnosisModuleRepository, DiagnosisModuleRepository>();
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;

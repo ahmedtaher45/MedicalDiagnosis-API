@@ -9,6 +9,8 @@ namespace Diagnosis.Application.Interfaces
     public interface IUnitOfWork
     {
         IAuth Auth { get; }
+        IDiagnosisModuleRepository DiagnosisModule { get; }
+
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
     }

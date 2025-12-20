@@ -17,24 +17,28 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly ApplicationDbContext _context;
         private IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IEmailSender _emailSender;
-        
+
 
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
             IJwtTokenGenerator jwtTokenGenerator,
             IEmailSender emailSender
-            )
+,
+            IDiagnosisModuleRepository diagnosisModule)
         {
             _userManager = userManager;
             _context = context;
             _jwtTokenGenerator = jwtTokenGenerator;
             _emailSender = emailSender;
 
-            Auth = new AuthRepository(_userManager, _jwtTokenGenerator , _emailSender);
+            Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender);
+            DiagnosisModule = diagnosisModule;
         }
 
         public IAuth Auth { get; private set; }
+        public IDiagnosisModuleRepository DiagnosisModule { get; private set; }
+
 
         public async Task<int> CompleteAsync()
         {
