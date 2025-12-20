@@ -1,7 +1,6 @@
 
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
-using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Repositories;
 using Microsoft.AspNetCore.Http.Features;
@@ -15,6 +14,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
 using Diagnosis.Application.Services.FileService;
+using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.DrugChecker;
 
 
 
@@ -53,6 +56,21 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            builder.Services.AddScoped<GetDoctorConsultationsUseCase>();
+            builder.Services.AddScoped<GetConsultationDetailsUseCase>();
+            builder.Services.AddScoped<GetModifyConsultationDataUseCase>();
+            builder.Services.AddScoped<ModifyConsultationsUseCase>();
+            builder.Services.AddScoped<RejectConsultationsUseCase>();
+            builder.Services.AddScoped<AcceptConsultationsUseCase>();
+            builder.Services.AddScoped<DrugCheckerUseCase>();
+            builder.Services.AddScoped<DrugSuggestionUseCase>();
+            builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]);
+            });
+
+
+
             builder.Services.AddScoped<IAuth, AuthRepository>();
             builder.Services.AddScoped<IDiagnosisModuleRepository, DiagnosisModuleRepository>();
             builder.Services.AddIdentityCore<ApplicationUser>(options =>

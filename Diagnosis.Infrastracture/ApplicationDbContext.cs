@@ -26,6 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Request> Requests { get; set; }
+    public DbSet<Consultation> Consultations { get; set; }
 
     //var seedDate = new DateTime(2024, 01, 01);
 
@@ -358,6 +359,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 IsDeleted = false
             }
         );
+        // ----------------------
+        // Consultation
+        // ----------------------
+        modelBuilder.Entity<Consultation>().HasData(
+            new Consultation
+            {
+                Id = 1,
+                PatientId = -1,
+                DoctorId = -1,
+                Symptoms = "Headache, fever, and fatigue.",
+                Notes = "Patient reports symptoms for 3 days.",
+                Status = ConsultationStatus.Pending,
+                Type = ConsultationType.Inquiry,
+                Date = new DateTime(2025, 1, 1),
+                ConfidenceLevel = 0,
+                Description = "General inquiry about symptoms"
+            }
+        );
+
 
 
     }

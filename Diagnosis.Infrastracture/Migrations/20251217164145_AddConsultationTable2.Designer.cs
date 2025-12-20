@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217164145_AddConsultationTable2")]
+    partial class AddConsultationTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -968,7 +971,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "38b5cdd1-6d8d-464d-8af2-89935d3ff808",
+                            ConcurrencyStamp = "d7dddb25-13c5-4e71-8640-a4c3fb85b71b",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -976,7 +979,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b1cc9aaf-c29b-478c-8fcf-fea45d6e101c",
+                            SecurityStamp = "d8e0f22d-e0f5-4076-8707-0df2a6f0ff59",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -984,7 +987,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a81e07f4-78e1-43d4-98aa-5658b5c4aad4",
+                            ConcurrencyStamp = "dd6001c4-7eb8-4879-8c99-1c6a2f77bb16",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1000,7 +1003,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6f4ff980-0c40-4e05-aff2-84b0ac217c9e",
+                            ConcurrencyStamp = "5cde5de3-207c-4c26-8680-e700b497764a",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1076,23 +1079,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Consultations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ConfidenceLevel = 0,
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "General inquiry about symptoms",
-                            DoctorId = -1,
-                            IsDeleted = false,
-                            Notes = "Patient reports symptoms for 3 days.",
-                            PatientId = -1,
-                            Status = "Pending",
-                            Symptoms = "Headache, fever, and fatigue.",
-                            Type = "Inquiry"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

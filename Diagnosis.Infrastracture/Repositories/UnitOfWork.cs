@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Application.Services.EmailService;
+using Microsoft.Extensions.Configuration;
+using Diagnosis.Infrastructure.Providers;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
@@ -19,6 +21,7 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly IEmailSender _emailSender;
 
 
+
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
@@ -26,6 +29,12 @@ namespace Diagnosis.Infrastracture.Repositories
             IEmailSender emailSender
 ,
             IDiagnosisModuleRepository diagnosisModule)
+            IEmailSender emailSender,
+            
+            HttpClient _httpClient,
+            IConfiguration _configuration
+            
+            )
         {
             _userManager = userManager;
             _context = context;
@@ -34,11 +43,15 @@ namespace Diagnosis.Infrastracture.Repositories
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender);
             DiagnosisModule = diagnosisModule;
+            Consultation = new ConsultationRepository(_context);
+            DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
         }
 
         public IAuth Auth { get; private set; }
         public IDiagnosisModuleRepository DiagnosisModule { get; private set; }
 
+        public IConsultationRepository Consultation { get; private set; }
+        public IDrugCheckerProvider DrugChecker { get; private set; }
 
         public async Task<int> CompleteAsync()
         {
