@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
+﻿using Diagnosis.Application.DTOs.Auth;
 using Diagnosis.Application.Interfaces;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Application.DTOs.DiagnosisModule;
+using Diagnosis.Domain.Models.Entites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface IDiagnosisModuleRepository
+    public interface IDiagnosisModuleRepository : IRepository<Consultation>
     {
-        Task<DiagnosisResponse> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO);
+        Task<ProviderResponse> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO);
     }
+
 }

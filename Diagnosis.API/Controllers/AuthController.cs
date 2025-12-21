@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.WebUtilities;
 using Diagnosis.Application.DTOs.Auth;
 using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases;
 
 namespace Diagnosis.API.Controllers
 {

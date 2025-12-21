@@ -11,6 +11,7 @@ namespace Diagnosis.Application.Interfaces
         IAuth Auth { get; }
         IDiagnosisModuleRepository DiagnosisModule { get; }
 
+        IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
         Task<int> CompleteAsync();
         Task SaveChangesAsync();

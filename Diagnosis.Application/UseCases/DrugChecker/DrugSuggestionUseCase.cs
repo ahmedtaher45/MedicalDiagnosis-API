@@ -12,16 +12,16 @@ namespace Diagnosis.Application.UseCases.DrugChecker
 {
     public class DrugSuggestionUseCase
     {
-        private readonly  IDrugCheckerProvider _drugCheckerProvider;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DrugSuggestionUseCase(IDrugCheckerProvider drugSuggestionProvider)
+        public DrugSuggestionUseCase(IUnitOfWork unitOfWork)
         {
-            _drugCheckerProvider = drugSuggestionProvider;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<DrugSuggestionDTO>> GetSuggestionsAsync(string keyword)
         {
-            return await _drugCheckerProvider.GetSuggestionsAsync(keyword);
+            return await _unitOfWork.DrugChecker.GetSuggestionsAsync(keyword);
         }
     }
     }

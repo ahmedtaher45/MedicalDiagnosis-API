@@ -12,6 +12,10 @@ namespace Diagnosis.Application.Services.FileService
     {
         private readonly string _templateFolderPath;
 
+        public static readonly string[] AllowedExtensions =
+        { ".jpg", ".jpeg", ".png", ".pdf" };
+
+        public static readonly long MaxSizeInBytes = 50 * 1024 * 1024; 
         public FileService(IWebHostEnvironment environment)
         {
             _templateFolderPath = Path.Combine(environment.ContentRootPath, "Template");
@@ -62,17 +66,17 @@ namespace Diagnosis.Application.Services.FileService
             return files;
         }
 
-        public bool IsValidFile(IFormFile file, string[] allowedExtensions, long maxSizeInBytes)
+        public bool IsValidFile(IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return false;
 
-            if (file.Length > maxSizeInBytes)
+            if (file.Length > MaxSizeInBytes)
                 return false;
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-            if (!allowedExtensions.Contains(extension))
+            if (!AllowedExtensions.Contains(extension))
                 return false;
 
             return true;

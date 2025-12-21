@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,10 @@ namespace Diagnosis.Application.DTOs.DiagnosisModule
 {
     public class CreateDiagnosisDTO
     {
-
-    }
-
-    public class DiagnosisResponse
-    {
-        public bool Success { get; set; }
-        public string? Message { get; set; }
+        public int PatientId { get; set; }
+        public int DoctorId { get; set; }
+        public ICollection<IFormFile>? Files { get; set; }
+        public string? Symptoms { get; set; }
+        public string? Description { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Diagnosis.Application.Services.FileService
         Task<byte[]> GetFileAsync(string path);
         Task<ICollection<byte[]>> GetMultipleFilesAsync(ICollection<string> path);
         Task<bool> DeleteFileAsync(string path);
-        bool IsValidFile(IFormFile file, string[] allowedExtensions, long maxSizeInBytes);
+        bool IsValidFile(IFormFile file);
 
     }
 }
