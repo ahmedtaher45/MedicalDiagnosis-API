@@ -30,6 +30,8 @@ namespace Diagnosis.Domain.Entites
         public ICollection<LabResult> LabResults { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Request> Requests { get; set; }
+        public ICollection<Consultation>? Consultations { get; set; }
+
 
 
 

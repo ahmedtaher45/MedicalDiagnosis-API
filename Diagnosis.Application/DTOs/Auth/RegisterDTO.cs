@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diagnosis.Application.DTOs
+namespace Diagnosis.Application.DTOs.Auth
 {
     public class RegisterDTO
     {
@@ -32,8 +32,9 @@ namespace Diagnosis.Application.DTOs
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "User Role is required")]
-        public string? Role { get; set; }
+        [Required(ErrorMessage = "ClientUri is required")]
+        public string? ClientUri { get; set; }
+
     }
 
     public class RegisterResponse

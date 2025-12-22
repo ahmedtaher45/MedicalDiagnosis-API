@@ -1,7 +1,6 @@
 ﻿
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
-using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Repositories;
 using Microsoft.AspNetCore.Http.Features;
@@ -15,6 +14,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
 using Diagnosis.Application.UseCases.Treatment;
+using Diagnosis.Application.Services.FileService;
+using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.DrugChecker;
+using Diagnosis.Application.UseCases;
+using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Infrastracture.Providers;
 
 
 
@@ -32,6 +39,7 @@ namespace Diagnosis.API
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.Configure<FormOptions>(O =>
             {
                 O.ValueLengthLimit = int.MaxValue;
@@ -50,7 +58,32 @@ namespace Diagnosis.API
             builder.Services.AddScoped<LoginUseCase>();
             builder.Services.AddScoped<ForgotPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
+            builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            builder.Services.AddScoped<GetDoctorConsultationsUseCase>();
+            builder.Services.AddScoped<GetConsultationDetailsUseCase>();
+            builder.Services.AddScoped<GetModifyConsultationDataUseCase>();
+            builder.Services.AddScoped<ModifyConsultationsUseCase>();
+            builder.Services.AddScoped<RejectConsultationsUseCase>();
+            builder.Services.AddScoped<AcceptConsultationsUseCase>();
+            builder.Services.AddScoped<DrugCheckerUseCase>();
+            builder.Services.AddScoped<DrugSuggestionUseCase>();
+            builder.Services.AddScoped<AddInquiryUseCase>();
+            builder.Services.AddScoped<GetInquiriesUseCase>();
+            builder.Services.AddScoped<GetInquiryUseCase>();
+
+
+            builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
+
+            builder.Services.AddHttpClient<IDiagnosisModuleProvider, DiagnosisModuleProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
+
+
             builder.Services.AddScoped<IAuth, AuthRepository>();
             ////
             // تسجيل UseCases
@@ -59,6 +92,7 @@ namespace Diagnosis.API
             //builder.Services.AddScoped<CreateTreatmentUseCase>();
             builder.Services.AddScoped<GetActiveTreatmentsUseCase>();
 
+            builder.Services.AddScoped<IDiagnosisModuleRepository, DiagnosisModuleRepository>();
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -98,7 +132,12 @@ namespace Diagnosis.API
                         Encoding.UTF8.GetBytes(jwtConfig["Key"])
                     )
                 };
-            });    
+            });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy",policy =>
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -115,6 +154,10 @@ namespace Diagnosis.API
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+            app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -124,7 +167,7 @@ namespace Diagnosis.API
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                await IdentitySeeder.SeedRoles(roleManager);
+                await IdentitySeeder.SeedAdminRole(roleManager);
             }
 
             app.Run();

@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
+﻿using Diagnosis.Application.DTOs.Auth;
 using Diagnosis.Application.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diagnosis.Application.UseCases
+namespace Diagnosis.Application.UseCases.Auth
 {
     public class ForgotPasswordUseCase
     {

@@ -14,8 +14,13 @@
                    .HasForeignKey(a => a.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            // One-to-Many: Patient -> Prescriptions (through Appointments)
-            builder.HasMany(p => p.Prescriptions)
+            builder.HasMany(p => p.Consultations)
+                   .WithOne(a => a.Patient)
+                   .HasForeignKey(a => a.PatientId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+        // One-to-Many: Patient -> Prescriptions (through Appointments)
+        builder.HasMany(p => p.Prescriptions)
                    .WithOne(d => d.Patient)
                    .HasForeignKey(p => p.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
@@ -59,8 +64,13 @@
                    .HasForeignKey(a => a.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            // One-to-Many: Doctor -> DoctorClinics
-            builder.HasMany(d => d.DoctorClinics)
+            builder.HasMany(d => d.Consultations)
+                   .WithOne(a => a.Doctor)
+                   .HasForeignKey(a => a.DoctorId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+        // One-to-Many: Doctor -> DoctorClinics
+        builder.HasMany(d => d.DoctorClinics)
                    .WithOne(dc => dc.Doctor)
                    .HasForeignKey(dc => dc.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);

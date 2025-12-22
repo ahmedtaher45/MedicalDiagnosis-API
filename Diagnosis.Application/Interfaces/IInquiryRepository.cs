@@ -1,0 +1,15 @@
+﻿using Diagnosis.Application.DTOs.Inquiry;
+using Diagnosis.Domain.Models.Entites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Diagnosis.Application.Interfaces
+{
+    public interface IInquiryRepository: IRepository<Consultation>
+    {
+        Task<IquiryResponse> AddInquiryAsync(AddInquiryDTO addInquiryDTO);
+    }
+}

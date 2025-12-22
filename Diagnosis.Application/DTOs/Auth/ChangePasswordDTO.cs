@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diagnosis.Application.DTOs
+namespace Diagnosis.Application.DTOs.Auth
 {
     public class ChangePasswordDTO
     {

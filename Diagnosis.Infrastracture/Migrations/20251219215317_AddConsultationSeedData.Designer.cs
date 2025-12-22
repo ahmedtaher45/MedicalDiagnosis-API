@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251219215317_AddConsultationSeedData")]
+    partial class AddConsultationSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1014,120 +1017,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SideEffect", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSevere")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TreatmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TreatmentId");
-
-                    b.ToTable("SideEffects");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Treatment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Alternatives")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Dosage")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Method")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TotalDuration")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Treatments", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            Alternatives = "Home exercises",
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Dosage = "N/A",
-                            Frequency = "3 times a week",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Method = "In-person sessions",
-                            Name = "Physical Therapy",
-                            PatientId = -1,
-                            TotalDuration = "6 weeks"
-                        });
-                });
-
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Consultation", b =>
                 {
                     b.Property<int>("Id")
@@ -1564,27 +1453,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SideEffect", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Models.Entites.Treatment", "Treatment")
-                        .WithMany("SideEffects")
-                        .HasForeignKey("TreatmentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Treatment");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Treatment", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("Treatments")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Consultation", b =>
                 {
                     b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
@@ -1705,8 +1573,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Requests");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Treatments");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Prescription", b =>
@@ -1721,11 +1587,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Treatment", b =>
-                {
-                    b.Navigation("SideEffects");
                 });
 #pragma warning restore 612, 618
         }
