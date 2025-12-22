@@ -14,6 +14,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
+using Diagnosis.Application.UseCases.Treatment;
 
 
 
@@ -55,7 +56,7 @@ namespace Diagnosis.API
             // تسجيل UseCases
             builder.Services.AddScoped<GetAllTreatmentsUseCase>();
             builder.Services.AddScoped<GetTreatmentByIdUseCase>();
-            builder.Services.AddScoped<CreateTreatmentUseCase>();
+            //builder.Services.AddScoped<CreateTreatmentUseCase>();
             builder.Services.AddScoped<GetActiveTreatmentsUseCase>();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>

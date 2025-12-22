@@ -32,10 +32,11 @@ namespace Diagnosis.Infrastracture.Repositories
             _emailSender = emailSender;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator , _emailSender);
+            Treatment = new TreatmentRepository(_context);
         }
 
         public IAuth Auth { get; private set; }
-
+        public ITreatmentRepository Treatment {  get; private set; }
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

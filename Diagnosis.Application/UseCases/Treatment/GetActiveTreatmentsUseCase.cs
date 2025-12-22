@@ -6,20 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diagnosis.Application.UseCases
+namespace Diagnosis.Application.UseCases.Treatment
 {
     public class GetActiveTreatmentsUseCase
     {
-        private readonly ITreatmentRepository _treatmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetActiveTreatmentsUseCase(ITreatmentRepository treatmentRepository)
+        public GetActiveTreatmentsUseCase(IUnitOfWork unitOfWork)
         {
-            _treatmentRepository = treatmentRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<TreatmentDTO>> Execute()
         {
-            var treatments = await _treatmentRepository.GetActiveTreatmentsAsync();
+            var treatments = await _unitOfWork.Treatment.GetActiveTreatmentsAsync();
 
             return treatments.Select(t => new TreatmentDTO
             {
@@ -32,7 +32,7 @@ namespace Diagnosis.Application.UseCases
                 Alternatives = t.Alternatives,
                 IsActive = t.IsActive,
                 PatientId = t.PatientId,
-                PatientName = t.Patient != null ? $"{t.Patient.FName} {t.Patient.LName}" : null,
+                PatientName = t.Patient != null ? $"{t.Patient.FName} {t.Patient.LName}" : null!
                 // SideEffects تم حذفها
             });
         }

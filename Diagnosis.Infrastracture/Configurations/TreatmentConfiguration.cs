@@ -39,11 +39,6 @@ namespace Diagnosis.Infrastracture.Configurations
 
             builder.Property(t => t.IsActive)
                 .IsRequired();
-
-            builder.HasOne(t => t.Patient)
-                .WithMany() // No navigation property on Patient for Treatment
-                .HasForeignKey(t => t.PatientId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

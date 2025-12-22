@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Application.DTOs;
 using Diagnosis.Application.UseCases;
+using Diagnosis.Application.UseCases.Treatment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,26 +76,26 @@ namespace Diagnosis.API.Controllers
         }
 
         // POST: api/treatments
-        [HttpPost]
-        public async Task<ActionResult<TreatmentDTO>> Create([FromBody] CreateTreatmentDTO dto)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+        //[HttpPost]
+        //public async Task<ActionResult<TreatmentDTO>> Create([FromBody] CreateTreatmentDTO dto)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //            return BadRequest(ModelState);
 
-                var treatment = await _createTreatmentUseCase.Execute(dto);
-                return CreatedAtAction(nameof(GetById), new { id = treatment.Id }, treatment);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //        //var treatment = await _createTreatmentUseCase.Execute(dto);
+        //        return CreatedAtAction(nameof(GetById), new { id = treatment.Id }, treatment);
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
     }
 
 }

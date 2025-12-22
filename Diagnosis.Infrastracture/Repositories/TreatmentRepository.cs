@@ -35,12 +35,12 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<Treatment> GetTreatmentByIdAsync(int id)
         {
-            return await _context.Set<Treatment>()
+            var result = await _context.Treatments
                 .Include(t => t.Patient)
                 .Include(t => t.SideEffects)
                 .FirstOrDefaultAsync(t => t.Id == id);
-           //return await _context.Set<Treatment>()
-           //     .FirstOrDefaultAsync(t => t.Id == id);
+            if(result == null) throw new ArgumentNullException(nameof(result));
+            return result;
         }
 
         public async Task<IEnumerable<Treatment>> GetTreatmentsByPatientIdAsync(int patientId)

@@ -6,20 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diagnosis.Application.UseCases
+namespace Diagnosis.Application.UseCases.Treatment
 {
     public class GetTreatmentByIdUseCase
     {
-        private readonly ITreatmentRepository _treatmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetTreatmentByIdUseCase(ITreatmentRepository treatmentRepository)
+        public GetTreatmentByIdUseCase(IUnitOfWork unitOfWork)
         {
-            _treatmentRepository = treatmentRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<TreatmentDTO> ExecuteAsync(int id)
         {
-            var treatment = await _treatmentRepository.GetByIdAsync(new object[] { id });
+            var treatment = await _unitOfWork.Treatment.GetByIdAsync(new object[] { id });
             if (treatment == null)
             {
                 throw new Exception("Treatment not found");
@@ -43,7 +43,7 @@ namespace Diagnosis.Application.UseCases
                     Description = se.Description,
                     IsSevere = se.IsSevere
                 }).ToList(),
-                PatientName = treatment.Patient != null ? $"{treatment.Patient.FName} {treatment.Patient.LName}" : null,
+                PatientName = treatment.Patient != null ? $"{treatment.Patient.FName} {treatment.Patient.LName}" : null!
 
                 //CreatedAt = treatment.CreatedAt
             };
