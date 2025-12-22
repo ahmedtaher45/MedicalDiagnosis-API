@@ -20,17 +20,17 @@ namespace Diagnosis.Domain.Entites
         public int PatientId { get; set; }
         public int DoctorId { get; set; }
         public DateTime AppointmentDateTime { get; set; }
-        public string AppointmentType { get; set; }
-        public string Status { get; set; }
-        public string ConsultationType { get; set; }
-        public string Notes { get; set; }
+        public string? AppointmentType { get; set; }
+        public string? Status { get; set; }
+        public string? ConsultationType { get; set; }
+        public string?  Notes { get; set; }
         
         public DateTime UpdatedAt { get; set; }
-        public Patient Patient { get; set; }
-        public Doctor Doctor { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-        public Prescription Prescription { get; set; }
-        public Review Review { get; set; }
+        public Patient? Patient { get; set; }
+        public Doctor? Doctor { get; set; }
+        public ICollection<Payment>? Payments { get; set; }
+        public Prescription? Prescription { get; set; }
+        public Review? Review { get; set; }
         // Scheduled, Completed, Canceled
     }
 }
