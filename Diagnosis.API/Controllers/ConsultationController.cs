@@ -79,7 +79,7 @@ namespace Diagnosis.API.Controllers
        }
        //get modify data
        [Authorize(Roles = "Doctor")]
-       [HttpPost("modify-data/{consultationId}")]
+       [HttpGet("modify-data/{consultationId}")]
        public async Task<IActionResult> GetModifyData(
            [FromRoute] int consultationId,
            [FromServices] GetModifyConsultationDataUseCase _getModifyConsultationDataUseCase)

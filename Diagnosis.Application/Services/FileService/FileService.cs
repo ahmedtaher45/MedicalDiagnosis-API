@@ -18,7 +18,7 @@ namespace Diagnosis.Application.Services.FileService
         public static readonly long MaxSizeInBytes = 50 * 1024 * 1024; 
         public FileService(IWebHostEnvironment environment)
         {
-            _templateFolderPath = Path.Combine(environment.ContentRootPath, "Template");
+            _templateFolderPath = Path.Combine(environment.WebRootPath, "uploads", "diagnosis");
 
             if (!Directory.Exists(_templateFolderPath))
             {
@@ -94,7 +94,7 @@ namespace Diagnosis.Application.Services.FileService
             {
                 await file.CopyToAsync(stream);
             }
-            return Path.Combine("Template", fileName);
+            return Path.Combine("uploads", "diagnosis", fileName);
         }
 
         public async Task<ICollection<string>> UploadMultipleFilesAsync(ICollection<IFormFile> files)

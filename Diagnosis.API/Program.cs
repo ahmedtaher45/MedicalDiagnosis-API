@@ -146,7 +146,9 @@ namespace Diagnosis.API
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
+            app.UseRouting();
             app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
