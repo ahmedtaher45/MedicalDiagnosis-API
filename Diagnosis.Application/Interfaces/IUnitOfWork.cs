@@ -10,6 +10,7 @@ namespace Diagnosis.Application.Interfaces
     {
         IAuth Auth { get; }
         IDiagnosisModuleRepository DiagnosisModule { get; }
+        IInquiryRepository Inquiry { get; }
 
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }

@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Application.DTOs.DiagnosisModule;
 using Diagnosis.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,10 @@ namespace Diagnosis.Infrastracture.Providers
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
 
-        public DiagnosisModuleProvider(HttpClient httpClient, string apiKey)
+        public DiagnosisModuleProvider(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
-            _apiKey = apiKey;
+            _apiKey = config["AiModule:ApiKey"];
         }
 
         public async Task<ProviderResponse> GetDiagnosisAsync(

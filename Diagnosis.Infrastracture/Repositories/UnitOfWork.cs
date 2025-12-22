@@ -48,9 +48,10 @@ namespace Diagnosis.Infrastracture.Repositories
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender);
 
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
-
+            Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
+
 
         }
 
@@ -58,7 +59,7 @@ namespace Diagnosis.Infrastracture.Repositories
         public IDiagnosisModuleRepository DiagnosisModule { get; private set; }
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
-
+        public IInquiryRepository Inquiry { get; private set; }
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
