@@ -1,19 +1,20 @@
 ﻿
+using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
+using Diagnosis.Application.Services.ProfileService;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-using Diagnosis.Infrastracture.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
-using Diagnosis.API.Middleware;
 
 
 
@@ -57,6 +58,20 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetTreatmentByIdUseCase>();
             builder.Services.AddScoped<CreateTreatmentUseCase>();
             builder.Services.AddScoped<GetActiveTreatmentsUseCase>();
+
+
+            /////
+            ///// ====== Profiles (Today Work) ======
+
+            // Generic Management Repository
+            builder.Services.AddScoped(typeof(IManagementRepository<>), typeof(ManagementRepository<>));
+
+            // Appointment specialized repository (History + Profiles)
+            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+            // Profile Services
+            builder.Services.AddScoped<PatientProfileService>();
+            builder.Services.AddScoped<DoctorProfileService>();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
