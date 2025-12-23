@@ -27,10 +27,7 @@ namespace Diagnosis.Domain.Entites
         public bool IsRead { get; set; }
         public int? RelatedId { get; set; }
         public string RelatedType { get; set; }
-        //public DateTime CreatedAt { get; set; }
         public DateTime? ReadAt { get; set; }
 
-        // Navigation Properties
-       // public User User { get; set; }
     }
 }

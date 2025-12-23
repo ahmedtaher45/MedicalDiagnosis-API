@@ -11,10 +11,9 @@ namespace Diagnosis.Application.Interfaces
         IAuth Auth { get; }
         IDiagnosisModuleRepository DiagnosisModule { get; }
         IInquiryRepository Inquiry { get; }
-
+        ITreatmentProvider TreatmentProvider { get; }
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
-        ITreatmentRepository Treatment { get; }
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
     }

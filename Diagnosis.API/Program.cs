@@ -13,7 +13,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
-using Diagnosis.Application.UseCases.Treatment;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Infrastructure.Providers;
 using Diagnosis.Application.UseCases.Auth;
@@ -71,6 +70,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<AddInquiryUseCase>();
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
+            builder.Services.AddScoped<CreateAITreatmentUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
@@ -83,16 +83,12 @@ namespace Diagnosis.API
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
 
+            builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
 
-            builder.Services.AddScoped<IAuth, AuthRepository>();
-            ////
-            // تسجيل UseCases
-            builder.Services.AddScoped<GetAllTreatmentsUseCase>();
-            builder.Services.AddScoped<GetTreatmentByIdUseCase>();
-            //builder.Services.AddScoped<CreateTreatmentUseCase>();
-            builder.Services.AddScoped<GetActiveTreatmentsUseCase>();
 
-            builder.Services.AddScoped<IDiagnosisModuleRepository, DiagnosisModuleRepository>();
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
