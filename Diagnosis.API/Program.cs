@@ -1,7 +1,6 @@
 ﻿
 using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
-using Diagnosis.Application.Services.DashboardService;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Application.UseCases;
@@ -39,7 +38,6 @@ namespace Diagnosis.API
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailSender, EmailSender>();
-            builder.Services.AddScoped<IDoctorDashboardService, DoctorDashboardService>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.Configure<FormOptions>(O =>
             {
