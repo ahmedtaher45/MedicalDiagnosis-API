@@ -15,7 +15,6 @@ namespace Diagnosis.Application.Interfaces
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
         IProfileRepository Profile { get; }
-
        // IAppointmentRepository Appointment { get; }
      
        
