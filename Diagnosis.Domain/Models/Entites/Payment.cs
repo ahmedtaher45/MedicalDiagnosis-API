@@ -18,6 +18,5 @@ namespace Diagnosis.Domain.Entites
         public string PaymentStatus { get; set; }
         public string Notes { get; set; }
         public Doctor Doctor { get; set; }
-        public Appointment Appointment { get; set; }
     }
 }

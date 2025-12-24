@@ -1,10 +1,10 @@
-﻿using Diagnosis.Application.DTOs;
-using Diagnosis.Application.DTOs;
+﻿using Diagnosis.Application.DTOs.Auth;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using MimeKit.Encodings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Diagnosis.Infrastracture.Repositories
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IJwtTokenGenerator jwtTokenGenerator;
-        private readonly Application.Services.EmailService.IEmailSender emailSender;
+        private readonly IEmailSender emailSender;
 
         public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, IEmailSender emailSender)
         {
@@ -60,7 +60,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
             try
             {
-                await userManager.AddToRoleAsync(newUser, registerDTO.Role!);
+                await userManager.AddToRoleAsync(newUser, "Patient");
             }
             catch (Exception ex)
             {
@@ -71,9 +71,68 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Error with assigning role: " + ex.Message
                 };
             }
+            await SendConfirmationEmail(newUser, registerDTO.ClientUri!);
             return new RegisterResponse
             {
-                Success = true
+                Success = true,
+                ErrorMessage = "Check your Email for Confirmation"
+            };
+        }
+
+        public async Task SendConfirmationEmail(ApplicationUser user, string clientUri)
+        {
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var param = new Dictionary<string, string?>
+            {
+                { "token", token},
+                { "email", user.Email!}
+            };
+
+            var callBackUrl = QueryHelpers.AddQueryString(clientUri, param);
+
+            var assembly = Assembly.Load("Diagnosis.Application");
+            using var  stream = assembly.GetManifestResourceStream("Diagnosis.Application.Template.ConfirmEmail.html");
+            
+            if (stream == null) throw new Exception("stream file of Email template is not correct");
+
+            using var reader = new StreamReader(stream);
+            var htmlTemplate = await reader.ReadToEndAsync();
+
+            var html = htmlTemplate.Replace("{{CallbackUrl}}", callBackUrl);
+
+            var message = new Message(
+                new string[] { user.Email! },
+                "Confirm your Email",
+                html);
+
+            await emailSender.SendEmailAsync(message);
+        }
+        public async Task<RegisterResponse> ConfirmEmailAsync(ConfirmEmailDTO confirmEmailDTO)
+        {
+            if (confirmEmailDTO.Email == null) throw new ArgumentNullException(nameof(confirmEmailDTO.Email));
+            if (confirmEmailDTO.Token == null) throw new ArgumentNullException(nameof(confirmEmailDTO.Token));
+
+            var user = await userManager.FindByEmailAsync(confirmEmailDTO.Email);
+            if (user == null) return new RegisterResponse { Success = false, ErrorMessage = "user Doesn't Exist" };
+
+            try
+            {
+                 await userManager.ConfirmEmailAsync(user, confirmEmailDTO.Token);
+            }
+            catch (Exception ex)
+            {
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "Error with confirming Email" + ex
+                    };               
+            }
+            
+            return new RegisterResponse
+            {
+                Success = true,
+                ErrorMessage = "Email confirmed Successfully"
             };
         }
         public async Task<LoginResponseDTO> LoginAsync(string email, string password)
@@ -138,17 +197,7 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);
-
-            
-            //var response = new ForgotPasswordResponseDTO
-            //{
-            //    Email = new EmailInfo
-            //    {
-            //        Address = forgotPasswordDTO.Email!,
-            //        Token = token
-            //    }
-            //};
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);         
 
             
             if (!string.IsNullOrEmpty(forgotPasswordDTO.ClientUri))

@@ -9,6 +9,11 @@ namespace Diagnosis.Application.Interfaces
     public interface IUnitOfWork
     {
         IAuth Auth { get; }
+        IDiagnosisModuleRepository DiagnosisModule { get; }
+        IInquiryRepository Inquiry { get; }
+        ITreatmentProvider TreatmentProvider { get; }
+        IDrugCheckerProvider DrugChecker { get; }
+        IConsultationRepository Consultation { get; }
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
     }

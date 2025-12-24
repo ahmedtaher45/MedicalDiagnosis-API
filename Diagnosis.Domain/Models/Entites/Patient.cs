@@ -18,20 +18,15 @@ namespace Diagnosis.Domain.Entites
         public string Gender { get; set; }
         public string Address { get; set; }
         public string BloodType { get; set; }
+        public DateTime BirthDate { get; set; }
         public string Allergies { get; set; }
         public string ProfileImageUrl { get; set; }
         public bool IsNewPatient { get; set; }
         public bool IsUrgent { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-        //// Navigation Properties
-        public ICollection<Appointment> Appointments { get; set; }
         public ICollection<Prescription> Prescriptions { get; set; }
         public ICollection<LabResult> LabResults { get; set; }
-        public ICollection<Review> Reviews { get; set; }
-        public ICollection<Billing> Billings { get; set; }
-        public ICollection<Request> Requests { get; set; }
-        public ICollection<Treatment> Treatments { get; set; }  
+        public ICollection<Consultation>? Consultations { get; set; }
 
     }
 }
