@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251217164145_AddConsultationTable2")]
-    partial class AddConsultationTable2
+    [Migration("20251222235956_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,201 +23,6 @@ namespace Diagnosis.Infrastracture.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Appointment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AppointmentDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("AppointmentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConsultationType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentDateTime")
-                        .HasDatabaseName("idx_appointment_date");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("Status")
-                        .HasDatabaseName("idx_status");
-
-                    b.ToTable("Appointments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            AppointmentDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AppointmentType = "InPerson",
-                            ConsultationType = "General",
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = -1,
-                            IsDeleted = false,
-                            Notes = "Initial Checkup",
-                            PatientId = -1,
-                            Status = "Confirmed",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Billing", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AmountPaid")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("AppointmentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PatientName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentDate")
-                        .HasDatabaseName("idx_appointment_date");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Billings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            AmountPaid = 250m,
-                            AppointmentDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            PatientId = -1,
-                            PatientName = "Hager"
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Clinic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Clinics");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            Address = "Main Street",
-                            City = "Cairo",
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "General medical services",
-                            IsDeleted = false,
-                            Latitude = 30.05m,
-                            Longitude = 31.23m,
-                            Name = "Downtown Clinic",
-                            Phone = "01012345789"
-                        });
-                });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Doctor", b =>
                 {
@@ -296,57 +101,6 @@ namespace Diagnosis.Infrastracture.Migrations
                             Specialization = "Dermatology",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "user-1"
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.DoctorClinic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClinicId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ConsultationFees")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("FollowUpFees")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClinicId");
-
-                    b.HasIndex("DoctorId", "ClinicId")
-                        .IsUnique();
-
-                    b.ToTable("DoctorClinics");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            ClinicId = -1,
-                            ConsultationFees = 300m,
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = -1,
-                            FollowUpFees = 150m,
-                            IsDeleted = false
                         });
                 });
 
@@ -638,8 +392,6 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId");
-
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PaymentDate")
@@ -710,9 +462,6 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId")
-                        .IsUnique();
-
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
@@ -774,131 +523,6 @@ namespace Diagnosis.Infrastracture.Migrations
                             IsDeleted = false,
                             MedicineName = "Skin Cream",
                             PrescriptionId = -1
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Request", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Priority")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RequestDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RequestType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Requests");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = -1,
-                            IsDeleted = false,
-                            Message = "Need urgent follow-up.",
-                            PatientId = -1,
-                            Priority = "High",
-                            RequestDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RequestType = "FollowUp",
-                            Status = "Pending"
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Review", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("RatingValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ReviewText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId")
-                        .IsUnique()
-                        .HasFilter("[AppointmentId] IS NOT NULL");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Reviews");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            AppointmentId = -1,
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = -1,
-                            IsDeleted = false,
-                            PatientId = -1,
-                            RatingValue = 5m,
-                            ReviewText = "Excellent doctor!"
                         });
                 });
 
@@ -971,7 +595,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d7dddb25-13c5-4e71-8640-a4c3fb85b71b",
+                            ConcurrencyStamp = "7aa276fd-6752-4729-9a62-d9b5b1e0a9bb",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -979,7 +603,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d8e0f22d-e0f5-4076-8707-0df2a6f0ff59",
+                            SecurityStamp = "26de0416-14a3-4ba1-a191-49d55e6694d9",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -987,7 +611,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dd6001c4-7eb8-4879-8c99-1c6a2f77bb16",
+                            ConcurrencyStamp = "0bacbcc8-7e66-4cc6-8c32-6a9537c8f337",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1003,7 +627,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5cde5de3-207c-4c26-8680-e700b497764a",
+                            ConcurrencyStamp = "3790002a-c886-4a9e-803f-71bbe536398c",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1035,6 +659,9 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DiagnosisName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DoctorId")
@@ -1079,6 +706,23 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Consultations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConfidenceLevel = 0,
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "General inquiry about symptoms",
+                            DoctorId = -1,
+                            IsDeleted = false,
+                            Notes = "Patient reports symptoms for 3 days.",
+                            PatientId = -1,
+                            Status = "Pending",
+                            Symptoms = "Headache, fever, and fatigue.",
+                            Type = "Inquiry"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1234,36 +878,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Appointment", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
-                        .WithMany("Appointments")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("Appointments")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Billing", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("Billings")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("Diagnosis.Domain.Entites.Doctor", b =>
                 {
                     b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
@@ -1273,25 +887,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.DoctorClinic", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Clinic", "Clinic")
-                        .WithMany("DoctorClinics")
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
-                        .WithMany("DoctorClinics")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Clinic");
-
-                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.LabResult", b =>
@@ -1337,30 +932,17 @@ namespace Diagnosis.Infrastracture.Migrations
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Payment", b =>
                 {
-                    b.HasOne("Diagnosis.Domain.Entites.Appointment", "Appointment")
-                        .WithMany("Payments")
-                        .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
                         .WithMany("Payments")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Appointment");
-
                     b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Prescription", b =>
                 {
-                    b.HasOne("Diagnosis.Domain.Entites.Appointment", "Appointment")
-                        .WithOne("Prescription")
-                        .HasForeignKey("Diagnosis.Domain.Entites.Prescription", "AppointmentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
                         .WithMany("Prescriptions")
                         .HasForeignKey("DoctorId")
@@ -1372,8 +954,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Appointment");
 
                     b.Navigation("Doctor");
 
@@ -1389,51 +969,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsRequired();
 
                     b.Navigation("Prescription");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Request", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
-                        .WithMany("Requests")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("Requests")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Review", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Appointment", "Appointment")
-                        .WithOne("Review")
-                        .HasForeignKey("Diagnosis.Domain.Entites.Review", "AppointmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
-                        .WithMany("Reviews")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("Reviews")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Appointment");
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Consultation", b =>
@@ -1506,56 +1041,24 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Appointment", b =>
-                {
-                    b.Navigation("Payments");
-
-                    b.Navigation("Prescription")
-                        .IsRequired();
-
-                    b.Navigation("Review")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Clinic", b =>
-                {
-                    b.Navigation("DoctorClinics");
-                });
-
             modelBuilder.Entity("Diagnosis.Domain.Entites.Doctor", b =>
                 {
-                    b.Navigation("Appointments");
-
                     b.Navigation("Consultations");
-
-                    b.Navigation("DoctorClinics");
 
                     b.Navigation("LabResults");
 
                     b.Navigation("Payments");
 
                     b.Navigation("Prescriptions");
-
-                    b.Navigation("Requests");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Patient", b =>
                 {
-                    b.Navigation("Appointments");
-
-                    b.Navigation("Billings");
-
                     b.Navigation("Consultations");
 
                     b.Navigation("LabResults");
 
                     b.Navigation("Prescriptions");
-
-                    b.Navigation("Requests");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Prescription", b =>

@@ -15,17 +15,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
-    public DbSet<Clinic> Clinics { get; set; }
-    public DbSet<DoctorClinic> DoctorClinics { get; set; }
-    public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    public DbSet<Billing> Billings { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
     public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
     public DbSet<LabResult> LabResults { get; set; }
-    public DbSet<Review> Reviews { get; set; }
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Request> Requests { get; set; }
     public DbSet<Consultation> Consultations { get; set; }
 
     //var seedDate = new DateTime(2024, 01, 01);
@@ -37,17 +31,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // Apply configurations
         modelBuilder.ApplyConfiguration(new PatientConfiguration());
         modelBuilder.ApplyConfiguration(new DoctorConfiguration());
-        modelBuilder.ApplyConfiguration(new ClinicConfiguration());
-        modelBuilder.ApplyConfiguration(new DoctorClinicConfiguration());
-        modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
         modelBuilder.ApplyConfiguration(new PaymentConfiguration());
-        modelBuilder.ApplyConfiguration(new BillingConfiguration());
         modelBuilder.ApplyConfiguration(new PrescriptionConfiguration());
         modelBuilder.ApplyConfiguration(new PrescriptionItemConfiguration());
         modelBuilder.ApplyConfiguration(new LabResultConfiguration());
-        modelBuilder.ApplyConfiguration(new ReviewConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
-        modelBuilder.ApplyConfiguration(new RequestConfiguration());
 
         modelBuilder.Entity<ApplicationUser>()
         .HasOne(u => u.Doctor)
@@ -67,9 +55,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
+
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Status)
             .HasConversion<string>();
+
 
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Type)
@@ -96,7 +86,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 NormalizedEmail = "ADMIN@DIAGNOSIS.COM",
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                PasswordHash = "" 
+                PasswordHash = ""
             },
             new ApplicationUser
             {
@@ -119,25 +109,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 EmailConfirmed = true,
                 SecurityStamp = "stamp2",
                 PasswordHash = ""
-            }
-        );
-
-        // ----------------------
-        // Clinic
-        // ----------------------
-        modelBuilder.Entity<Clinic>().HasData(
-            new Clinic
-            {
-                Id = -1,
-                Name = "Downtown Clinic",
-                Address = "Main Street",
-                City = "Cairo",
-                Latitude = 30.05m,
-                Longitude = 31.23m,
-                Phone = "01012345789",
-                Description = "General medical services",
-                ModifiedOn = null,
-                IsDeleted = false
             }
         );
 
@@ -185,39 +156,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             }
         );
 
-        // ----------------------
-        // DoctorClinic
-        // ----------------------
-        modelBuilder.Entity<DoctorClinic>().HasData(
-            new DoctorClinic
-            {
-                Id = -1,
-                DoctorId = -1,
-                ClinicId = -1,
-                ConsultationFees = 300,
-                FollowUpFees = 150,
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
-
-        // ----------------------
-        // Appointment
-        // ----------------------
-        modelBuilder.Entity<Appointment>().HasData(
-            new Appointment
-            {
-                Id = -1,
-                PatientId = -1,
-                DoctorId = -1,
-                AppointmentType = "InPerson",
-                Status = "Confirmed",
-                ConsultationType = "General",
-                Notes = "Initial Checkup",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
 
         // ----------------------
         // Prescription
@@ -271,21 +209,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         );
 
         // ----------------------
-        // Billing
-        // ----------------------
-        modelBuilder.Entity<Billing>().HasData(
-            new Billing
-            {
-                Id = -1,
-                PatientId = -1,
-                PatientName = "Hager",
-                AmountPaid = 250,
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
-
-        // ----------------------
         // LabResult
         // ----------------------
         modelBuilder.Entity<LabResult>().HasData(
@@ -325,40 +248,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             }
         );
 
-        // ----------------------
-        // Request
-        // ----------------------
-        modelBuilder.Entity<Request>().HasData(
-            new Request
-            {
-                Id = -1,
-                PatientId = -1,
-                DoctorId = -1,
-                RequestType = "FollowUp",
-                Status = "Pending",
-                Priority = "High",
-                Message = "Need urgent follow-up.",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
 
-        // ----------------------
-        // Review
-        // ----------------------
-        modelBuilder.Entity<Review>().HasData(
-            new Review
-            {
-                Id = -1,
-                PatientId = -1,
-                DoctorId = -1,
-                AppointmentId = -1,
-                RatingValue = 5,
-                ReviewText = "Excellent doctor!",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
         // ----------------------
         // Consultation
         // ----------------------
@@ -377,10 +267,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Description = "General inquiry about symptoms"
             }
         );
-
-
-
     }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);

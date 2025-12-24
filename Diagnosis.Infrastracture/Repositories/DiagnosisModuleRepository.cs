@@ -48,20 +48,25 @@ namespace Diagnosis.Infrastracture.Repositories
                 createDiagnosisDTO.Description!
             );
 
-            await _context.Consultations.AddAsync(
-                new Consultation
-                {
-                    PatientId = createDiagnosisDTO.PatientId,
-                    DoctorId = createDiagnosisDTO.DoctorId,
-                    Symptoms = createDiagnosisDTO.Symptoms,
-                    Notes = createDiagnosisDTO.Description,
-                    Status = ConsultationStatus.Pending,
-                    Type = ConsultationType.AIDiagnosis,
-                    Date = DateTime.Now,
-                    ConfidenceLevel = Diagnosis.ConfidenceLevel,
-                    Description = Diagnosis.DiagnosisDescription,
-                    FileUrls = fileUrls
-                });
+            var consultaion = new Consultation
+            {
+                PatientId = createDiagnosisDTO.PatientId,
+                DoctorId = createDiagnosisDTO.DoctorId,
+                Symptoms = createDiagnosisDTO.Symptoms,
+                Notes = createDiagnosisDTO.Description,
+                Status = ConsultationStatus.Pending,
+                Type = ConsultationType.AIDiagnosis,
+                Date = DateTime.Now,
+                ConfidenceLevel = Diagnosis.ConfidenceLevel,
+                Description = Diagnosis.DiagnosisDescription,
+                DiagnosisName = Diagnosis.DiagnosisName,
+                FileUrls = fileUrls
+            };
+
+            await _context.Consultations.AddAsync(consultaion);
+            await _context.SaveChangesAsync();
+
+            Diagnosis.InquiryId = consultaion.Id;
             return Diagnosis;
         }
 

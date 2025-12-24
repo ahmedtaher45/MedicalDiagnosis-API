@@ -1,4 +1,4 @@
-
+﻿
 using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.DashboardService;
@@ -80,8 +80,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<AddInquiryUseCase>();
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
-            builder.Services.AddScoped<IDoctorDashboardService, DoctorDashboardService>();
-
+            builder.Services.AddScoped<CreateAITreatmentUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
@@ -94,9 +93,12 @@ namespace Diagnosis.API
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
 
+            builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
 
-            builder.Services.AddScoped<IAuth, AuthRepository>();
-            builder.Services.AddScoped<IDiagnosisModuleRepository, DiagnosisModuleRepository>();
+
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -159,7 +161,9 @@ namespace Diagnosis.API
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
+            app.UseRouting();
             app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseAuthorization();

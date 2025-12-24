@@ -19,7 +19,7 @@ namespace Diagnosis.API.Controllers
     {
 
         [Authorize(Roles = "Patient")]
-        [HttpGet("check")]
+        [HttpPost("check")]
         public async Task<IActionResult> CheckDrug(
             [FromBody] DrugCheckerRequestDTO requestDTO,
             [FromServices] DrugCheckerUseCase _drugCheckerUseCase)
