@@ -61,7 +61,7 @@ namespace Diagnosis.Infrastracture.Repositories
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
 
-       // public IAppointmentRepository Appointment => throw new NotImplementedException();
+  
         public IAppointmentRepository Appointment { get; private set; }
 
         public async Task<int> CompleteAsync()

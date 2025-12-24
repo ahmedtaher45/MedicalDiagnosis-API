@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs.Dashboard;
+﻿using Diagnosis.Application.DTOs.Dashboard.DoctorDashboard;
 
 namespace Diagnosis.Application.Interfaces
 {

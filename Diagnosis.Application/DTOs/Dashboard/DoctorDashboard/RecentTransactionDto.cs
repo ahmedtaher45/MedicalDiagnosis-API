@@ -1,4 +1,4 @@
-﻿namespace Diagnosis.Application.DTOs.Dashboard
+﻿namespace Diagnosis.Application.DTOs.Dashboard.DoctorDashboard
 {
     public class RecentTransactionDto
     {
