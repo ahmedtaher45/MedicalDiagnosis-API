@@ -18,7 +18,6 @@ namespace Diagnosis.Domain.Entites
         public DateTime CreatedAt { get; set; }
         public int DoctorId { get; set; }
         public Doctor Doctor { get; set; }
-        public Appointment Appointment { get; set; }
         public Patient Patient { get; set; }
         public ICollection<PrescriptionItem> PrescriptionItems { get; set; }
     }

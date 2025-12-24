@@ -10,6 +10,7 @@ namespace Diagnosis.Application.DTOs.DiagnosisModule
     {
         public bool Success { get; set; }
         public string? Message { get; set; }
+        public int InquiryId { get; set; }
         public ICollection<FollowUpQuestionDto>? FollowUpQuestions { get; set; }
         public string? DiagnosisName { get; set; }
         public string? DiagnosisDescription { get; set; }

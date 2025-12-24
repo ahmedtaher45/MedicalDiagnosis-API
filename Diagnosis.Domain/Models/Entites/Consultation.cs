@@ -31,6 +31,7 @@ namespace Diagnosis.Domain.Models.Entites
         public DateTime Date { get; set; }
         public int ConfidenceLevel { get; set; }
         public ICollection<string>? FileUrls { get; set; }
+        public string? DiagnosisName { get; set; }
         public string? Description { get; set; }
         public string? RejectReason { get; set; }
         public string? RejectNotes { get; set; }

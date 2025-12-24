@@ -1,4 +1,4 @@
-
+﻿
 using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
@@ -84,6 +84,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<AddInquiryUseCase>();
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
+            builder.Services.AddScoped<CreateAITreatmentUseCase>();
       
 
 
@@ -127,7 +128,6 @@ namespace Diagnosis.API
             });
 
 
-
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
@@ -138,9 +138,12 @@ namespace Diagnosis.API
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
 
+            builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
 
-            builder.Services.AddScoped<IAuth, AuthRepository>();
-            builder.Services.AddScoped<IDiagnosisModuleRepository, DiagnosisModuleRepository>();
+
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -194,13 +197,6 @@ namespace Diagnosis.API
 
             var app = builder.Build();
 
-            // Use CORS
-            app.UseCors("AllowAll");
-
-            app.UseAuthorization();
-
-            app.MapControllers();
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -210,7 +206,9 @@ namespace Diagnosis.API
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
+            app.UseRouting();
             app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
