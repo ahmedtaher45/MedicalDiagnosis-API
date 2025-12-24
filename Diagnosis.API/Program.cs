@@ -53,7 +53,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuth, AuthRepository>();
             ////
-            // تسجيل UseCases
+            // تسجيل UseCasesa
+            builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
             builder.Services.AddScoped<GetAllTreatmentsUseCase>();
             builder.Services.AddScoped<GetTreatmentByIdUseCase>();
             builder.Services.AddScoped<CreateTreatmentUseCase>();

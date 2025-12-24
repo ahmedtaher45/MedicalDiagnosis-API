@@ -16,12 +16,12 @@ namespace Diagnosis.Domain.Entites
         public string LName { get; set; }
         public string Specialization { get; set; }
         public string Bio { get; set; }
-        public int? ExperienceYears { get; set; }
+        public int ExperienceYears { get; set; }
         public decimal? Rating { get; set; }
         public string LicenseNumber { get; set; }
         public string ProfileImageUrl { get; set; }
-        public string Gender { get; set; }
-        public string Address { get; set; }
+        //public string Gender { get; set; }
+       // public string Address { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         // Navigation Properties
