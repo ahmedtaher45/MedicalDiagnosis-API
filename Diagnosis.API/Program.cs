@@ -1,26 +1,27 @@
 ﻿
-using Diagnosis.Application.Interfaces;
-using Diagnosis.Application.Services.EmailService;
-using Diagnosis.Domain.Models.Entites;
-using Diagnosis.Infrastracture.Repositories;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-using Diagnosis.Infrastracture.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Threading.Tasks;
 using Diagnosis.API.Middleware;
+using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.Services.DashboardService;
+using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
-using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
 using Diagnosis.Application.UseCases.DrugChecker;
-using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
+using Diagnosis.Infrastracture.Repositories;
+using Diagnosis.Infrastructure.Providers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
+using System.Text;
+using System.Threading.Tasks;
 
 
 
@@ -38,6 +39,7 @@ namespace Diagnosis.API
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IDoctorDashboardService, DoctorDashboardService>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.Configure<FormOptions>(O =>
             {
@@ -45,8 +47,16 @@ namespace Diagnosis.API
                 O.MultipartBodyLengthLimit = int.MaxValue;
                 O.MemoryBufferThreshold = int.MaxValue;
             });
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+              builder.Configuration.GetConnectionString("Diagnosis");
+              builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
+           
+
+         
+
+
 
             builder.Services.AddDataProtection();
 
@@ -134,6 +144,7 @@ namespace Diagnosis.API
                 options.AddPolicy("MyPolicy",policy =>
                     policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             });
+           
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
