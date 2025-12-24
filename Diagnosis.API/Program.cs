@@ -163,7 +163,7 @@ namespace Diagnosis.API
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                await IdentitySeeder.SeedAdminRole(roleManager);
+                await IdentitySeeder.SeedRoles(roleManager);
             }
 
             app.Run();

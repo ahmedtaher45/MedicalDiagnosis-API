@@ -14,7 +14,7 @@ namespace Diagnosis.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddInquiry(
             [FromServices] AddInquiryUseCase addInquiryUseCase,
-            [FromBody] AddInquiryDTO addInquiryDTO)
+            [FromForm] AddInquiryDTO addInquiryDTO)
         {
             var result = await addInquiryUseCase.ExecuteAsync(addInquiryDTO);
 

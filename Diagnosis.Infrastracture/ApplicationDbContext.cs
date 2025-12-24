@@ -22,8 +22,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Consultation> Consultations { get; set; }
 
-    //var seedDate = new DateTime(2024, 01, 01);
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -55,6 +53,37 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity <Consultation>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Doctor>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<LabResult>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Notification>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Patient>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Payment>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Prescription>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<PrescriptionItem>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
 
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Status)
@@ -64,6 +93,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Type)
             .HasConversion<string>();
+
+        modelBuilder.Entity<Notification>()
+            .Property(p => p.NotificationType)
+            .HasConversion<string>();
+
         // ----------------------
         // Identity Roles
         // ----------------------

@@ -45,7 +45,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _fileService = fileService;
             _diagnosisModuleProvider = diagnosisModuleProvider;
 
-            Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender);
+            Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
 
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
             Inquiry = new InquiryRepository(_context, _fileService);

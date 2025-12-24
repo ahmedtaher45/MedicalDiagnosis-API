@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
+﻿using Diagnosis.Application.DTOs.Treatment;
 using System;
 using System.Collections.Generic;
 using System.Linq;

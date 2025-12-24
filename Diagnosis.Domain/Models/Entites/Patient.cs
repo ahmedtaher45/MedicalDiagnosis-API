@@ -10,22 +10,20 @@ namespace Diagnosis.Domain.Entites
 {
     public class Patient: BaseEntity
     {
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-        public string FName { get; set; }
-        public string LName { get; set; }
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+        public string? FName { get; set; }
+        public string? LName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string Gender { get; set; }
-        public string Address { get; set; }
-        public string BloodType { get; set; }
-        public DateTime BirthDate { get; set; }
-        public string Allergies { get; set; }
-        public string ProfileImageUrl { get; set; }
-        public bool IsNewPatient { get; set; }
-        public bool IsUrgent { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public ICollection<Prescription> Prescriptions { get; set; }
-        public ICollection<LabResult> LabResults { get; set; }
+        public string? Gender { get; set; }
+        public string? Address { get; set; }
+        public string? BloodType { get; set; }
+        public string? Allergies { get; set; }
+        public string? ProfileImageUrl { get; set; }
+        public bool? IsNewPatient { get; set; }
+        public bool? IsUrgent { get; set; }
+        public ICollection<Prescription>? Prescriptions { get; set; }
+        public ICollection<LabResult>? LabResults { get; set; }
         public ICollection<Consultation>? Consultations { get; set; }
 
     }

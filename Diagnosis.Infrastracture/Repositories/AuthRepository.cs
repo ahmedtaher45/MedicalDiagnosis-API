@@ -1,12 +1,15 @@
 ﻿using Diagnosis.Application.DTOs.Auth;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
+using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using MimeKit.Encodings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -20,18 +23,18 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IJwtTokenGenerator jwtTokenGenerator;
         private readonly IEmailSender emailSender;
-
-        public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, IEmailSender emailSender)
+        private readonly ApplicationDbContext _context;
+        public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, IEmailSender emailSender, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.jwtTokenGenerator = jwtTokenGenerator;
             this.emailSender = emailSender;
+            _context = context;
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterDTO registerDTO)
         {
-            var user = userManager.FindByEmailAsync(registerDTO.Email!);
-            if (user == null)
+            if (registerDTO.Email == null)
             {
                 return new RegisterResponse
                 {
@@ -39,53 +42,81 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Invalid Email"
                 };
             }
-
-            ApplicationUser newUser = new ApplicationUser
-            {
-                Email = registerDTO.Email,
-                UserName = registerDTO.UserName,
-                PhoneNumber = registerDTO.PhoneNumber
-            };
-
-            var result = await userManager.CreateAsync(newUser, registerDTO.Password!);
-
-            if (!result.Succeeded)
-            {
-                return new RegisterResponse
-                {
-                    Success = false,
-                    ErrorMessage = "Error occured while creating user"
-                };
-            }
+            ApplicationUser? user = null;
 
             try
             {
-                await userManager.AddToRoleAsync(newUser, "Patient");
-            }
-            catch (Exception ex)
-            {
-
-                return new RegisterResponse
+                user = new ApplicationUser
                 {
-                    Success = false,
-                    ErrorMessage = "Error with assigning role: " + ex.Message
+                    Email = registerDTO.Email,
+                    UserName = registerDTO.UserName,
+                    PhoneNumber = registerDTO.PhoneNumber
                 };
-            }
-            await SendConfirmationEmail(newUser, registerDTO.ClientUri!);
-            return new RegisterResponse
+                var result = await userManager.CreateAsync(user, registerDTO.Password!);
+
+                if (!result.Succeeded)
+                {
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description))
+                    };
+                }
+                if (string.IsNullOrEmpty(user.Id))
+                {
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "User ID is null after creation"
+                    };
+                }
+
+                await userManager.AddToRoleAsync(user, "Patient");
+
+            var patient = new Patient
             {
-                Success = true,
-                ErrorMessage = "Check your Email for Confirmation"
-            };
-        }
+                UserId = user.Id,
+                FName = registerDTO.FName!,
+                LName = registerDTO.LName!,
+                Gender = registerDTO.Gender!,
+                DateOfBirth = registerDTO.BirthDate
+                };
+
+                _context.Patients.Add(patient);
+                await _context.SaveChangesAsync();
+            }
+                catch (Exception ex)
+                {
+                    if (user != null)
+                        await userManager.DeleteAsync(user);
+
+                      var errorMessage = ex.InnerException != null
+                            ? ex.InnerException.Message
+                            : ex.Message;
+
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "Error: " + errorMessage + " | StackTrace: " + ex.StackTrace
+                    };
+                }
+
+                    await SendConfirmationEmail(user, registerDTO.ClientUri!);
+                    return new RegisterResponse
+                    {
+                        Success = true,
+                        ErrorMessage = "Check your Email for Confirmation"
+                    };
+            }
+            
 
         public async Task SendConfirmationEmail(ApplicationUser user, string clientUri)
         {
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             var param = new Dictionary<string, string?>
             {
-                { "token", token},
+                { "token", encodedToken},
                 { "email", user.Email!}
             };
 
@@ -116,19 +147,17 @@ namespace Diagnosis.Infrastracture.Repositories
             var user = await userManager.FindByEmailAsync(confirmEmailDTO.Email);
             if (user == null) return new RegisterResponse { Success = false, ErrorMessage = "user Doesn't Exist" };
 
-            try
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmEmailDTO.Token));
+            var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+
+            if (!result.Succeeded)
             {
-                 await userManager.ConfirmEmailAsync(user, confirmEmailDTO.Token);
-            }
-            catch (Exception ex)
-            {
-                    return new RegisterResponse
-                    {
-                        Success = false,
-                        ErrorMessage = "Error with confirming Email" + ex
-                    };               
-            }
-            
+                return new RegisterResponse
+                {
+                    Success = false,
+                    ErrorMessage = "Error with confirming Email" 
+                };
+            }                                            
             return new RegisterResponse
             {
                 Success = true,
@@ -144,6 +173,15 @@ namespace Diagnosis.Infrastracture.Repositories
                 {
                     Success = false,
                     ErrorMessage = "Invalid email or password"
+                });
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                return (new LoginResponseDTO
+                {
+                    Success = false,
+                    ErrorMessage = "You must confirm your Email, please return to your gmail"
                 });
             }
 
