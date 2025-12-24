@@ -25,6 +25,7 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IDiagnosisModuleProvider _diagnosisModuleProvider;
+
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
@@ -52,6 +53,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Consultation = new ConsultationRepository(_context);
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            Profile = new ProfileRepository(_context);
 
         }
 
@@ -61,6 +63,7 @@ namespace Diagnosis.Infrastracture.Repositories
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
         public ITreatmentProvider TreatmentProvider { get; private set; }
+        public IProfileRepository Profile { get; private set; }
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

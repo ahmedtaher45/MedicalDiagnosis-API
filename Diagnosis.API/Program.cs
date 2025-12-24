@@ -21,6 +21,7 @@ using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Infrastracture.Providers;
+using Diagnosis.Application.UseCases.Settings;
 
 
 
@@ -71,6 +72,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
+            builder.Services.AddScoped<GetProfileUseCase>();
+            builder.Services.AddScoped<UpdateProfileUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>

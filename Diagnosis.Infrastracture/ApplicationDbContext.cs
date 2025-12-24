@@ -64,6 +64,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Type)
             .HasConversion<string>();
+        
+        
+        
         // ----------------------
         // Identity Roles
         // ----------------------
