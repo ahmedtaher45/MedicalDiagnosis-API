@@ -66,7 +66,7 @@ namespace Diagnosis.Infrastracture.Repositories
             await _context.Consultations.AddAsync(consultaion);
             await _context.SaveChangesAsync();
 
-            Diagnosis.InquiryId = consultaion.Id;
+            Diagnosis.DiagnosisId = consultaion.Id;
             return Diagnosis;
         }
 

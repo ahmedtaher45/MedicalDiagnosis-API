@@ -1,18 +1,18 @@
-using Diagnosis.Application.DTOs.Consultation;
-using Diagnosis.Application.Services.EmailService;
+﻿using Diagnosis.Application.DTOs.Consultation;
 using Diagnosis.Domain.Models.Entites;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface IConsultationRepository: IRepository<Consultation>
+    public interface IConsultationRepository : IRepository<Consultation>
     {
-    
+        // 🔹 Dashboard support (NEW)
+        IQueryable<Consultation> GetQueryable();
+
+        // 🔹 Existing methods (unchanged)
         Task<List<Consultation>> GetByDoctorIdAsync(int doctorId);
         Task<List<Consultation>> GetByPatientIdAsync(int patientId);
         Task<List<Consultation>> GetByStatusAsync(ConsultationStatus status);

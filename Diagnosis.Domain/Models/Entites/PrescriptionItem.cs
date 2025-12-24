@@ -13,7 +13,7 @@ namespace Diagnosis.Domain.Entites
 
         [ForeignKey("Prescription")]
         public int PrescriptionId { get; set; }
-        public string MedicineName { get; set; }
-        public Prescription Prescription { get; set; }
+        public string? MedicineName { get; set; }
+        public Prescription? Prescription { get; set; }
     }
 }

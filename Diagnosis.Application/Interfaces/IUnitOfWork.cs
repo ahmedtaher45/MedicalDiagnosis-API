@@ -16,7 +16,8 @@ namespace Diagnosis.Application.Interfaces
         IConsultationRepository Consultation { get; }
         IProfileRepository Profile { get; }
 
-        Task<int> CompleteAsync();
-        Task SaveChangesAsync();
+       // IAppointmentRepository Appointment { get; }
+     
+       
     }
 }
