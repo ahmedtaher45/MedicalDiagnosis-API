@@ -1,12 +1,15 @@
 ﻿
 using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
-using Diagnosis.Application.Services.DashboardService;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.Dashboard;
+using Diagnosis.Application.UseCases.Dashboard.AdminDashboard;
+using Diagnosis.Application.UseCases.Dashboard.DoctorDashboard;
+using Diagnosis.Application.UseCases.Dashboard.PatiantDashboard;
 using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Domain.Models.Entites;
@@ -14,6 +17,7 @@ using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastracture.Repositories;
 using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
-using System.Threading.Tasks;
+
 
 
 
@@ -39,7 +43,7 @@ namespace Diagnosis.API
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailSender, EmailSender>();
-            builder.Services.AddScoped<IDoctorDashboardService, DoctorDashboardService>();
+  
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.Configure<FormOptions>(O =>
             {
@@ -81,6 +85,47 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
+      
+
+
+
+            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+            builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+            // Register Admin Dashboard Use Cases
+            builder.Services.AddScoped<GetDashboardStatsUseCase>();
+            builder.Services.AddScoped<GetAppointmentsOverTimeUseCase>();
+            builder.Services.AddScoped<GetTopDoctorsUseCase>();
+            builder.Services.AddScoped<GetRecentAppointmentsUseCase>();
+
+            // Register Doctor Use Cases
+            builder.Services.AddScoped<GetAllDoctorsUseCase>();
+            builder.Services.AddScoped<GetDoctorByIdUseCase>();
+            builder.Services.AddScoped<CreateDoctorUseCase>();
+            builder.Services.AddScoped<UpdateDoctorUseCase>();
+            builder.Services.AddScoped<DeleteDoctorUseCase>();
+            builder.Services.AddScoped<SearchDoctorsUseCase>();
+
+            // Register Patient Use Cases
+            builder.Services.AddScoped<GetAllPatientsUseCase>();
+            builder.Services.AddScoped<GetPatientByIdUseCase>();
+            builder.Services.AddScoped<CreatePatientUseCase>();
+            builder.Services.AddScoped<UpdatePatientUseCase>();
+            builder.Services.AddScoped<DeletePatientUseCase>();
+            builder.Services.AddScoped<SearchPatientsUseCase>();
+
+
+            // Configure CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>

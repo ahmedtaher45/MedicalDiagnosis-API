@@ -1,34 +1,4 @@
-﻿/*using Diagnosis.Application.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-
-namespace Diagnosis.API.Controllers
-{
-    [ApiController]
-    [Route("api/doctor/dashboard")]
-    [Authorize(Roles = "Doctor")]
-    public class DoctorDashboardController : ControllerBase
-    {
-        private readonly IDoctorDashboardService _dashboardService;
-
-        public DoctorDashboardController(IDoctorDashboardService dashboardService)
-        {
-            _dashboardService = dashboardService;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetDashboard()
-        {
-            // ✅ doctorId كـ int
-            var doctorId = int.Parse(User.FindFirst("uid")!.Value);
-
-            var result = await _dashboardService.GetDashboardAsync(doctorId);
-            return Ok(result);
-        }
-    }
-}*/
-
+﻿
 using Diagnosis.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,10 +19,7 @@ namespace Diagnosis.API.Controllers
             _dashboardService = dashboardService;
         }
 
-        /// <summary>
-        /// Get the doctor's dashboard summary
-        /// </summary>
-        /// <returns>Doctor dashboard data as JSON</returns>
+        
         [HttpGet]
         [ProducesResponseType(typeof(DoctorDashboardDto), 200)]
         [ProducesResponseType(404)]
@@ -78,13 +45,13 @@ namespace Diagnosis.API.Controllers
             }
             catch (System.Exception ex)
             {
-                // Logging ممكن تضيف هنا
+             
                 return StatusCode(500, new { message = "An error occurred", detail = ex.Message });
             }
         }
     }
 
-    // مثال DTO للـ Swagger وتجربة JSON
+   
     public class DoctorDashboardDto
     {
         public int TotalPatients { get; set; }

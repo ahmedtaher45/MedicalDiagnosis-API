@@ -60,6 +60,10 @@ namespace Diagnosis.Infrastracture.Repositories
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
+
+  
+        public IAppointmentRepository Appointment { get; private set; }
+
         public ITreatmentProvider TreatmentProvider { get; private set; }
         public async Task<int> CompleteAsync()
         {
