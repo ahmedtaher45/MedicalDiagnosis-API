@@ -3,6 +3,7 @@ using Diagnosis.Application.UseCases.DiagnosisModule;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Diagnosis.API.Controllers
 {
@@ -16,7 +17,8 @@ namespace Diagnosis.API.Controllers
             [FromServices] CreateDiagnosisUseCase createDiagnosisUseCase,
             [FromForm] CreateDiagnosisDTO createDiagnosisDTO)
         {
-            var result = await createDiagnosisUseCase.ExecuteAsync(createDiagnosisDTO);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await createDiagnosisUseCase.ExecuteAsync(createDiagnosisDTO, userId);
 
             if (!result.Success)
             {

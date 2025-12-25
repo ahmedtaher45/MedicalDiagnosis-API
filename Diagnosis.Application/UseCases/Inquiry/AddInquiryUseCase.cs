@@ -18,9 +18,9 @@ namespace Diagnosis.Application.UseCases.Inquiry
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IquiryResponse> ExecuteAsync(AddInquiryDTO addInquiryDTO)
+        public async Task<IquiryResponse> ExecuteAsync(AddInquiryDTO addInquiryDTO, string userId)
         {
-            var response =  await _unitOfWork.Inquiry.AddInquiryAsync(addInquiryDTO);
+            var response =  await _unitOfWork.Inquiry.AddInquiryAsync(addInquiryDTO, userId);
             await _unitOfWork.SaveChangesAsync();
             return response;
         }

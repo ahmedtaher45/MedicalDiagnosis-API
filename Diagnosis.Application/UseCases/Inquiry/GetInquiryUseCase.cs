@@ -22,10 +22,11 @@ namespace Diagnosis.Application.UseCases.Inquiry
             _config = config;
         }
 
-        public async Task<GetInquiryDTO> ExecuteAsync(int patientId, int inquiryId)
+        public async Task<GetInquiryDTO> ExecuteAsync(string userId, int inquiryId)
         {
             try
             {
+                var patientId = await _unitOfWork.Inquiry.GetPatientAsync(userId);
                 var inquiry = await _unitOfWork.Inquiry.GetAsync(c => c.Id == inquiryId
                 && c.PatientId == patientId
                 && c.Type == Domain.Models.Entites.ConsultationType.Inquiry);
