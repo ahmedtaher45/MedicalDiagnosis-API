@@ -6,6 +6,7 @@ using Diagnosis.Application.Services.FileService;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Domain.Models.Entites;
@@ -50,12 +51,6 @@ namespace Diagnosis.API
               builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-           
-
-         
-
-
-
             builder.Services.AddDataProtection();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
@@ -79,6 +74,9 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
+            builder.Services.AddScoped<GetTemplateUseCase>();
+            builder.Services.AddScoped<GetAllTemplatesUseCase>();
+            builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>

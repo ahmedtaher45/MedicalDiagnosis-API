@@ -147,22 +147,37 @@ namespace Diagnosis.Infrastracture.Repositories
             var user = await userManager.FindByEmailAsync(confirmEmailDTO.Email);
             if (user == null) return new RegisterResponse { Success = false, ErrorMessage = "user Doesn't Exist" };
 
-            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmEmailDTO.Token));
-            var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+            try
+            {
+                var decodedToken = Encoding.UTF8.GetString(
+                    WebEncoders.Base64UrlDecode(confirmEmailDTO.Token)
+                );
 
-            if (!result.Succeeded)
+                var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+
+                if (!result.Succeeded)
+                {
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description))
+                    };
+                }
+
+                return new RegisterResponse
+                {
+                    Success = true,
+                    ErrorMessage = "Email confirmed successfully"
+                };
+            }
+            catch (Exception ex)
             {
                 return new RegisterResponse
                 {
                     Success = false,
-                    ErrorMessage = "Error with confirming Email" 
+                    ErrorMessage = $"Invalid token format: {ex.Message}"
                 };
-            }                                            
-            return new RegisterResponse
-            {
-                Success = true,
-                ErrorMessage = "Email confirmed Successfully"
-            };
+            }
         }
         public async Task<LoginResponseDTO> LoginAsync(string email, string password)
         {

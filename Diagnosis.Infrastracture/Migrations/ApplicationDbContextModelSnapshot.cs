@@ -547,7 +547,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "420c3960-929c-4298-b91c-5fc1aaf6be84",
+                            ConcurrencyStamp = "908d365f-b719-4358-8301-b7fa5d7d7933",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -555,7 +555,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bd973f8a-9d68-42cf-9ac3-4f4efb2ec6b5",
+                            SecurityStamp = "205789b7-4e35-43fe-b1fa-bc3d4e2d2ac0",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -563,7 +563,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e84a0af2-f6ad-462e-9617-a7f03506f244",
+                            ConcurrencyStamp = "33105e6c-ae0c-41cb-96b2-250ff9a03641",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -579,7 +579,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a7aaf6ae-c0fe-43fd-8677-0b9566bed221",
+                            ConcurrencyStamp = "dc327741-d0ea-4975-bdc1-34806340846f",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -590,6 +590,98 @@ namespace Diagnosis.Infrastracture.Migrations
                             SecurityStamp = "stamp2",
                             TwoFactorEnabled = false,
                             UserName = "patient@test.com"
+                        });
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.ClinicalFinding", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DiagnosisId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiagnosisId");
+
+                    b.ToTable("ClinicalFindings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DiagnosisId = 1,
+                            IsDeleted = false,
+                            Name = "Body Temperature",
+                            Notes = "Fever",
+                            Value = "38.5°C"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DiagnosisId = 1,
+                            IsDeleted = false,
+                            Name = "Oxygen Saturation",
+                            Notes = "Normal",
+                            Value = "98%"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DiagnosisId = 2,
+                            IsDeleted = false,
+                            Name = "Abdominal tenderness",
+                            Notes = "Epigastric area",
+                            Value = "Present"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DiagnosisId = 3,
+                            IsDeleted = false,
+                            Name = "Blood Pressure",
+                            Notes = "Elevated",
+                            Value = "150/95 mmHg"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DiagnosisId = 4,
+                            IsDeleted = false,
+                            Name = "HbA1c",
+                            Notes = "Above target",
+                            Value = "7.1%"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DiagnosisId = 4,
+                            IsDeleted = false,
+                            Name = "Fasting Blood Glucose",
+                            Notes = "Elevated",
+                            Value = "140 mg/dL"
                         });
                 });
 
@@ -675,6 +767,309 @@ namespace Diagnosis.Infrastracture.Migrations
                             Status = "Pending",
                             Symptoms = "Headache, fever, and fatigue.",
                             Type = "Inquiry"
+                        });
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PatientSymptoms")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Diagnosises");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Viral infection affecting upper respiratory tract",
+                            IsDeleted = false,
+                            Name = "Upper Respiratory Infection",
+                            PatientSymptoms = "Fever, cough, sore throat, runny nose",
+                            Title = "Cold & Flu"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Inflammation of stomach lining",
+                            IsDeleted = false,
+                            Name = "Gastritis",
+                            PatientSymptoms = "Abdominal pain, nausea, vomiting",
+                            Title = "Stomach Pain"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Chronic elevation of blood pressure",
+                            IsDeleted = false,
+                            Name = "High Blood Pressure",
+                            PatientSymptoms = "Headache, dizziness, blurred vision",
+                            Title = "Hypertension"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Routine diabetes follow-up and monitoring",
+                            IsDeleted = false,
+                            Name = "Type 2 Diabetes Mellitus",
+                            PatientSymptoms = "Fatigue, frequent urination",
+                            Title = "Diabetes Follow-up"
+                        });
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SuggestedMedication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DiagnosisId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Dosage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Frequency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiagnosisId");
+
+                    b.ToTable("SuggestedMedications");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DiagnosisId = 1,
+                            Dosage = "500 mg",
+                            Frequency = "Every 8 hours",
+                            IsDeleted = false,
+                            Name = "Paracetamol"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DiagnosisId = 1,
+                            Dosage = "10 mg",
+                            Frequency = "Once daily",
+                            IsDeleted = false,
+                            Name = "Antihistamine"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DiagnosisId = 2,
+                            Dosage = "20 mg",
+                            Frequency = "Once daily before meals",
+                            IsDeleted = false,
+                            Name = "Omeprazole"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DiagnosisId = 2,
+                            Dosage = "10 ml",
+                            Frequency = "After meals",
+                            IsDeleted = false,
+                            Name = "Antacid"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DiagnosisId = 3,
+                            Dosage = "5 mg",
+                            Frequency = "Once daily",
+                            IsDeleted = false,
+                            Name = "Amlodipine"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DiagnosisId = 3,
+                            Dosage = "-",
+                            Frequency = "Low salt diet & exercise",
+                            IsDeleted = false,
+                            Name = "Lifestyle modification"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DiagnosisId = 4,
+                            Dosage = "500 mg",
+                            Frequency = "Twice daily",
+                            IsDeleted = false,
+                            Name = "Metformin"
+                        });
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DiagnosisId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiagnosisId");
+
+                    b.ToTable("Symptoms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DiagnosisId = 1,
+                            IsDeleted = false,
+                            Name = "Fever"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DiagnosisId = 1,
+                            IsDeleted = false,
+                            Name = "Cough"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DiagnosisId = 1,
+                            IsDeleted = false,
+                            Name = "Sore throat"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DiagnosisId = 1,
+                            IsDeleted = false,
+                            Name = "Runny nose"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DiagnosisId = 1,
+                            IsDeleted = false,
+                            Name = "Body aches"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DiagnosisId = 2,
+                            IsDeleted = false,
+                            Name = "Abdominal pain"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DiagnosisId = 2,
+                            IsDeleted = false,
+                            Name = "Nausea"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            DiagnosisId = 2,
+                            IsDeleted = false,
+                            Name = "Vomiting"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            DiagnosisId = 2,
+                            IsDeleted = false,
+                            Name = "Bloating"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            DiagnosisId = 3,
+                            IsDeleted = false,
+                            Name = "Headache"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            DiagnosisId = 3,
+                            IsDeleted = false,
+                            Name = "Dizziness"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            DiagnosisId = 3,
+                            IsDeleted = false,
+                            Name = "Blurred vision"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            DiagnosisId = 4,
+                            IsDeleted = false,
+                            Name = "Fatigue"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            DiagnosisId = 4,
+                            IsDeleted = false,
+                            Name = "Frequent urination"
                         });
                 });
 
@@ -921,6 +1316,17 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Prescription");
                 });
 
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.ClinicalFinding", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", "Diagnosis")
+                        .WithMany("ClinicalFindings")
+                        .HasForeignKey("DiagnosisId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Diagnosis");
+                });
+
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Consultation", b =>
                 {
                     b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
@@ -938,6 +1344,28 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SuggestedMedication", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", "Diagnosis")
+                        .WithMany("SuggestedMedications")
+                        .HasForeignKey("DiagnosisId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Diagnosis");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", "Diagnosis")
+                        .WithMany("Symptoms")
+                        .HasForeignKey("DiagnosisId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Diagnosis");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1023,6 +1451,15 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>
+                {
+                    b.Navigation("ClinicalFindings");
+
+                    b.Navigation("SuggestedMedications");
+
+                    b.Navigation("Symptoms");
                 });
 #pragma warning restore 612, 618
         }
