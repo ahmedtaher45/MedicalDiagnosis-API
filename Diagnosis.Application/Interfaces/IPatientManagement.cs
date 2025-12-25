@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface IAppointmentRepository
+    public interface IPatientManagement: IRepository<Patient>
     {
-        Task<List<Appointment>> GetByPatientIdAsync(int patientId);
-        Task<List<Appointment>> GetByDoctorIdAsync(int doctorId);
     }
 }

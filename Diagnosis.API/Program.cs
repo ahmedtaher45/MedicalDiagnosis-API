@@ -1,12 +1,21 @@
 ﻿
 using Diagnosis.API.Middleware;
+using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
-using Diagnosis.Application.Services.ProfileService;
+using Diagnosis.Application.Services.FileService;
 using Diagnosis.Application.UseCases;
+using Diagnosis.Application.UseCases;
+using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.DrugChecker;
+using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
+using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastracture.Repositories;
+using Diagnosis.Infrastructure.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -15,15 +24,6 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
 using System.Threading.Tasks;
-using Diagnosis.API.Middleware;
-using Diagnosis.Application.Services.FileService;
-using Diagnosis.Infrastructure.Providers;
-using Diagnosis.Application.UseCases.Auth;
-using Diagnosis.Application.UseCases.Consultation;
-using Diagnosis.Application.UseCases.DrugChecker;
-using Diagnosis.Application.UseCases;
-using Diagnosis.Application.UseCases.Inquiry;
-using Diagnosis.Infrastracture.Providers;
 
 
 
@@ -96,15 +96,13 @@ namespace Diagnosis.API
             /////
             ///// ====== Profiles (Today Work) ======
 
-            // Generic Management Repository
-            builder.Services.AddScoped(typeof(IManagementRepository<>), typeof(ManagementRepository<>));
+            // Doctor & Patient repositories
+            builder.Services.AddScoped<IRepository<Doctor>, DoctorRepository>();
+            builder.Services.AddScoped<IRepository<Patient>, PatientRepository>();
+            builder.Services.AddScoped<IPatientManagement, PatientRepository>(); 
+            builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
 
-            // Appointment specialized repository (History + Profiles)
-            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
-            // Profile Services
-            builder.Services.AddScoped<PatientProfileService>();
-            builder.Services.AddScoped<DoctorProfileService>();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
