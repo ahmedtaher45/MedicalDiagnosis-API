@@ -1,19 +1,27 @@
-
+﻿
+using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
+using Diagnosis.Application.Services.FileService;
 using Diagnosis.Application.UseCases;
+using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.DoctorDiagnosis;
+using Diagnosis.Application.UseCases.DrugChecker;
+using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Infrastracture.Identity;
+using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastracture.Repositories;
+using Diagnosis.Infrastructure.Providers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-using Diagnosis.Infrastracture.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
-using Diagnosis.API.Middleware;
 
 
 
@@ -31,13 +39,16 @@ namespace Diagnosis.API
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.Configure<FormOptions>(O =>
             {
                 O.ValueLengthLimit = int.MaxValue;
                 O.MultipartBodyLengthLimit = int.MaxValue;
                 O.MemoryBufferThreshold = int.MaxValue;
             });
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+              builder.Configuration.GetConnectionString("Diagnosis");
+              builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddDataProtection();
@@ -49,7 +60,40 @@ namespace Diagnosis.API
             builder.Services.AddScoped<LoginUseCase>();
             builder.Services.AddScoped<ForgotPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
+            builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            builder.Services.AddScoped<GetDoctorConsultationsUseCase>();
+            builder.Services.AddScoped<GetConsultationDetailsUseCase>();
+            builder.Services.AddScoped<GetModifyConsultationDataUseCase>();
+            builder.Services.AddScoped<ModifyConsultationsUseCase>();
+            builder.Services.AddScoped<RejectConsultationsUseCase>();
+            builder.Services.AddScoped<AcceptConsultationsUseCase>();
+            builder.Services.AddScoped<DrugCheckerUseCase>();
+            builder.Services.AddScoped<DrugSuggestionUseCase>();
+            builder.Services.AddScoped<AddInquiryUseCase>();
+            builder.Services.AddScoped<GetInquiriesUseCase>();
+            builder.Services.AddScoped<GetInquiryUseCase>();
+            builder.Services.AddScoped<CreateAITreatmentUseCase>();
+            builder.Services.AddScoped<GetTemplateUseCase>();
+            builder.Services.AddScoped<GetAllTemplatesUseCase>();
+            builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
+
+
+            builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
+
+            builder.Services.AddHttpClient<IDiagnosisModuleProvider, DiagnosisModuleProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
+
+            builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
+
             builder.Services.AddScoped<IAuth, AuthRepository>();
             builder.Services.AddScoped<SupportTicketUseCase>();
             builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
@@ -95,7 +139,13 @@ namespace Diagnosis.API
                         Encoding.UTF8.GetBytes(jwtConfig["Key"])
                     )
                 };
-            });    
+            });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy",policy =>
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            });
+           
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -112,6 +162,10 @@ namespace Diagnosis.API
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+            app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -18,8 +18,15 @@ namespace Diagnosis.Application.Services.EmailService
         }
         public async Task SendEmailAsync(Message message)
         {
-            var emailMessage = CreateEmailMessage(message);
-            await Send(emailMessage);
+            try
+            {
+                var emailMessage = CreateEmailMessage(message);
+                await Send(emailMessage);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Email send Failed", ex);
+            }
         }
 
         private MimeMessage CreateEmailMessage(Message message)
