@@ -51,6 +51,10 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuth, AuthRepository>();
+            builder.Services.AddScoped<SupportTicketUseCase>();
+            builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
+            builder.Services.AddScoped<FaqUseCase>();
+            builder.Services.AddScoped<IFaq, FaqRepository>();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {

@@ -36,6 +36,10 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public IAuth Auth { get; private set; }
 
+        public IFaq Faq => throw new NotImplementedException();
+
+        public ISupportTicket SupportTicket => throw new NotImplementedException();
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

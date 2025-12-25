@@ -26,6 +26,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Request> Requests { get; set; }
+    public DbSet<Faq> Faqs { get; set; }
+    public DbSet<SupportTicket> SupportTickets { get; set; }
 
     //var seedDate = new DateTime(2024, 01, 01);
 
@@ -358,6 +360,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 IsDeleted = false
             }
         );
+
+        // --------------------
+        // Faq
+        // --------------------
+        modelBuilder.Entity<Faq>().HasData(
+            new Faq
+            {
+                Id = 1,
+                Question = "How do I Start a Physiotherapy session?",
+                Answer = "Go to Phsiotherapy module and book a session."
+                
+            } ,
+            new Faq
+            {
+                Id = 2,
+                Question = "How do I Send a question to the doctor?",
+                Answer = "You can send your question from the Inquiries section."
+            }
+            );
 
 
     }
