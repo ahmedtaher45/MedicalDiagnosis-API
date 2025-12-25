@@ -14,7 +14,7 @@ namespace Diagnosis.API.Controllers
         [HttpPost("create-daignosis")]
         public async Task<IActionResult> CreateDiagnosis(
             [FromServices] CreateDiagnosisUseCase createDiagnosisUseCase,
-            [FromBody] CreateDiagnosisDTO createDiagnosisDTO)
+            [FromForm] CreateDiagnosisDTO createDiagnosisDTO)
         {
             var result = await createDiagnosisUseCase.ExecuteAsync(createDiagnosisDTO);
 

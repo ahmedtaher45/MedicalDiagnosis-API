@@ -40,13 +40,16 @@ namespace Diagnosis.Application.UseCases.Inquiry
                             Date = inquiry.Date
                         });
                     }
-                    dto.Add(new InquiryItemResponse
+                    else
                     {
-                        Status = "Replied",
-                        Symptoms = inquiry.Symptoms,
-                        InquiryId = inquiry.Id,
-                        Date = inquiry.Date
-                    });
+                        dto.Add(new InquiryItemResponse
+                        {
+                            Status = "Replied",
+                            Symptoms = inquiry.Symptoms,
+                            InquiryId = inquiry.Id,
+                            Date = inquiry.Date
+                        });
+                    }
                 }
                 return dto;
             }

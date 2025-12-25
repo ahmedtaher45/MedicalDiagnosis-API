@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Application.DTOs.Inquiry;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.FileService;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace Diagnosis.Application.UseCases.Inquiry
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFileService _fileService;
-        public GetInquiryUseCase(IUnitOfWork unitOfWork, IFileService fileService)
+        private readonly IConfiguration _config;
+        public GetInquiryUseCase(IUnitOfWork unitOfWork, IFileService fileService, IConfiguration config)
         {
             _unitOfWork = unitOfWork;
             _fileService = fileService;
+            _config = config;
         }
 
         public async Task<GetInquiryDTO> ExecuteAsync(int patientId, int inquiryId)
@@ -29,7 +32,12 @@ namespace Diagnosis.Application.UseCases.Inquiry
 
                 if (inquiry == null) throw new ArgumentNullException(nameof(inquiry));
 
-                var files = await _fileService.GetMultipleFilesAsync(inquiry.FileUrls!);
+                var baseUrl = _config["AppSettings:BaseUrl"];
+
+                var files = inquiry.FileUrls?
+                    .Select(path => $"{baseUrl}/{path.Replace("\\", "/")}")
+                    .ToList()
+                    ?? new List<string>();
 
                 var dto = new GetInquiryDTO();
 

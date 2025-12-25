@@ -8,7 +8,7 @@ namespace Diagnosis.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Patient")]
+    [Authorize(Roles = "Patient")]
     public class InquiryController : ControllerBase
     {
         [HttpPost]
