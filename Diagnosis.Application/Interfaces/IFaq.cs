@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
+﻿using Diagnosis.Application.DTOs.Faq;
 using Diagnosis.Domain.Models.Entites;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,6 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IFaq: IRepository<Faq>
     {
-        Task<List<FaqResponseDTO>> GetAllFaqAsync(string? search = null);
+        Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO , string? search = null);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
+﻿using Diagnosis.Application.DTOs.Faq;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +17,11 @@ namespace Diagnosis.Infrastracture.Repositories
         {
             _context = context;
         }
-        public async Task<List<FaqResponseDTO>> GetAllFaqAsync(string? search = null)
-        {
-            var query = _context.Faqs.AsQueryable();
+        public async Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO, string? search = null)
+        { 
+            var query = _context.Faqs
+                .Where(f => f.Type == faqDTO.Type )
+                .AsQueryable();
 
             if(!string.IsNullOrEmpty(search) )
             {

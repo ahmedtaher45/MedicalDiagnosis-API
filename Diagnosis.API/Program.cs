@@ -8,7 +8,9 @@ using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
 using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
+using Diagnosis.Application.UseCases.Faq;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -76,8 +78,12 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
-            builder.Services.AddScoped<SupportTicketUseCase>();
-            builder.Services.AddScoped<FaqUseCase>();
+            builder.Services.AddScoped<AddSupportTicketUseCase>();
+            builder.Services.AddScoped<GetSupportTicketsUseCase>();
+            builder.Services.AddScoped<GetFaqsUseCase>();
+            builder.Services.AddScoped<IFaq , FaqRepository>();
+            builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
+
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {

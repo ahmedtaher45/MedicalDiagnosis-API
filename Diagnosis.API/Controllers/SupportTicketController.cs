@@ -1,5 +1,5 @@
-﻿using Diagnosis.Application.DTOs;
-using Diagnosis.Application.UseCases;
+﻿using Diagnosis.Application.DTOs.SupportTicket;
+using Diagnosis.Application.UseCases.SupportTicket;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +10,21 @@ namespace Diagnosis.API.Controllers
     public class SupportTicketController : ControllerBase
     {
         [HttpPost]
-        public async Task CreateSupportTicketAsync([FromBody]SupportTicketDTO supportTicketDTO , [FromServices]SupportTicketUseCase supportTicketUseCase)
+        public async Task<IActionResult> CreateSupportTicketAsync([FromBody]SupportTicketDTO supportTicketDTO , [FromServices]AddSupportTicketUseCase supportTicketUseCase)
         {
-           var result =   supportTicketUseCase.CreateSupportTicketAsync(supportTicketDTO);
-           await result;
-            
+            if (supportTicketDTO == null)
+                return BadRequest("SupportTicketDTO cannot be null.");
+
+            await supportTicketUseCase.CreateSupportTicketAsync(supportTicketDTO);
+
+            return Ok(new { Message = "Support ticket created successfully." });
+
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<GetSupportTicketDTO>>> GetSupportTicketsAsync([FromServices]GetSupportTicketsUseCase getSupportTicketsUseCase)
+        {
+            var tickets = await getSupportTicketsUseCase.GetSupportTicketsAsync();
+            return Ok(tickets);
         }
     }
 }

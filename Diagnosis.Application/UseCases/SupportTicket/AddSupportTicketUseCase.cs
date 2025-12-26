@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
+﻿ using Diagnosis.Application.DTOs.SupportTicket;
 using Diagnosis.Application.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diagnosis.Application.UseCases
+namespace Diagnosis.Application.UseCases.SupportTicket
 {
-    public class SupportTicketUseCase
+    public class AddSupportTicketUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public SupportTicketUseCase(IUnitOfWork unitOfWork)
+        public AddSupportTicketUseCase(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }        
