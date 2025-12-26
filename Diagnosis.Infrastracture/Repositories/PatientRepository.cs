@@ -1,4 +1,5 @@
-﻿using Diagnosis.Application.Interfaces;
+﻿using Diagnosis.Application.DTOs.Profile;
+using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -74,6 +75,25 @@ namespace Diagnosis.Infrastracture.Repositories
             _context.Set<Patient>().Remove(entity);
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<PatientProfileDto?> GetPatientProfileAsync(int patientId)
+        {
+            var patient = await _context.Set<Patient>()
+                .FirstOrDefaultAsync(p => p.Id == patientId);
+
+            if (patient == null) return null;
+
+            return new PatientProfileDto
+            {
+                Id = patient.Id,
+                FName = patient.FName,
+                LName = patient.LName,
+                Email = patient.User.Email,
+                Gender = patient.Gender,
+
+
+
+            };
         }
     }
 }

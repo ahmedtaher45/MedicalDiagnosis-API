@@ -11,102 +11,138 @@ namespace Diagnosis.API.Controllers
     [ApiController]
     public class PatientsController: ControllerBase
     {
-        private readonly IRepository<Patient> _patientRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<PatientsController> _logger;
 
-        public PatientsController(IRepository<Patient> patientRepository)
+        public PatientsController(IUnitOfWork unitOfWork, ILogger<PatientsController> logger)
         {
-            _patientRepository = patientRepository;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
-        // ==========================
-        // GET: api/patients  (جدول المرضى)
-        // ==========================
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PatientProfileDto>>> GetAll()
+        /// <summary>
+        /// احصل على بروفايل مريض
+        /// GET: api/patient/{id}
+        /// </summary>
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PatientProfileDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientProfile(int id)
         {
-            var patients = await _patientRepository.Query()
-                .Include(p => p.User)          // عشان Email من ApplicationUser
-                .ToListAsync();
-
-            var result = patients.Select(p => new PatientProfileDto
+            try
             {
-                Id = p.Id,
-                FName = p.FName,
-                LName = p.LName,
-                Email = p.User.Email,
-                Gender = p.Gender,
-                //IsNewPatient = p.IsNewPatient,
-               // IsUrgent = p.IsUrgent
-            }).ToList();
+                var patient = await _unitOfWork.Patient.GetPatientProfileAsync(id);
 
-            return Ok(result);
-        }
+                if (patient == null)
+                {
+                    _logger.LogWarning($"Patient with ID {id} not found");
+                    return NotFound(new { message = "المريض غير موجود" });
+                }
 
-        // ======================================
-        // GET: api/patients/{id}/profile (البروفايل)
-        // ======================================
-        [HttpGet("{id:int}/profile")]
-        public async Task<ActionResult<PatientProfileDto>> GetProfile(int id)
-        {
-            var patient = await _patientRepository.Query()
-                .Include(p => p.User)
-                .Include(p => p.Consultations)   // بس للـ Count أو لو عايزة تستخدمها
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (patient is null)
-                return NotFound();
-
-            var dto = new PatientProfileDto
+                return Ok(patient);
+            }
+            catch (Exception ex)
             {
-                Id = patient.Id,
-                FName = patient.FName,
-                LName = patient.LName,
-                Email = patient.User.Email,
-                Gender = patient.Gender,
-                // خلي التاريخ كامل من كنترولر الـ Consultation اللي عندك
-                ConsultationHistory = null
-            };
+                _logger.LogError(ex, $"Error retrieving patient profile for ID {id}");
+                return StatusCode(500, new { message = "حدث خطأ في النظام" });
+            }
+            //private readonly IRepository<Patient> _patientRepository;
 
-            return Ok(dto);
-        }
+            //public PatientsController(IRepository<Patient> patientRepository)
+            //{
+            //    _patientRepository = patientRepository;
+            //}
 
-        // اختيارية: GET api/patients/{id}
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Patient>> Get(int id)
-        {
-            var patient = await _patientRepository.GetByIdAsync(new object[] { id });
-            if (patient is null) return NotFound();
+            //// ==========================
+            //// GET: api/patients  (جدول المرضى)
+            //// ==========================
+            //[HttpGet]
+            //public async Task<ActionResult<IEnumerable<PatientProfileDto>>> GetAll()
+            //{
+            //    var patients = await _patientRepository.Query()
+            //        .Include(p => p.User)          // عشان Email من ApplicationUser
+            //        .ToListAsync();
 
-            return Ok(patient);
-        }
+            //    var result = patients.Select(p => new PatientProfileDto
+            //    {
+            //        Id = p.Id,
+            //        FName = p.FName,
+            //        LName = p.LName,
+            //        Email = p.User.Email,
+            //        Gender = p.Gender,
+            //        //IsNewPatient = p.IsNewPatient,
+            //       // IsUrgent = p.IsUrgent
+            //    }).ToList();
 
-        // اختيارية: POST api/patients
-        [HttpPost]
-        public async Task<ActionResult> Create(Patient patient)
-        {
-            await _patientRepository.AddAsync(patient);
-            return CreatedAtAction(nameof(Get), new { id = patient.Id }, patient);
-        }
+            //    return Ok(result);
+            //}
 
-        // اختيارية: PUT api/patients/{id}
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, Patient patient)
-        {
-            if (id != patient.Id)
-                return BadRequest();
+            //// ======================================
+            //// GET: api/patients/{id}/profile (البروفايل)
+            //// ======================================
+            //[HttpGet("{id:int}/profile")]
+            //public async Task<ActionResult<PatientProfileDto>> GetProfile(int id)
+            //{
+            //    var patient = await _patientRepository.Query()
+            //        .Include(p => p.User)
+            //        .Include(p => p.Consultations)   // بس للـ Count أو لو عايزة تستخدمها
+            //        .FirstOrDefaultAsync(p => p.Id == id);
 
-            _patientRepository.Update(patient);
-            return NoContent();
-        }
+            //    if (patient is null)
+            //        return NotFound();
 
-        // اختيارية: DELETE api/patients/{id}
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var deleted = await _patientRepository.DeleteAsync(id);
-            if (!deleted) return NotFound();
+            //    var dto = new PatientProfileDto
+            //    {
+            //        Id = patient.Id,
+            //        FName = patient.FName,
+            //        LName = patient.LName,
+            //        Email = patient.User.Email,
+            //        Gender = patient.Gender,
+            //        // خلي التاريخ كامل من كنترولر الـ Consultation اللي عندك
+            //        ConsultationHistory = null
+            //    };
 
-            return NoContent();
-        }
-    }
+            //    return Ok(dto);
+            //}
+
+            //// اختيارية: GET api/patients/{id}
+            //[HttpGet("{id:int}")]
+            //public async Task<ActionResult<Patient>> Get(int id)
+            //{
+            //    var patient = await _patientRepository.GetByIdAsync(new object[] { id });
+            //    if (patient is null) return NotFound();
+
+            //    return Ok(patient);
+            //}
+
+            //// اختيارية: POST api/patients
+            //[HttpPost]
+            //public async Task<ActionResult> Create(Patient patient)
+            //{
+            //    await _patientRepository.AddAsync(patient);
+            //    return CreatedAtAction(nameof(Get), new { id = patient.Id }, patient);
+            //}
+
+            //// اختيارية: PUT api/patients/{id}
+            //[HttpPut("{id:int}")]
+            //public async Task<IActionResult> Update(int id, Patient patient)
+            //{
+            //    if (id != patient.Id)
+            //        return BadRequest();
+
+            //    _patientRepository.Update(patient);
+            //    return NoContent();
+            //}
+
+            //// اختيارية: DELETE api/patients/{id}
+            //[HttpDelete("{id:int}")]
+            //public async Task<IActionResult> Delete(int id)
+            //{
+            //    var deleted = await _patientRepository.DeleteAsync(id);
+            //    if (!deleted) return NotFound();
+
+            //    return NoContent();
+            //}
+    }   }
 }

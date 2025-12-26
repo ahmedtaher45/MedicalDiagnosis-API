@@ -14,6 +14,9 @@ namespace Diagnosis.Application.Interfaces
         ITreatmentProvider TreatmentProvider { get; }
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
+        // ✨ New Repositories
+        IPatientManagement Patient { get; }
+        IDoctorManagement Doctor { get; }
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
     }

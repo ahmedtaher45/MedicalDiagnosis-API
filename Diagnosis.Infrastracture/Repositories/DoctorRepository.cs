@@ -1,5 +1,7 @@
-﻿using Diagnosis.Application.Interfaces;
+﻿using Diagnosis.Application.DTOs.Profile;
+using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
+using Diagnosis.Infrastracture; // <-- Ensure this matches the actual namespace where AppDbContext is defined
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,15 +9,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Diagnosis.Infrastracture; // <-- Ensure this matches the actual namespace where AppDbContext is defined
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class DoctorRepository:IRepository<Doctor>, IDoctorManagement
+    public class DoctorRepository : IRepository<Doctor>, IDoctorManagement
     {
         private readonly ApplicationDbContext _context;
 
-        public DoctorRepository(ApplicationDbContext context): base()
+        public DoctorRepository(ApplicationDbContext context) : base()
         {
             _context = context;
         }
@@ -70,6 +71,29 @@ namespace Diagnosis.Infrastracture.Repositories
             _context.Set<Doctor>().Remove(entity);
             await _context.SaveChangesAsync();
             return true;
+        }
+        // ========== IDoctorManagement Implementation ==========
+        public async Task<DoctorProfileDto?> GetDoctorProfileAsync(int doctorId)
+        {
+            var doctor = await _context.Set<Doctor>()
+                .FirstOrDefaultAsync(d => d.Id == doctorId);
+
+            if (doctor == null) return null;
+
+            return new DoctorProfileDto
+            {
+                Id = doctor.Id,
+                FullName = doctor.FName + " " + doctor.LName,
+                Specialization = doctor.Specialization,
+                IsActive = doctor.User.LockoutEnd == null,
+                Email = doctor.User.Email,
+                PhoneNumber = doctor.User.PhoneNumber,
+                Gender = null,
+                DateOfBirth= DateTime.MinValue,
+
+
+
+            };
         }
     }
 }

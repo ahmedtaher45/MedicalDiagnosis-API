@@ -61,6 +61,13 @@ namespace Diagnosis.Infrastracture.Repositories
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
         public ITreatmentProvider TreatmentProvider { get; private set; }
+        /// <summary>
+        /// //
+        /// </summary>
+        public IPatientManagement Patient { get; private set; } 
+
+        public IDoctorManagement Doctor { get; private set; }
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
