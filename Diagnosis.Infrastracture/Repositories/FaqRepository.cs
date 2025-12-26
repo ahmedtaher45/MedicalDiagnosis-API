@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Application.DTOs;
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class FaqRepository : IFaq
+    public class FaqRepository : Repository<Faq> ,IFaq
     {
         private readonly ApplicationDbContext _context;
-        public FaqRepository(ApplicationDbContext context) 
+        public FaqRepository(ApplicationDbContext context) :base(context)
         {
             _context = context;
         }

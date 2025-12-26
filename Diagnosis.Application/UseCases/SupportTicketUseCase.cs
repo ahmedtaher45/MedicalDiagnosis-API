@@ -10,15 +10,16 @@ namespace Diagnosis.Application.UseCases
 {
     public class SupportTicketUseCase
     {
-        private readonly ISupportTicket supportTicket;
-        public SupportTicketUseCase(ISupportTicket supportTicket)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public SupportTicketUseCase(IUnitOfWork unitOfWork)
         {
-            this.supportTicket = supportTicket;
-        }
+            _unitOfWork = unitOfWork;
+        }        
 
         public async Task CreateSupportTicketAsync(SupportTicketDTO supportTicketDTO)
         {
-            await supportTicket.CreateSupportTicketAsync(supportTicketDTO);
+            await _unitOfWork.SupportTicket.CreateSupportTicketAsync(supportTicketDTO);
         }
     }
 }

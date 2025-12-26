@@ -10,15 +10,16 @@ namespace Diagnosis.Application.UseCases
 {
     public class FaqUseCase
     {
-        private readonly IFaq faq;
-        public FaqUseCase(IFaq faq)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public FaqUseCase(IUnitOfWork unitOfWork)
         {
-            this.faq = faq;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<FaqResponseDTO>> GetAllFaqAsync(string? search = null)
         {
-            return await faq.GetAllFaqAsync(search);
+            return await _unitOfWork.Faq.GetAllFaqAsync(search);
         }
     }
 }

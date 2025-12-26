@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class SupportTicketRepository : ISupportTicket
+    public class SupportTicketRepository :Repository<SupportTicket>, ISupportTicket
     {
         private readonly ApplicationDbContext _context;
-        public SupportTicketRepository(ApplicationDbContext context)
+        public SupportTicketRepository(ApplicationDbContext context): base(context) 
         {
             _context = context;
         }

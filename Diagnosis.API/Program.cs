@@ -54,7 +54,6 @@ namespace Diagnosis.API
             builder.Services.AddDataProtection();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
-
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<LoginUseCase>();
@@ -77,7 +76,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
-
+            builder.Services.AddScoped<SupportTicketUseCase>();
+            builder.Services.AddScoped<FaqUseCase>();
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -94,11 +94,10 @@ namespace Diagnosis.API
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
 
-            builder.Services.AddScoped<IAuth, AuthRepository>();
-            builder.Services.AddScoped<SupportTicketUseCase>();
-            builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
-            builder.Services.AddScoped<FaqUseCase>();
-            builder.Services.AddScoped<IFaq, FaqRepository>();
+            builder.Services.AddHttpClient<IDoctorDiagnosisProvider, DoctorDiagnosisProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
