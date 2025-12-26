@@ -24,7 +24,15 @@ namespace Diagnosis.Infrastracture.Repositories
 
             _context = context;
         }
-        
+        //get user profile by id
+        public async Task<ApplicationUser?> GetUserProfile(string userId)
+        {
+            return await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.Doctor)
+                .Include(u => u.Patient)
+                .FirstOrDefaultAsync();
+        }
 
 
     }

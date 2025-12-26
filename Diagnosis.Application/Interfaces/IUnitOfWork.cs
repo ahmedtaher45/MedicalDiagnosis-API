@@ -15,6 +15,11 @@ namespace Diagnosis.Application.Interfaces
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
         IProfileRepository Profile { get; }
+        IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; }
+        ISettingsRepository Settings { get; }
+        Task<int> CompleteAsync();
+        Task SaveChangesAsync();
+
        // IAppointmentRepository Appointment { get; }
      
        

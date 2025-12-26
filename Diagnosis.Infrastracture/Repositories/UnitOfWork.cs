@@ -7,6 +7,7 @@ using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastructure.Providers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,8 @@ namespace Diagnosis.Infrastracture.Repositories
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             Profile = new ProfileRepository(_context);
+            PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
+            Settings = new SettingsRepository(_context);
 
         }
 
@@ -64,6 +67,10 @@ namespace Diagnosis.Infrastracture.Repositories
         public IInquiryRepository Inquiry { get; private set; }
         public ITreatmentProvider TreatmentProvider { get; private set; }
         public IProfileRepository Profile { get; private set; }
+
+        public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
+        public ISettingsRepository Settings { get; private set; }
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

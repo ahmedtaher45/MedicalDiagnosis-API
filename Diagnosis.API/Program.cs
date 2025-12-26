@@ -24,6 +24,8 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
 using System.Threading.Tasks;
+using Diagnosis.Application.UseCases.PhysiotherapyExercise;
+using Diagnosis.Application.UseCases.PatientDashboard;
 
 
 
@@ -76,6 +78,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetModifyConsultationDataUseCase>();
             builder.Services.AddScoped<ModifyConsultationsUseCase>();
             builder.Services.AddScoped<RejectConsultationsUseCase>();
+            builder.Services.AddScoped<CancelConsultationUseCase>();
             builder.Services.AddScoped<AcceptConsultationsUseCase>();
             builder.Services.AddScoped<DrugCheckerUseCase>();
             builder.Services.AddScoped<DrugSuggestionUseCase>();
@@ -85,6 +88,13 @@ namespace Diagnosis.API
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
             builder.Services.AddScoped<GetProfileUseCase>();
             builder.Services.AddScoped<UpdateProfileUseCase>();
+            builder.Services.AddScoped<GetUserSettingsUseCase>();
+            builder.Services.AddScoped<UpdateUserSettingsUseCase>();
+            builder.Services.AddScoped<GetPhysiotherapyExerciseUseCase>();
+            builder.Services.AddScoped<GetRecentInquiriesUseCase>();
+            builder.Services.AddScoped<GetPendingInquiriesCountUseCase>();
+            builder.Services.AddScoped<GetConsultationCountThisWeekUseCase>();
+            builder.Services.AddScoped<GetTopSymptomsThisWeekUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>

@@ -18,21 +18,34 @@ namespace Diagnosis.Application.UseCases.Settings
             _unitOfWork = unitOfWork;
          
         }
-       public async Task<ProfileDto?> GetPatientProfile(string id)
+       public async Task<ProfileDto?> GetPatientProfile(string id, string role)
     {
-        var user = await _unitOfWork.Profile.GetByIdAsync([id]);
+        var user = await _unitOfWork.Profile.GetUserProfile(id);
 
         if (user == null)
         {
             return null;
         }
-       
-        return new ProfileDto
+        if( role == "Doctor")
         {
-            FullName = $"{user.UserName} ",
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
-        };
+            return new ProfileDto
+            {
+                FullName = $"{user.Doctor.FName} {user.Doctor.LName} ",
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+            };
+        }
+        else if (role == "Patient")
+        {
+            return new ProfileDto
+            {
+                FullName = $"{user.Patient.FName} {user.Patient.LName} ",
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+            };
+        }
+
+       return null;
     }
     }
 }

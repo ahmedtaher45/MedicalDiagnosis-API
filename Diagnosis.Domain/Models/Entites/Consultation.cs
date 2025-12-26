@@ -12,7 +12,8 @@ namespace Diagnosis.Domain.Models.Entites
     {
         Pending = 0,
         Accepted = 1,
-        Rejected = 2
+        Rejected = 2,
+        Canceled = 3
     }
 
     public enum ConsultationType

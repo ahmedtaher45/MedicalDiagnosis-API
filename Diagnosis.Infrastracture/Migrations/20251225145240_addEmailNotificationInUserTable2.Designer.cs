@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251225145240_addEmailNotificationInUserTable2")]
+    partial class addEmailNotificationInUserTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -374,104 +377,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Entites.PhysiotherapyExercise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BodyPart")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Difficulty")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YoutubeUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PhysiotherapyExercises");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BodyPart = "Back",
-                            Difficulty = "Easy",
-                            DurationMinutes = 4,
-                            ThumbnailUrl = "https://img.youtube.com/vi/4BOTvaRaDjI/hqdefault.jpg",
-                            Title = "Back Stretch Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=4BOTvaRaDjI"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BodyPart = "Back",
-                            Difficulty = "Easy",
-                            DurationMinutes = 6,
-                            ThumbnailUrl = "https://img.youtube.com/vi/DWmGArQBtFI/hqdefault.jpg",
-                            Title = "Lower Back Mobility Routine",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=DWmGArQBtFI"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BodyPart = "Shoulder",
-                            Difficulty = "Medium",
-                            DurationMinutes = 5,
-                            ThumbnailUrl = "https://img.youtube.com/vi/1g6L2HkZz9Y/hqdefault.jpg",
-                            Title = "Shoulder Strengthening Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=1g6L2HkZz9Y"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BodyPart = "Shoulder",
-                            Difficulty = "Medium",
-                            DurationMinutes = 7,
-                            ThumbnailUrl = "https://img.youtube.com/vi/PPzD2w6pXyE/hqdefault.jpg",
-                            Title = "Rotator Cuff Rehab Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=PPzD2w6pXyE"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BodyPart = "Legs",
-                            Difficulty = "Hard",
-                            DurationMinutes = 6,
-                            ThumbnailUrl = "https://img.youtube.com/vi/Z8nQXn1pXyE/hqdefault.jpg",
-                            Title = "Leg Balance Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=Z8nQXn1pXyE"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BodyPart = "Legs",
-                            Difficulty = "Medium",
-                            DurationMinutes = 5,
-                            ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg",
-                            Title = "Knee Stability Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU"
-                        });
-                });
-
             modelBuilder.Entity("Diagnosis.Domain.Entites.Prescription", b =>
                 {
                     b.Property<int>("Id")
@@ -648,7 +553,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d100a610-d9f3-4f9f-bb7c-b12e923061e3",
+                            ConcurrencyStamp = "e4394b9e-c40e-4951-ad77-2da4e1123878",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -657,7 +562,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
                             ReceiveEmailNotifications = true,
-                            SecurityStamp = "565e1c36-b590-4a82-9158-d8e908d77396",
+                            SecurityStamp = "59620394-8756-439d-bf6e-2576914ab610",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -665,7 +570,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0101303c-fb2f-404c-a357-11986bb28222",
+                            ConcurrencyStamp = "d5ba1350-8b39-4238-be19-2579a8fff10e",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -682,7 +587,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f5f0cebd-42aa-4820-87fc-94214a73176f",
+                            ConcurrencyStamp = "1cff7a3a-d6a5-44a8-8734-6995b608ded5",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,

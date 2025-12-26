@@ -16,7 +16,7 @@ using Diagnosis.Application.DTOs.Consultation;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class SettingsRepository : Repository<ApplicationUser>
+    public class SettingsRepository : Repository<ApplicationUser>, ISettingsRepository
     {
         private readonly ApplicationDbContext _context;
         public SettingsRepository(ApplicationDbContext context) : base(context)
@@ -24,17 +24,17 @@ namespace Diagnosis.Infrastracture.Repositories
 
             _context = context;
         }
-       // public async Task 
+       
        public async Task<ApplicationUser?> GetUserSettings(string userId)
         {
             return await _context.Users
                 .Where(u => u.Id == userId)
-                .Select(u => new ApplicationUser
-                {
-                    Id = u.Id,
-                    Email = u.Email,
-                    // Map other properties as needed
-                })
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateUserSettings(ApplicationUser user)
+        {
+            _context.Users.Update(user);
+            return await _context.SaveChangesAsync() > 0;
         }
     }}
