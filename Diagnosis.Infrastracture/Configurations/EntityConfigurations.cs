@@ -26,7 +26,9 @@
                    .WithOne(l => l.Patient)
                    .HasForeignKey(l => l.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
-        }
+
+          
+    }
     }
 
     public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
@@ -57,7 +59,11 @@
                    .WithOne(l => l.Doctor)
                    .HasForeignKey(l => l.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);
-        }
+
+            // One-to-Many: Doctor -> Prescriptions
+           
+
+    }
     }
 
     public class PaymentConfiguration : IEntityTypeConfiguration<Payment>

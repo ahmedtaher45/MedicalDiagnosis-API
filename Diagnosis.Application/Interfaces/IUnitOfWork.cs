@@ -9,6 +9,8 @@ namespace Diagnosis.Application.Interfaces
     public interface IUnitOfWork
     {
         IAuth Auth { get; }
+        IFaq Faq { get; }
+        ISupportTicket SupportTicket { get; }
         IDiagnosisModuleRepository DiagnosisModule { get; }
         IInquiryRepository Inquiry { get; }
         ITreatmentProvider TreatmentProvider { get; }

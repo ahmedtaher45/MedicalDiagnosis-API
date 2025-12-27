@@ -8,7 +8,9 @@ using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
 using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
+using Diagnosis.Application.UseCases.Faq;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -54,7 +56,6 @@ namespace Diagnosis.API
             builder.Services.AddDataProtection();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
-
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<LoginUseCase>();
@@ -78,6 +79,11 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
             builder.Services.AddScoped<AddDoctorUseCase>();
+            builder.Services.AddScoped<AddSupportTicketUseCase>();
+            builder.Services.AddScoped<GetSupportTicketsUseCase>();
+            builder.Services.AddScoped<GetFaqsUseCase>();
+            builder.Services.AddScoped<IFaq , FaqRepository>();
+            builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -94,6 +100,10 @@ namespace Diagnosis.API
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
 
+            builder.Services.AddHttpClient<IDoctorDiagnosisProvider, DoctorDiagnosisProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
 
 
             /////
