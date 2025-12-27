@@ -2,16 +2,10 @@
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Models.Entites;
-using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastructure.Providers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
@@ -52,6 +46,8 @@ namespace Diagnosis.Infrastracture.Repositories
             Consultation = new ConsultationRepository(_context);
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            AdminDashboard = new AdminDashboardRepository(_context);
+            DoctorDashboard = new DoctorDashboardRepository(_context);
 
         }
 
@@ -60,11 +56,11 @@ namespace Diagnosis.Infrastracture.Repositories
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
-
-  
-        public IAppointmentRepository Appointment { get; private set; }
-
         public ITreatmentProvider TreatmentProvider { get; private set; }
+        public IAdminDashboardRepository AdminDashboard { get; private set; }
+
+        public IDoctorDashboardRepository DoctorDashboard { get; private set; }
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
