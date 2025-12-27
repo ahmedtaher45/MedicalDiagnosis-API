@@ -101,6 +101,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(p => p.NotificationType)
             .HasConversion<string>();
 
+        modelBuilder.Entity<Request>()
+        .Property(p => p.Status)
+        .HasConversion<string>();
+
         modelBuilder.Entity<DoctorDiagnosis>(d => 
         {
             d.HasMany(c => c.Symptoms)

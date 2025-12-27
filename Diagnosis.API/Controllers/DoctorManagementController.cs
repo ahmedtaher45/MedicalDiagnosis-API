@@ -1,5 +1,7 @@
-﻿using Diagnosis.Application.DTOs.Profile;
+﻿using Diagnosis.Application.DTOs.DoctorManagement;
+using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Infrastracture.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +21,24 @@ namespace Diagnosis.API.Controllers
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
+
+
+        [HttpPost("add-doctor")]
+        public async Task<IActionResult> AddDoctor(
+            [FromServices] AddDoctorUseCase addDoctorUseCase,
+            [FromBody] AddDoctorDTO addDoctorDTO
+            )
+        {
+            var result = await addDoctorUseCase.ExecuteAsync(addDoctorDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(DoctorProfileDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

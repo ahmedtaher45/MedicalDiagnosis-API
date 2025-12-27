@@ -1,4 +1,6 @@
 ﻿using Diagnosis.Application.DTOs.Auth;
+using Diagnosis.Application.DTOs.DoctorManagement;
+using Diagnosis.Application.DTOs.SystemSettings;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Entites;
@@ -82,7 +84,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 DateOfBirth = registerDTO.BirthDate
                 };
 
-                _context.Patients.Add(patient);
+                await _context.Patients.AddAsync(patient);
                 await _context.SaveChangesAsync();
             }
                 catch (Exception ex)
@@ -110,9 +112,108 @@ namespace Diagnosis.Infrastracture.Repositories
             }
             
 
-        public async Task<> AddDoctorAsync()
+        public async Task<AddDoctorRespose> AddDoctorAsync(AddDoctorDTO addDoctorDTO)
         {
+            if (addDoctorDTO == null)
+            {
+                return new AddDoctorRespose
+                {
+                    Success = false,
+                    Message = "Doctor's Details cannot be null"
+                };
+            }
+            var user = new ApplicationUser
+            {
+                Email = addDoctorDTO.Email,
+                UserName = addDoctorDTO.UserName,
+                PhoneNumber = addDoctorDTO.PhoneNumber
+            };
+            try
+            {
+                var result = await userManager.CreateAsync(user, addDoctorDTO.Password!);
+                if (!result.Succeeded)
+                {
+                    return new AddDoctorRespose
+                    {
+                        Success = false,
+                        Message = "Doctor user creation failed"
+                    };
+                }
+                await userManager.AddToRoleAsync(user ,"Doctor");
 
+                var doctor = new Doctor
+                {
+                    UserId = user.Id,
+                    ExperienceYears = addDoctorDTO.ExperienceYears,
+                    NationalId = addDoctorDTO.NationalId,
+                    BirhDate = addDoctorDTO.BirhDate,
+                    Address = addDoctorDTO.Address,
+                    Gender = addDoctorDTO.Gender
+                };
+
+
+                await _context.Doctors.AddAsync(doctor);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                return new AddDoctorRespose
+                {
+                    Success = false,
+                    Message = "Error while adding Doctor Data: " + ex.Message
+                };
+            }
+            await SendConfirmationEmail(user, addDoctorDTO.ClientUri!);
+            return new AddDoctorRespose
+            {
+                Success = true,
+                Message = "Doctor was added successfully, please botify him to check for Confirmation Email"
+            };
+        }
+
+        public async Task<AddAdminResponse> AddAdminAsync(AddAdminDTO addAdminDTO)
+        {
+            if (addAdminDTO == null)
+            {
+                return new AddAdminResponse
+                {
+                    Success = false,
+                    Message = "Admin's Details cannot be null"
+                };
+            }
+            var user = new ApplicationUser
+            { 
+                UserName = addAdminDTO.UserName,
+                Email = addAdminDTO.Email
+            };
+            try
+            {
+                var result = await userManager.CreateAsync(user, addAdminDTO.Password!);
+                if (!result.Succeeded)
+                {
+                    return new AddAdminResponse
+                    {
+                        Success = false,
+                        Message = "Admin user creation failed"
+                    };
+                }
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
+            catch (Exception ex)
+            {
+                return new AddAdminResponse
+                {
+                    Success = false,
+                    Message = "Error while adding Admin Data: " + ex.Message
+                };
+            }
+
+            return new AddAdminResponse
+            {
+                Success = true,
+                Message = "Admin user was added successfully"
+            };
         }
         public async Task SendConfirmationEmail(ApplicationUser user, string clientUri)
         {

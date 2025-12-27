@@ -77,7 +77,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
-
+            builder.Services.AddScoped<AddDoctorUseCase>();
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -100,8 +100,7 @@ namespace Diagnosis.API
             ///// ====== Profiles (Today Work) ======
 
             // Doctor & Patient repositories
-            builder.Services.AddScoped<IRepository<Doctor>, DoctorRepository>();
-            builder.Services.AddScoped<IRepository<Patient>, PatientRepository>();
+
             builder.Services.AddScoped<IPatientManagement, PatientRepository>(); 
             builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
 
