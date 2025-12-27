@@ -26,7 +26,6 @@ namespace Diagnosis.Domain.Entites
         public ICollection<Consultation>? Consultations { get; set; }
 
 
-        //public DoctorDashboardDto? Dashboard { get; set; }
 
 
     }

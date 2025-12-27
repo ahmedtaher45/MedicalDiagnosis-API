@@ -95,6 +95,18 @@ namespace Diagnosis.API
             });
 
 
+
+            /////
+            ///// ====== Profiles (Today Work) ======
+
+            // Doctor & Patient repositories
+            builder.Services.AddScoped<IRepository<Doctor>, DoctorRepository>();
+            builder.Services.AddScoped<IRepository<Patient>, PatientRepository>();
+            builder.Services.AddScoped<IPatientManagement, PatientRepository>(); 
+            builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
+
+
+
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
