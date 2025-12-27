@@ -10,7 +10,7 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IDiagnosisModuleRepository : IRepository<Consultation>
     {
-        Task<ProviderResponse> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO);
+        Task<ProviderResponse> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId);
     }
 
 }

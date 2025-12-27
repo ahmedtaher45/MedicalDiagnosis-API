@@ -11,7 +11,7 @@ namespace Diagnosis.Infrastracture.Identity
     {
         public static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            string[] roles = { "Patient", "Doctor" };
+            string[] roles = { "Patient", "Doctor", "Admin" };
 
             foreach (var role in roles)
             {

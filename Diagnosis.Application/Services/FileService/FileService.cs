@@ -15,10 +15,10 @@ namespace Diagnosis.Application.Services.FileService
         public static readonly string[] AllowedExtensions =
         { ".jpg", ".jpeg", ".png", ".pdf" };
 
-        public static readonly long MaxSizeInBytes = 50 * 1024 * 1024; 
+        public static readonly long MaxSizeInBytes = 50 * 1024 * 1024;
         public FileService(IWebHostEnvironment environment)
         {
-            _templateFolderPath = Path.Combine(environment.WebRootPath, "uploads", "diagnosis");
+            _templateFolderPath = Path.Combine(environment.ContentRootPath, "uploads", "diagnosis");
 
             if (!Directory.Exists(_templateFolderPath))
             {

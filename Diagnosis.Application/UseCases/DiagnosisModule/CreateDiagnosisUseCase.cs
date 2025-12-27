@@ -17,9 +17,9 @@ namespace Diagnosis.Application.UseCases.DiagnosisModule
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ProviderResponse> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO)
+        public async Task<ProviderResponse> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
         {
-            return await _unitOfWork.DiagnosisModule.CreateDiagnosisAsync(createDiagnosisDTO);
+            return await _unitOfWork.DiagnosisModule.CreateDiagnosisAsync(createDiagnosisDTO, userId);
         }
     }
 }

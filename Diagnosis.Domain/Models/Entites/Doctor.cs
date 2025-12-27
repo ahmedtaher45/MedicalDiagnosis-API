@@ -11,7 +11,7 @@ namespace Diagnosis.Domain.Entites
     public class Doctor: BaseEntity
     {
         public string? UserId { get; set; }
-        public ApplicationUser  User { get; set; }
+        public ApplicationUser? User { get; set; }
         public string? FName { get; set; }
         public string? LName { get; set; }
         public string? Specialization { get; set; }
@@ -20,14 +20,11 @@ namespace Diagnosis.Domain.Entites
         public decimal? Rating { get; set; }
         public string? LicenseNumber { get; set; }
         public string? ProfileImageUrl { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-        public ICollection<Prescription> Prescriptions { get; set; }
-        public ICollection<LabResult> LabResults { get; set; }
+        public ICollection<Payment>? Payments { get; set; }
+        public ICollection<Prescription>? Prescriptions { get; set; }
+        public ICollection<LabResult>? LabResults { get; set; }
         public ICollection<Consultation>? Consultations { get; set; }
-
-
-        //public DoctorDashboardDto? Dashboard { get; set; }
+        public ICollection<SupportTicket>? SupportTickets { get; set; }
 
 
     }

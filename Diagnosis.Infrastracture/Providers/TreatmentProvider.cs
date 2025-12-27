@@ -1,5 +1,5 @@
-﻿using Diagnosis.Application.DTOs;
-using Diagnosis.Application.DTOs.DiagnosisModule;
+﻿using Diagnosis.Application.DTOs.DiagnosisModule;
+using Diagnosis.Application.DTOs.Treatment;
 using Diagnosis.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,9 +27,9 @@ namespace Diagnosis.Infrastracture.Providers
             _context = context;
         }
 
-        public async Task<AITreatmentResponseDTO> CreateTreamentPlanAsync(int InquiryId)
+        public async Task<AITreatmentResponseDTO> CreateTreamentPlanAsync(int DiagnosisId)
         {
-            var consultation = await _context.Consultations.FirstOrDefaultAsync(c => c.Id == InquiryId);
+            var consultation = await _context.Consultations.FirstOrDefaultAsync(c => c.Id == DiagnosisId);
 
             if(consultation == null)
             {

@@ -10,12 +10,12 @@ namespace Diagnosis.API.Controllers
     public class TreatmentController : ControllerBase
     {
         [Authorize("Patient")]
-        [HttpPost("ai-plan{InquiryId}")]
+        [HttpGet("ai-plan/{DiagnosisId}")]
         public async Task<IActionResult> CreateAITreatment(
-            [FromRoute] int InquiryId,
+            [FromRoute] int DiagnosisId,
             [FromServices] CreateAITreatmentUseCase createAITreatmentUseCase)
         {
-            var result = await createAITreatmentUseCase.ExecuteAsync(InquiryId);
+            var result = await createAITreatmentUseCase.ExecuteAsync(DiagnosisId);
 
             if (!result.Success)
             {

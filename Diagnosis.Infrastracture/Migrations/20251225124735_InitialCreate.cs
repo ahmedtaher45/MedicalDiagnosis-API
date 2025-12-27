@@ -53,6 +53,25 @@ namespace Diagnosis.Infrastracture.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Diagnosises",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientSymptoms = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Diagnosises", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -164,17 +183,16 @@ namespace Diagnosis.Infrastracture.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExperienceYears = table.Column<int>(type: "int", nullable: true),
                     Rating = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    LicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -194,16 +212,16 @@ namespace Diagnosis.Infrastracture.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NotificationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NotificationType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
                     RelatedId = table.Column<int>(type: "int", nullable: true),
-                    RelatedType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RelatedType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReadAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -223,20 +241,18 @@ namespace Diagnosis.Infrastracture.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Allergies = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsNewPatient = table.Column<bool>(type: "bit", nullable: false),
-                    IsUrgent = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Allergies = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsNewPatient = table.Column<bool>(type: "bit", nullable: true),
+                    IsUrgent = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -251,6 +267,76 @@ namespace Diagnosis.Infrastracture.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClinicalFindings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DiagnosisId = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClinicalFindings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClinicalFindings_Diagnosises_DiagnosisId",
+                        column: x => x.DiagnosisId,
+                        principalTable: "Diagnosises",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SuggestedMedications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DiagnosisId = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SuggestedMedications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SuggestedMedications_Diagnosises_DiagnosisId",
+                        column: x => x.DiagnosisId,
+                        principalTable: "Diagnosises",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Symptoms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DiagnosisId = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Symptoms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Symptoms_Diagnosises_DiagnosisId",
+                        column: x => x.DiagnosisId,
+                        principalTable: "Diagnosises",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -260,10 +346,10 @@ namespace Diagnosis.Infrastracture.Migrations
                     AppointmentId = table.Column<int>(type: "int", nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -296,7 +382,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RejectNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -323,14 +409,13 @@ namespace Diagnosis.Infrastracture.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
                     DoctorId = table.Column<int>(type: "int", nullable: false),
-                    TestName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TestName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ResultValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResultStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LabNotes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FileUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ResultValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResultStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LabNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -357,13 +442,12 @@ namespace Diagnosis.Infrastracture.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppointmentId = table.Column<int>(type: "int", nullable: false),
                     PatientId = table.Column<int>(type: "int", nullable: false),
-                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiagnosisName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Severity = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DiagnosisName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Severity = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DoctorId = table.Column<int>(type: "int", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -389,8 +473,8 @@ namespace Diagnosis.Infrastracture.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PrescriptionId = table.Column<int>(type: "int", nullable: false),
-                    MedicineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MedicineName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()"),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -419,89 +503,153 @@ namespace Diagnosis.Infrastracture.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "user-0", 0, "7aa276fd-6752-4729-9a62-d9b5b1e0a9bb", "admin@diagnosis.com", true, false, null, "ADMIN@DIAGNOSIS.COM", "ADMIN@DIAGNOSIS.COM", "", null, false, "26de0416-14a3-4ba1-a191-49d55e6694d9", false, "admin@diagnosis.com" },
-                    { "user-1", 0, "0bacbcc8-7e66-4cc6-8c32-6a9537c8f337", "doctor@test.com", true, false, null, "DOCTOR@TEST.COM", "DOCTOR@TEST.COM", "", null, false, "stamp1", false, "doctor@test.com" },
-                    { "user-2", 0, "3790002a-c886-4a9e-803f-71bbe536398c", "patient@test.com", true, false, null, "PATIENT@TEST.COM", "PATIENT@TEST.COM", "", null, false, "stamp2", false, "patient@test.com" }
+                    { "user-0", 0, "908d365f-b719-4358-8301-b7fa5d7d7933", "admin@diagnosis.com", true, false, null, "ADMIN@DIAGNOSIS.COM", "ADMIN@DIAGNOSIS.COM", "", null, false, "205789b7-4e35-43fe-b1fa-bc3d4e2d2ac0", false, "admin@diagnosis.com" },
+                    { "user-1", 0, "33105e6c-ae0c-41cb-96b2-250ff9a03641", "doctor@test.com", true, false, null, "DOCTOR@TEST.COM", "DOCTOR@TEST.COM", "", null, false, "stamp1", false, "doctor@test.com" },
+                    { "user-2", 0, "dc327741-d0ea-4975-bdc1-34806340846f", "patient@test.com", true, false, null, "PATIENT@TEST.COM", "PATIENT@TEST.COM", "", null, false, "stamp2", false, "patient@test.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Diagnosises",
+                columns: new[] { "Id", "CreatedOn", "Description", "IsDeleted", "ModifiedOn", "Name", "PatientSymptoms", "Title" },
+                values: new object[,]
+                {
+                    { 1, null, "Viral infection affecting upper respiratory tract", false, null, "Upper Respiratory Infection", "Fever, cough, sore throat, runny nose", "Cold & Flu" },
+                    { 2, null, "Inflammation of stomach lining", false, null, "Gastritis", "Abdominal pain, nausea, vomiting", "Stomach Pain" },
+                    { 3, null, "Chronic elevation of blood pressure", false, null, "High Blood Pressure", "Headache, dizziness, blurred vision", "Hypertension" },
+                    { 4, null, "Routine diabetes follow-up and monitoring", false, null, "Type 2 Diabetes Mellitus", "Fatigue, frequent urination", "Diabetes Follow-up" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ClinicalFindings",
+                columns: new[] { "Id", "CreatedOn", "DiagnosisId", "IsDeleted", "ModifiedOn", "Name", "Notes", "Value" },
+                values: new object[,]
+                {
+                    { 1, null, 1, false, null, "Body Temperature", "Fever", "38.5°C" },
+                    { 2, null, 1, false, null, "Oxygen Saturation", "Normal", "98%" },
+                    { 3, null, 2, false, null, "Abdominal tenderness", "Epigastric area", "Present" },
+                    { 4, null, 3, false, null, "Blood Pressure", "Elevated", "150/95 mmHg" },
+                    { 5, null, 4, false, null, "HbA1c", "Above target", "7.1%" },
+                    { 6, null, 4, false, null, "Fasting Blood Glucose", "Elevated", "140 mg/dL" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Doctors",
-                columns: new[] { "Id", "Bio", "CreatedOn", "ExperienceYears", "FName", "IsDeleted", "LName", "LicenseNumber", "ModifiedOn", "ProfileImageUrl", "Rating", "Specialization", "UpdatedAt", "UserId" },
-                values: new object[] { -1, "Skin specialist", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 8, "Ahmed", false, "Mahmoud", "LIC-001", null, "", 4.7m, "Dermatology", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "user-1" });
+                columns: new[] { "Id", "Bio", "ExperienceYears", "FName", "IsDeleted", "LName", "LicenseNumber", "ModifiedOn", "ProfileImageUrl", "Rating", "Specialization", "UserId" },
+                values: new object[] { -1, "Skin specialist", 8, "Ahmed", false, "Mahmoud", "LIC-001", null, "", 4.7m, "Dermatology", "user-1" });
 
             migrationBuilder.InsertData(
                 table: "Notifications",
-                columns: new[] { "Id", "CreatedOn", "IsDeleted", "IsRead", "Message", "ModifiedOn", "NotificationType", "ReadAt", "RelatedId", "RelatedType", "Title", "UserId", "UserType" },
-                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, "Your appointment is confirmed.", null, "Appointment", null, -1, "Appointment", "Appointment Confirmed", "user-2", "Patient" });
+                columns: new[] { "Id", "IsDeleted", "IsRead", "Message", "ModifiedOn", "NotificationType", "ReadAt", "RelatedId", "RelatedType", "Title", "UserId", "UserType" },
+                values: new object[] { -1, false, false, "Your appointment is confirmed.", null, "Appointment", null, -1, "Appointment", "Appointment Confirmed", "user-2", "Patient" });
 
             migrationBuilder.InsertData(
                 table: "Patients",
-                columns: new[] { "Id", "Address", "Allergies", "BirthDate", "BloodType", "CreatedOn", "DateOfBirth", "FName", "Gender", "IsDeleted", "IsNewPatient", "IsUrgent", "LName", "ModifiedOn", "ProfileImageUrl", "UpdatedAt", "UserId" },
-                values: new object[] { -1, "Cairo", "None", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "A+", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1996, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sara", "Female", false, true, false, "Ali", null, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "user-2" });
+                columns: new[] { "Id", "Address", "Allergies", "BloodType", "DateOfBirth", "FName", "Gender", "IsDeleted", "IsNewPatient", "IsUrgent", "LName", "ModifiedOn", "ProfileImageUrl", "UserId" },
+                values: new object[] { -1, "Cairo", "None", "A+", new DateTime(1996, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sara", "Female", false, true, false, "Ali", null, "", "user-2" });
+
+            migrationBuilder.InsertData(
+                table: "SuggestedMedications",
+                columns: new[] { "Id", "CreatedOn", "DiagnosisId", "Dosage", "Frequency", "IsDeleted", "ModifiedOn", "Name" },
+                values: new object[,]
+                {
+                    { 1, null, 1, "500 mg", "Every 8 hours", false, null, "Paracetamol" },
+                    { 2, null, 1, "10 mg", "Once daily", false, null, "Antihistamine" },
+                    { 3, null, 2, "20 mg", "Once daily before meals", false, null, "Omeprazole" },
+                    { 4, null, 2, "10 ml", "After meals", false, null, "Antacid" },
+                    { 5, null, 3, "5 mg", "Once daily", false, null, "Amlodipine" },
+                    { 6, null, 3, "-", "Low salt diet & exercise", false, null, "Lifestyle modification" },
+                    { 7, null, 4, "500 mg", "Twice daily", false, null, "Metformin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Symptoms",
+                columns: new[] { "Id", "CreatedOn", "DiagnosisId", "IsDeleted", "ModifiedOn", "Name" },
+                values: new object[,]
+                {
+                    { 1, null, 1, false, null, "Fever" },
+                    { 2, null, 1, false, null, "Cough" },
+                    { 3, null, 1, false, null, "Sore throat" },
+                    { 4, null, 1, false, null, "Runny nose" },
+                    { 5, null, 1, false, null, "Body aches" },
+                    { 6, null, 2, false, null, "Abdominal pain" },
+                    { 7, null, 2, false, null, "Nausea" },
+                    { 8, null, 2, false, null, "Vomiting" },
+                    { 9, null, 2, false, null, "Bloating" },
+                    { 10, null, 3, false, null, "Headache" },
+                    { 11, null, 3, false, null, "Dizziness" },
+                    { 12, null, 3, false, null, "Blurred vision" },
+                    { 13, null, 4, false, null, "Fatigue" },
+                    { 14, null, 4, false, null, "Frequent urination" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Consultations",
-                columns: new[] { "Id", "ConfidenceLevel", "CreatedOn", "Date", "Description", "DiagnosisName", "DoctorId", "FileUrls", "IsDeleted", "ModifiedOn", "Notes", "PatientId", "RejectNotes", "RejectReason", "Status", "Symptoms", "Type" },
-                values: new object[] { 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "General inquiry about symptoms", null, -1, null, false, null, "Patient reports symptoms for 3 days.", -1, null, null, "Pending", "Headache, fever, and fatigue.", "Inquiry" });
+                columns: new[] { "Id", "ConfidenceLevel", "Date", "Description", "DiagnosisName", "DoctorId", "FileUrls", "IsDeleted", "ModifiedOn", "Notes", "PatientId", "RejectNotes", "RejectReason", "Status", "Symptoms", "Type" },
+                values: new object[] { 1, 0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "General inquiry about symptoms", null, -1, null, false, null, "Patient reports symptoms for 3 days.", -1, null, null, "Pending", "Headache, fever, and fatigue.", "Inquiry" });
 
             migrationBuilder.InsertData(
                 table: "LabResults",
-                columns: new[] { "Id", "CreatedAt", "CreatedOn", "DoctorId", "FileUrl", "IsDeleted", "LabNotes", "ModifiedOn", "PatientId", "ResultStatus", "ResultValue", "TestDate", "TestName" },
-                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, "", false, "Good condition", null, -1, "Completed", "Normal", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Blood Test" });
+                columns: new[] { "Id", "DoctorId", "FileUrl", "IsDeleted", "LabNotes", "ModifiedOn", "PatientId", "ResultStatus", "ResultValue", "TestDate", "TestName" },
+                values: new object[] { -1, -1, "", false, "Good condition", null, -1, "Completed", "Normal", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Blood Test" });
 
             migrationBuilder.InsertData(
                 table: "Payments",
-                columns: new[] { "Id", "Amount", "AppointmentId", "CreatedOn", "DoctorId", "IsDeleted", "ModifiedOn", "Notes", "PaymentDate", "PaymentMethod", "PaymentStatus" },
-                values: new object[] { -1, 300m, -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -1, false, null, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cash", "Paid" });
+                columns: new[] { "Id", "Amount", "AppointmentId", "DoctorId", "IsDeleted", "ModifiedOn", "Notes", "PaymentDate", "PaymentMethod", "PaymentStatus" },
+                values: new object[] { -1, 300m, -1, -1, false, null, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cash", "Paid" });
 
             migrationBuilder.InsertData(
                 table: "Prescriptions",
-                columns: new[] { "Id", "AppointmentId", "CreatedAt", "CreatedOn", "DiagnosisName", "DoctorId", "IsDeleted", "ModifiedOn", "Notes", "PatientId", "Severity", "Specialization" },
-                values: new object[] { -1, -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Skin Irritation", -1, false, null, "Use cream twice daily", -1, "Mild", "Dermatology" });
+                columns: new[] { "Id", "AppointmentId", "DiagnosisName", "DoctorId", "IsDeleted", "ModifiedOn", "Notes", "PatientId", "Severity", "Specialization" },
+                values: new object[] { -1, -1, "Skin Irritation", -1, false, null, "Use cream twice daily", -1, "Mild", "Dermatology" });
 
             migrationBuilder.InsertData(
                 table: "PrescriptionItems",
-                columns: new[] { "Id", "CreatedOn", "IsDeleted", "MedicineName", "ModifiedOn", "PrescriptionId" },
-                values: new object[] { -1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Skin Cream", null, -1 });
+                columns: new[] { "Id", "IsDeleted", "MedicineName", "ModifiedOn", "PrescriptionId" },
+                values: new object[] { -1, false, "Skin Cream", null, -1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
 
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+            //migrationBuilder.CreateIndex(
+            //    name: "RoleNameIndex",
+            //    table: "AspNetRoles",
+            //    column: "NormalizedName",
+            //    unique: true,
+            //    filter: "[NormalizedName] IS NOT NULL");
+
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_AspNetUserClaims_UserId",
+            //    table: "AspNetUserClaims",
+            //    column: "UserId");
+
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_AspNetUserLogins_UserId",
+            //    table: "AspNetUserLogins",
+            //    column: "UserId");
+
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_AspNetUserRoles_RoleId",
+            //    table: "AspNetUserRoles",
+            //    column: "RoleId");
+
+            //migrationBuilder.CreateIndex(
+            //    name: "EmailIndex",
+            //    table: "AspNetUsers",
+            //    column: "NormalizedEmail");
+
+            //migrationBuilder.CreateIndex(
+            //    name: "UserNameIndex",
+            //    table: "AspNetUsers",
+            //    column: "NormalizedUserName",
+            //    unique: true,
+            //    filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                table: "AspNetUserRoles",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                name: "IX_ClinicalFindings_DiagnosisId",
+                table: "ClinicalFindings",
+                column: "DiagnosisId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Consultations_DoctorId",
@@ -517,107 +665,131 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "IX_Doctors_UserId",
                 table: "Doctors",
                 column: "UserId",
-                unique: true);
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_LabResults_DoctorId",
-                table: "LabResults",
-                column: "DoctorId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_LabResults_DoctorId",
+            //    table: "LabResults",
+            //    column: "DoctorId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_LabResults_PatientId",
-                table: "LabResults",
-                column: "PatientId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_LabResults_PatientId",
+            //    table: "LabResults",
+            //    column: "PatientId");
 
-            migrationBuilder.CreateIndex(
-                name: "idx_created_at",
-                table: "Notifications",
-                column: "CreatedOn");
+            //migrationBuilder.CreateIndex(
+            //    name: "idx_created_at",
+            //    table: "Notifications",
+            //    column: "CreatedOn");
 
-            migrationBuilder.CreateIndex(
-                name: "idx_user_unread",
-                table: "Notifications",
-                columns: new[] { "UserId", "IsRead" });
+            //migrationBuilder.CreateIndex(
+            //    name: "idx_user_unread",
+            //    table: "Notifications",
+            //    columns: new[] { "UserId", "IsRead" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Patients_UserId",
                 table: "Patients",
                 column: "UserId",
-                unique: true);
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
 
-            migrationBuilder.CreateIndex(
-                name: "idx_payment_date",
-                table: "Payments",
-                column: "PaymentDate");
+            //migrationBuilder.CreateIndex(
+            //    name: "idx_payment_date",
+            //    table: "Payments",
+            //    column: "PaymentDate");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_DoctorId",
                 table: "Payments",
                 column: "DoctorId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionItems_PrescriptionId",
-                table: "PrescriptionItems",
-                column: "PrescriptionId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_PrescriptionItems_PrescriptionId",
+            //    table: "PrescriptionItems",
+            //    column: "PrescriptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_DoctorId",
                 table: "Prescriptions",
                 column: "DoctorId");
 
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Prescriptions_PatientId",
+            //    table: "Prescriptions",
+            //    column: "PatientId");
+
             migrationBuilder.CreateIndex(
-                name: "IX_Prescriptions_PatientId",
-                table: "Prescriptions",
-                column: "PatientId");
+                name: "IX_SuggestedMedications_DiagnosisId",
+                table: "SuggestedMedications",
+                column: "DiagnosisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Symptoms_DiagnosisId",
+                table: "Symptoms",
+                column: "DiagnosisId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
+            //migrationBuilder.DropTable(
+            //    name: "AspNetRoleClaims");
+
+            //migrationBuilder.DropTable(
+            //    name: "AspNetUserClaims");
+
+            //migrationBuilder.DropTable(
+            //    name: "AspNetUserLogins");
+
+            //migrationBuilder.DropTable(
+            //    name: "AspNetUserRoles");
+
+            //migrationBuilder.DropTable(
+            //    name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
+                name: "ClinicalFindings");
 
             migrationBuilder.DropTable(
                 name: "Consultations");
 
-            migrationBuilder.DropTable(
-                name: "LabResults");
+            //migrationBuilder.DropTable(
+            //    name: "LabResults");
+
+            //migrationBuilder.DropTable(
+            //    name: "Notifications");
+
+            //migrationBuilder.DropTable(
+            //    name: "Payments");
+
+            //migrationBuilder.DropTable(
+            //    name: "PrescriptionItems");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "SuggestedMedications");
 
             migrationBuilder.DropTable(
-                name: "Payments");
+                name: "Symptoms");
 
-            migrationBuilder.DropTable(
-                name: "PrescriptionItems");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
+            //migrationBuilder.DropTable(
+            //    name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Prescriptions");
 
             migrationBuilder.DropTable(
-                name: "Doctors");
+                name: "Diagnosises");
 
-            migrationBuilder.DropTable(
-                name: "Patients");
+            //migrationBuilder.DropTable(
+            //    name: "Doctors");
 
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
+            //migrationBuilder.DropTable(
+            //    name: "Patients");
+
+            //migrationBuilder.DropTable(
+            //    name: "AspNetUsers");
         }
     }
 }

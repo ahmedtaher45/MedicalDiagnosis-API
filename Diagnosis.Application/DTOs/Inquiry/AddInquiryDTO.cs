@@ -9,7 +9,6 @@ namespace Diagnosis.Application.DTOs.Inquiry
 {
     public class AddInquiryDTO
     {
-        public int PatientId { get; set; }
         public int DoctorId { get; set; }
         public string? Symptoms { get; set; }
         public string? Notes { get; set; }
