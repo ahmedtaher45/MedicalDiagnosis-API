@@ -51,6 +51,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne(p => p.User)
             .HasForeignKey<Patient>(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<ApplicationUser>()
+          .HasMany(u => u.SupportTickets)
+          .WithOne(p => p.User)
+          .HasForeignKey(p => p.userId)
+          .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ApplicationUser>()
             .HasMany(u => u.Notifications)

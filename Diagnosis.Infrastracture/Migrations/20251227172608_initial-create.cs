@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Diagnosis.Infrastracture.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,6 +69,24 @@ namespace Diagnosis.Infrastracture.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Diagnosises", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Faqs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Answer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Faqs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -467,6 +485,43 @@ namespace Diagnosis.Infrastracture.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SupportTickets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    userId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Reply = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DoctorId = table.Column<int>(type: "int", nullable: true),
+                    PatientId = table.Column<int>(type: "int", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupportTickets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SupportTickets_AspNetUsers_userId",
+                        column: x => x.userId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SupportTickets_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SupportTickets_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PrescriptionItems",
                 columns: table => new
                 {
@@ -503,9 +558,9 @@ namespace Diagnosis.Infrastracture.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "user-0", 0, "908d365f-b719-4358-8301-b7fa5d7d7933", "admin@diagnosis.com", true, false, null, "ADMIN@DIAGNOSIS.COM", "ADMIN@DIAGNOSIS.COM", "", null, false, "205789b7-4e35-43fe-b1fa-bc3d4e2d2ac0", false, "admin@diagnosis.com" },
-                    { "user-1", 0, "33105e6c-ae0c-41cb-96b2-250ff9a03641", "doctor@test.com", true, false, null, "DOCTOR@TEST.COM", "DOCTOR@TEST.COM", "", null, false, "stamp1", false, "doctor@test.com" },
-                    { "user-2", 0, "dc327741-d0ea-4975-bdc1-34806340846f", "patient@test.com", true, false, null, "PATIENT@TEST.COM", "PATIENT@TEST.COM", "", null, false, "stamp2", false, "patient@test.com" }
+                    { "user-0", 0, "83cff965-e2da-452d-b78f-5e7fa5c1f7a0", "admin@diagnosis.com", true, false, null, "ADMIN@DIAGNOSIS.COM", "ADMIN@DIAGNOSIS.COM", "", null, false, "b10ee2e6-4d76-4a41-9378-5089a2b3d053", false, "admin@diagnosis.com" },
+                    { "user-1", 0, "cd2aac68-434e-4fe3-bd02-5c9fa2706959", "doctor@test.com", true, false, null, "DOCTOR@TEST.COM", "DOCTOR@TEST.COM", "", null, false, "stamp1", false, "doctor@test.com" },
+                    { "user-2", 0, "1b76410a-7b6b-4a9e-93d8-048b018b9109", "patient@test.com", true, false, null, "PATIENT@TEST.COM", "PATIENT@TEST.COM", "", null, false, "stamp2", false, "patient@test.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -517,6 +572,21 @@ namespace Diagnosis.Infrastracture.Migrations
                     { 2, null, "Inflammation of stomach lining", false, null, "Gastritis", "Abdominal pain, nausea, vomiting", "Stomach Pain" },
                     { 3, null, "Chronic elevation of blood pressure", false, null, "High Blood Pressure", "Headache, dizziness, blurred vision", "Hypertension" },
                     { 4, null, "Routine diabetes follow-up and monitoring", false, null, "Type 2 Diabetes Mellitus", "Fatigue, frequent urination", "Diabetes Follow-up" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Faqs",
+                columns: new[] { "Id", "Answer", "CreatedOn", "IsDeleted", "ModifiedOn", "Question", "Type" },
+                values: new object[,]
+                {
+                    { 1, "You can book an appointment through the mobile application.", null, false, null, "How can I book an appointment?", "Patient" },
+                    { 2, "Yes, you can cancel or reschedule your appointment from your profile.", null, false, null, "Can I cancel or reschedule my appointment?", "Patient" },
+                    { 3, "Your medical history is available in the medical records section.", null, false, null, "How do I view my medical history?", "Patient" },
+                    { 4, "Yes, all your data is securely stored and protected.", null, false, null, "Is my personal data secure?", "Patient" },
+                    { 5, "You can manage your appointments from the doctor dashboard.", null, false, null, "How can I manage my appointments?", "Doctor" },
+                    { 6, "You can update your availability from your profile settings.", null, false, null, "How do I update my availability?", "Doctor" },
+                    { 7, "Yes, you can access medical records for patients assigned to you.", null, false, null, "Can I access patient medical records?", "Doctor" },
+                    { 8, "Payments are transferred to your registered bank account.", null, false, null, "How do I receive payments?", "Doctor" }
                 });
 
             migrationBuilder.InsertData(
@@ -612,39 +682,39 @@ namespace Diagnosis.Infrastracture.Migrations
                 table: "AspNetRoleClaims",
                 column: "RoleId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "RoleNameIndex",
-            //    table: "AspNetRoles",
-            //    column: "NormalizedName",
-            //    unique: true,
-            //    filter: "[NormalizedName] IS NOT NULL");
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_AspNetUserClaims_UserId",
-            //    table: "AspNetUserClaims",
-            //    column: "UserId");
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_AspNetUserLogins_UserId",
-            //    table: "AspNetUserLogins",
-            //    column: "UserId");
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_AspNetUserRoles_RoleId",
-            //    table: "AspNetUserRoles",
-            //    column: "RoleId");
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "EmailIndex",
-            //    table: "AspNetUsers",
-            //    column: "NormalizedEmail");
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "UserNameIndex",
-            //    table: "AspNetUsers",
-            //    column: "NormalizedUserName",
-            //    unique: true,
-            //    filter: "[NormalizedUserName] IS NOT NULL");
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClinicalFindings_DiagnosisId",
@@ -668,25 +738,25 @@ namespace Diagnosis.Infrastracture.Migrations
                 unique: true,
                 filter: "[UserId] IS NOT NULL");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_LabResults_DoctorId",
-            //    table: "LabResults",
-            //    column: "DoctorId");
+            migrationBuilder.CreateIndex(
+                name: "IX_LabResults_DoctorId",
+                table: "LabResults",
+                column: "DoctorId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_LabResults_PatientId",
-            //    table: "LabResults",
-            //    column: "PatientId");
+            migrationBuilder.CreateIndex(
+                name: "IX_LabResults_PatientId",
+                table: "LabResults",
+                column: "PatientId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "idx_created_at",
-            //    table: "Notifications",
-            //    column: "CreatedOn");
+            migrationBuilder.CreateIndex(
+                name: "idx_created_at",
+                table: "Notifications",
+                column: "CreatedOn");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "idx_user_unread",
-            //    table: "Notifications",
-            //    columns: new[] { "UserId", "IsRead" });
+            migrationBuilder.CreateIndex(
+                name: "idx_user_unread",
+                table: "Notifications",
+                columns: new[] { "UserId", "IsRead" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Patients_UserId",
@@ -695,35 +765,50 @@ namespace Diagnosis.Infrastracture.Migrations
                 unique: true,
                 filter: "[UserId] IS NOT NULL");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "idx_payment_date",
-            //    table: "Payments",
-            //    column: "PaymentDate");
+            migrationBuilder.CreateIndex(
+                name: "idx_payment_date",
+                table: "Payments",
+                column: "PaymentDate");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_DoctorId",
                 table: "Payments",
                 column: "DoctorId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_PrescriptionItems_PrescriptionId",
-            //    table: "PrescriptionItems",
-            //    column: "PrescriptionId");
+            migrationBuilder.CreateIndex(
+                name: "IX_PrescriptionItems_PrescriptionId",
+                table: "PrescriptionItems",
+                column: "PrescriptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_DoctorId",
                 table: "Prescriptions",
                 column: "DoctorId");
 
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_Prescriptions_PatientId",
-            //    table: "Prescriptions",
-            //    column: "PatientId");
+            migrationBuilder.CreateIndex(
+                name: "IX_Prescriptions_PatientId",
+                table: "Prescriptions",
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SuggestedMedications_DiagnosisId",
                 table: "SuggestedMedications",
                 column: "DiagnosisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SupportTickets_DoctorId",
+                table: "SupportTickets",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SupportTickets_PatientId",
+                table: "SupportTickets",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SupportTickets_userId",
+                table: "SupportTickets",
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Symptoms_DiagnosisId",
@@ -734,20 +819,20 @@ namespace Diagnosis.Infrastracture.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.DropTable(
-            //    name: "AspNetRoleClaims");
+            migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
 
-            //migrationBuilder.DropTable(
-            //    name: "AspNetUserClaims");
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
 
-            //migrationBuilder.DropTable(
-            //    name: "AspNetUserLogins");
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
 
-            //migrationBuilder.DropTable(
-            //    name: "AspNetUserRoles");
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
 
-            //migrationBuilder.DropTable(
-            //    name: "AspNetUserTokens");
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
                 name: "ClinicalFindings");
@@ -755,26 +840,32 @@ namespace Diagnosis.Infrastracture.Migrations
             migrationBuilder.DropTable(
                 name: "Consultations");
 
-            //migrationBuilder.DropTable(
-            //    name: "LabResults");
+            migrationBuilder.DropTable(
+                name: "Faqs");
 
-            //migrationBuilder.DropTable(
-            //    name: "Notifications");
+            migrationBuilder.DropTable(
+                name: "LabResults");
 
-            //migrationBuilder.DropTable(
-            //    name: "Payments");
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
-            //migrationBuilder.DropTable(
-            //    name: "PrescriptionItems");
+            migrationBuilder.DropTable(
+                name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "PrescriptionItems");
 
             migrationBuilder.DropTable(
                 name: "SuggestedMedications");
 
             migrationBuilder.DropTable(
+                name: "SupportTickets");
+
+            migrationBuilder.DropTable(
                 name: "Symptoms");
 
-            //migrationBuilder.DropTable(
-            //    name: "AspNetRoles");
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Prescriptions");
@@ -782,14 +873,14 @@ namespace Diagnosis.Infrastracture.Migrations
             migrationBuilder.DropTable(
                 name: "Diagnosises");
 
-            //migrationBuilder.DropTable(
-            //    name: "Doctors");
+            migrationBuilder.DropTable(
+                name: "Doctors");
 
-            //migrationBuilder.DropTable(
-            //    name: "Patients");
+            migrationBuilder.DropTable(
+                name: "Patients");
 
-            //migrationBuilder.DropTable(
-            //    name: "AspNetUsers");
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

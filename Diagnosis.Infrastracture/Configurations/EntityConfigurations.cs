@@ -27,11 +27,7 @@
                    .HasForeignKey(l => l.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(p => p.SupportTickets)
-                   .WithOne(l => l.Patient)
-                   .HasForeignKey(l => l.PatientId)
-                   .OnDelete(DeleteBehavior.NoAction);
-
+          
     }
     }
 
@@ -65,10 +61,7 @@
                    .OnDelete(DeleteBehavior.NoAction);
 
             // One-to-Many: Doctor -> Prescriptions
-            builder.HasMany(d => d.SupportTickets)
-                   .WithOne(p => p.Doctor)
-                   .HasForeignKey(p => p.DoctorId)
-                   .OnDelete(DeleteBehavior.NoAction);
+           
 
     }
     }

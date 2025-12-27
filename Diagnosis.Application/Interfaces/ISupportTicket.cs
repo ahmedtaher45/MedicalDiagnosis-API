@@ -10,7 +10,7 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface ISupportTicket: IRepository<SupportTicket>
     {
-        Task CreateSupportTicketAsync(SupportTicketDTO supportTicketDTO);
+        Task CreateSupportTicketAsync(SupportTicketDTO supportTicketDTO , string userId);
         Task<List<GetSupportTicketDTO>> GetSupportTicketsAsync();
     }
 }

@@ -547,7 +547,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d924104b-108d-470e-a0c2-448136dc4d4d",
+                            ConcurrencyStamp = "83cff965-e2da-452d-b78f-5e7fa5c1f7a0",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -555,7 +555,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c4d386f0-65e2-48a3-a6ae-3e99ee2c21ee",
+                            SecurityStamp = "b10ee2e6-4d76-4a41-9378-5089a2b3d053",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -563,7 +563,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f1f55efc-1c42-4042-b16f-7b07b447b7e6",
+                            ConcurrencyStamp = "cd2aac68-434e-4fe3-bd02-5c9fa2706959",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -579,7 +579,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2590a673-18c7-42a9-923f-1973742cf718",
+                            ConcurrencyStamp = "1b76410a-7b6b-4a9e-93d8-048b018b9109",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1078,11 +1078,16 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("SupportTickets");
                 });
@@ -1503,19 +1508,20 @@ namespace Diagnosis.Infrastracture.Migrations
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SupportTicket", b =>
                 {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
+                    b.HasOne("Diagnosis.Domain.Entites.Doctor", null)
                         .WithMany("SupportTickets")
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", null)
+                        .WithMany("SupportTickets")
+                        .HasForeignKey("PatientId");
+
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
+                        .WithMany("SupportTickets")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("SupportTickets")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
@@ -1616,6 +1622,8 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Patient");
+
+                    b.Navigation("SupportTickets");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>
