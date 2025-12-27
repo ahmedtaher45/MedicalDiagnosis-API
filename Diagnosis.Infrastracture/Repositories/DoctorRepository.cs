@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
-using Diagnosis.Infrastracture; // <-- Ensure this matches the actual namespace where AppDbContext is defined
+using Diagnosis.Infrastracture; 
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

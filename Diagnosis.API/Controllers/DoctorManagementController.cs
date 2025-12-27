@@ -9,12 +9,12 @@ namespace Diagnosis.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class DoctorsController: ControllerBase
+    public class DoctorManagementController: ControllerBase
     {
 
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<DoctorsController> _logger;
-        public DoctorsController(IUnitOfWork unitOfWork, ILogger<DoctorsController> logger)
+        private readonly ILogger<DoctorManagementController> _logger;
+        public DoctorManagementController(IUnitOfWork unitOfWork, ILogger<DoctorManagementController> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -101,6 +101,6 @@ namespace Diagnosis.API.Controllers
 
         //    return Ok(dto);
         //    //}
-    }   //}    
+    }   
 }
 
