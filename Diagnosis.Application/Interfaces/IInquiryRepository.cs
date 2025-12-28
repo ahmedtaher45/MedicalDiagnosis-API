@@ -10,6 +10,7 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IInquiryRepository: IRepository<Consultation>
     {
-        Task<IquiryResponse> AddInquiryAsync(AddInquiryDTO addInquiryDTO);
+        Task<IquiryResponse> AddInquiryAsync(AddInquiryDTO addInquiryDTO, string userId);
+        Task<int> GetPatientAsync(string userId);
     }
 }

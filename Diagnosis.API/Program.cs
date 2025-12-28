@@ -1,17 +1,19 @@
 ﻿
 using Diagnosis.API.Middleware;
-using Diagnosis.API.Middleware;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Application.UseCases;
-using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
+using Diagnosis.Application.UseCases.Faq;
 using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Application.UseCases.Profile;
 using Diagnosis.Domain.Entites;
+using Diagnosis.Application.UseCases.SupportTicket;
+using Diagnosis.Application.UseCases.SystemSittings;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -49,13 +51,14 @@ namespace Diagnosis.API
                 O.MultipartBodyLengthLimit = int.MaxValue;
                 O.MemoryBufferThreshold = int.MaxValue;
             });
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+              builder.Configuration.GetConnectionString("Diagnosis");
+              builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddDataProtection();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
-
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<LoginUseCase>();
@@ -78,6 +81,16 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetDoctorUseCase>(); 
             builder.Services.AddScoped<GetPatientUseCase>();
 
+            builder.Services.AddScoped<GetTemplateUseCase>();
+            builder.Services.AddScoped<GetAllTemplatesUseCase>();
+            builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
+            builder.Services.AddScoped<AddDoctorUseCase>();
+            builder.Services.AddScoped<AddAdminUseCase>();
+            builder.Services.AddScoped<AddSupportTicketUseCase>();
+            builder.Services.AddScoped<GetSupportTicketsUseCase>();
+            builder.Services.AddScoped<GetFaqsUseCase>();
+            builder.Services.AddScoped<IFaq , FaqRepository>();
+            builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -94,6 +107,10 @@ namespace Diagnosis.API
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
 
+            builder.Services.AddHttpClient<IDoctorDiagnosisProvider, DoctorDiagnosisProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            });
 
 
             /////
@@ -101,7 +118,9 @@ namespace Diagnosis.API
 
             // Doctor & Patient repositories
 
-          
+            builder.Services.AddScoped<IPatientManagement, PatientRepository>(); 
+            builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
+            builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
 
 
 
@@ -150,6 +169,7 @@ namespace Diagnosis.API
                 options.AddPolicy("MyPolicy",policy =>
                     policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             });
+           
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -179,7 +199,7 @@ namespace Diagnosis.API
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                await IdentitySeeder.SeedAdminRole(roleManager);
+                await IdentitySeeder.SeedRoles(roleManager);
             }
 
             app.Run();

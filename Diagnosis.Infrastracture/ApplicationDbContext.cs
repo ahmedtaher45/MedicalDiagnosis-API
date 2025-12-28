@@ -20,10 +20,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
     public DbSet<LabResult> LabResults { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Faq> Faqs { get; set; }
+    public DbSet<SupportTicket> SupportTickets { get; set; }
     public DbSet<Consultation> Consultations { get; set; }
-
-    //var seedDate = new DateTime(2024, 01, 01);
-
+    public DbSet<DoctorDiagnosis> Diagnosises { get; set; }
+    public DbSet<Symptom> Symptoms { get; set; }
+    public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
+    public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -48,6 +51,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne(p => p.User)
             .HasForeignKey<Patient>(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<ApplicationUser>()
+          .HasMany(u => u.SupportTickets)
+          .WithOne(p => p.User)
+          .HasForeignKey(p => p.userId)
+          .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ApplicationUser>()
             .HasMany(u => u.Notifications)
@@ -55,6 +63,37 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<Consultation>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Doctor>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<LabResult>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Notification>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Patient>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Payment>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<Prescription>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        modelBuilder.Entity<PrescriptionItem>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
 
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Status)
@@ -64,6 +103,234 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Type)
             .HasConversion<string>();
+
+        modelBuilder.Entity<Notification>()
+            .Property(p => p.NotificationType)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<Request>()
+        .Property(p => p.Status)
+        .HasConversion<string>();
+
+        modelBuilder.Entity<Faq>()
+            .Property(p => p.Type)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<DoctorDiagnosis>(d =>
+        {
+            d.HasMany(c => c.Symptoms)
+            .WithOne(c => c.Diagnosis)
+            .HasForeignKey(c => c.DiagnosisId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            d.HasMany(d => d.SuggestedMedications)
+            .WithOne(c => c.Diagnosis)
+            .HasForeignKey(c => c.DiagnosisId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            d.HasMany(d => d.ClinicalFindings)
+            .WithOne(c => c.Diagnosis)
+            .HasForeignKey(d => d.DiagnosisId)
+            .OnDelete(DeleteBehavior.NoAction);
+        });
+
+
+        // ================== 1 ====================
+        modelBuilder.Entity<DoctorDiagnosis>().HasData(
+            new DoctorDiagnosis
+            {
+                Id = 1,
+                Title = "Cold & Flu",
+                Name = "Upper Respiratory Infection",
+                Description = "Viral infection affecting upper respiratory tract",
+                PatientSymptoms = "Fever, cough, sore throat, runny nose"
+            }
+            );
+
+        modelBuilder.Entity<Symptom>().HasData(
+            new Symptom { Id = 1, Name = "Fever", DiagnosisId = 1 },
+            new Symptom { Id = 2, Name = "Cough", DiagnosisId = 1 },
+            new Symptom { Id = 3, Name = "Sore throat", DiagnosisId = 1 },
+            new Symptom { Id = 4, Name = "Runny nose", DiagnosisId = 1 },
+            new Symptom { Id = 5, Name = "Body aches", DiagnosisId = 1 }
+        );
+
+        modelBuilder.Entity<ClinicalFinding>().HasData(
+
+            new ClinicalFinding { Id = 1, Name = "Body Temperature", Value = "38.5°C", Notes = "Fever", DiagnosisId = 1 },
+            new ClinicalFinding { Id = 2, Name = "Oxygen Saturation", Value = "98%", Notes = "Normal", DiagnosisId = 1 }
+
+        );
+
+        modelBuilder.Entity<SuggestedMedication>().HasData(
+            new SuggestedMedication
+            {
+                Id = 1,
+                Name = "Paracetamol",
+                Dosage = "500 mg",
+                Frequency = "Every 8 hours",
+                DiagnosisId = 1
+            },
+            new SuggestedMedication
+            {
+                Id = 2,
+                Name = "Antihistamine",
+                Dosage = "10 mg",
+                Frequency = "Once daily",
+                DiagnosisId = 1
+            }
+
+        );
+
+        //============== 2 ================
+
+        modelBuilder.Entity<DoctorDiagnosis>().HasData(
+            new DoctorDiagnosis
+            {
+                Id = 2,
+                Title = "Stomach Pain",
+                Name = "Gastritis",
+                Description = "Inflammation of stomach lining",
+                PatientSymptoms = "Abdominal pain, nausea, vomiting"
+            }
+         );
+
+        modelBuilder.Entity<Symptom>().HasData(
+            new Symptom { Id = 6, Name = "Abdominal pain", DiagnosisId = 2 },
+            new Symptom { Id = 7, Name = "Nausea", DiagnosisId = 2 },
+            new Symptom { Id = 8, Name = "Vomiting", DiagnosisId = 2 },
+            new Symptom { Id = 9, Name = "Bloating", DiagnosisId = 2 }
+
+        );
+
+        modelBuilder.Entity<ClinicalFinding>().HasData(
+
+           new ClinicalFinding { Id = 3, Name = "Abdominal tenderness", Value = "Present", Notes = "Epigastric area", DiagnosisId = 2 }
+        );
+
+        modelBuilder.Entity<SuggestedMedication>().HasData(
+            new SuggestedMedication
+            {
+                Id = 3,
+                Name = "Omeprazole",
+                Dosage = "20 mg",
+                Frequency = "Once daily before meals",
+                DiagnosisId = 2
+            },
+            new SuggestedMedication
+            {
+                Id = 4,
+                Name = "Antacid",
+                Dosage = "10 ml",
+                Frequency = "After meals",
+                DiagnosisId = 2
+            }
+        );
+
+
+        // =============== 3 ===============
+
+        modelBuilder.Entity<DoctorDiagnosis>().HasData(
+            new DoctorDiagnosis
+            {
+                Id = 3,
+                Title = "Hypertension",
+                Name = "High Blood Pressure",
+                Description = "Chronic elevation of blood pressure",
+                PatientSymptoms = "Headache, dizziness, blurred vision"
+            }
+
+         );
+
+        modelBuilder.Entity<Symptom>().HasData(
+            new Symptom { Id = 10, Name = "Headache", DiagnosisId = 3 },
+            new Symptom { Id = 11, Name = "Dizziness", DiagnosisId = 3 },
+            new Symptom { Id = 12, Name = "Blurred vision", DiagnosisId = 3 }
+        );
+
+        modelBuilder.Entity<ClinicalFinding>().HasData(
+
+            new ClinicalFinding
+            {
+                Id = 4,
+                Name = "Blood Pressure",
+                Value = "150/95 mmHg",
+                Notes = "Elevated",
+                DiagnosisId = 3
+            }
+        );
+
+        modelBuilder.Entity<SuggestedMedication>().HasData(
+            new SuggestedMedication
+            {
+                Id = 5,
+                Name = "Amlodipine",
+                Dosage = "5 mg",
+                Frequency = "Once daily",
+                DiagnosisId = 3
+            },
+            new SuggestedMedication
+            {
+                Id = 6,
+                Name = "Lifestyle modification",
+                Dosage = "-",
+                Frequency = "Low salt diet & exercise",
+                DiagnosisId = 3
+            }
+        );
+
+        // ================= 4 =================
+
+        modelBuilder.Entity<DoctorDiagnosis>().HasData(
+            new DoctorDiagnosis
+            {
+                Id = 4,
+                Title = "Diabetes Follow-up",
+                Name = "Type 2 Diabetes Mellitus",
+                Description = "Routine diabetes follow-up and monitoring",
+                PatientSymptoms = "Fatigue, frequent urination"
+            }
+
+         );
+
+        modelBuilder.Entity<Symptom>().HasData(
+        new Symptom { Id = 13, Name = "Fatigue", DiagnosisId = 4 },
+        new Symptom { Id = 14, Name = "Frequent urination", DiagnosisId = 4 }
+
+        );
+
+        modelBuilder.Entity<ClinicalFinding>().HasData(
+            new ClinicalFinding
+            {
+                Id = 5,
+                Name = "HbA1c",
+                Value = "7.1%",
+                Notes = "Above target",
+                DiagnosisId = 4
+            },
+            new ClinicalFinding
+            {
+                Id = 6,
+                Name = "Fasting Blood Glucose",
+                Value = "140 mg/dL",
+                Notes = "Elevated",
+                DiagnosisId = 4
+            }
+
+        );
+
+        modelBuilder.Entity<SuggestedMedication>().HasData(
+            new SuggestedMedication
+            {
+                Id = 7,
+                Name = "Metformin",
+                Dosage = "500 mg",
+                Frequency = "Twice daily",
+                DiagnosisId = 4
+            }
+        );
+
+
         // ----------------------
         // Identity Roles
         // ----------------------
@@ -267,7 +534,75 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Description = "General inquiry about symptoms"
             }
         );
+
+     
+        // --------------------
+        // Faq
+        // --------------------
+
+        modelBuilder.Entity<Faq>().HasData(
+    // Patient FAQs
+    new Faq
+    {
+        Id = 1,
+        Type = FaqType.Patient,
+        Question = "How can I book an appointment?",
+        Answer = "You can book an appointment through the mobile application."
+    },
+    new Faq
+    {
+        Id = 2,
+        Type = FaqType.Patient,
+        Question = "Can I cancel or reschedule my appointment?",
+        Answer = "Yes, you can cancel or reschedule your appointment from your profile."
+    },
+    new Faq
+    {
+        Id = 3,
+        Type = FaqType.Patient,
+        Question = "How do I view my medical history?",
+        Answer = "Your medical history is available in the medical records section."
+    },
+    new Faq
+    {
+        Id = 4,
+        Type = FaqType.Patient,
+        Question = "Is my personal data secure?",
+        Answer = "Yes, all your data is securely stored and protected."
+    },
+
+    // Doctor FAQs
+    new Faq
+    {
+        Id = 5,
+        Type = FaqType.Doctor,
+        Question = "How can I manage my appointments?",
+        Answer = "You can manage your appointments from the doctor dashboard."
+    },
+    new Faq
+    {
+        Id = 6,
+        Type = FaqType.Doctor,
+        Question = "How do I update my availability?",
+        Answer = "You can update your availability from your profile settings."
+    },
+    new Faq
+    {
+        Id = 7,
+        Type = FaqType.Doctor,
+        Question = "Can I access patient medical records?",
+        Answer = "Yes, you can access medical records for patients assigned to you."
+    },
+    new Faq
+    {
+        Id = 8,
+        Type = FaqType.Doctor,
+        Question = "How do I receive payments?",
+        Answer = "Payments are transferred to your registered bank account."
     }
+);
+    }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

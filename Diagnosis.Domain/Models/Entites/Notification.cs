@@ -18,15 +18,15 @@ namespace Diagnosis.Domain.Entites
     }
     public class Notification:BaseEntity
     {
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-        public string UserType { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string NotificationType { get; set; }
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+        public string? UserType { get; set; }
+        public string? Title { get; set; }
+        public string? Message { get; set; }
+        public string? NotificationType { get; set; }
         public bool IsRead { get; set; }
         public int? RelatedId { get; set; }
-        public string RelatedType { get; set; }
+        public string? RelatedType { get; set; }
         public DateTime? ReadAt { get; set; }
 
     }

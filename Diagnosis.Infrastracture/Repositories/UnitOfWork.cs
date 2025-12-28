@@ -45,7 +45,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _fileService = fileService;
             _diagnosisModuleProvider = diagnosisModuleProvider;
 
-            Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender);
+            Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
 
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
             Inquiry = new InquiryRepository(_context, _fileService);
@@ -54,15 +54,25 @@ namespace Diagnosis.Infrastracture.Repositories
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             Patient = new PatientRepository(_context);
             Doctor = new DoctorRepository(_context);
+            DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
+
+            Faq = new FaqRepository(_context);
+            SupportTicket = new SupportTicketRepository(_context , _userManager);
 
         }
 
         public IAuth Auth { get; private set; }
+
+        public IFaq Faq { get; private set; }
+
+        public ISupportTicket SupportTicket { get; private set; }
+
         public IDiagnosisModuleRepository DiagnosisModule { get; private set; }
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
         public ITreatmentProvider TreatmentProvider { get; private set; }
+        public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
         /// <summary>
         /// //
         /// </summary>

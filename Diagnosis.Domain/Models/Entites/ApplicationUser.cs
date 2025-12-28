@@ -12,6 +12,7 @@ namespace Diagnosis.Domain.Models.Entites
     {
         public Doctor? Doctor { get; set; }
         public Patient? Patient { get; set; }
-        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Notification>? Notifications { get; set; }
+        public ICollection<SupportTicket>? SupportTickets { get; set; }
     }
 }

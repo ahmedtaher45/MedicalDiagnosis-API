@@ -98,10 +98,11 @@ namespace Diagnosis.API.Controllers
             var result = await loginUseCase.Login(loginDTO);
             if (!result.Success)
             {
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             }
             return Ok(result);
         }
+
         [HttpPost("forget-password")]
         public async Task<IActionResult> ForgotPassword(
             [FromBody]ForgotPasswordDTO forgotPasswordDTO, 

@@ -2,6 +2,7 @@
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Models.Entites;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +22,26 @@ namespace Diagnosis.Infrastracture.Repositories
             _fileService = fileService;
         }
 
-        public async Task<IquiryResponse> AddInquiryAsync(AddInquiryDTO addInquiryDTO)
+        public async Task<IquiryResponse> AddInquiryAsync(AddInquiryDTO addInquiryDTO, string userId)
         {
             var fileUrls = await _fileService.UploadMultipleFilesAsync(addInquiryDTO.Files!);
+
+            var patient =  await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (patient == null)
+            {
+                return new IquiryResponse
+                {
+                    Success = false,
+                    Message = "No patient with this Id"
+                };
+            }
 
             try
             {
                 await _context.Consultations.AddAsync(
                 new Consultation
                 {
-                    PatientId = addInquiryDTO.PatientId,
+                    PatientId = patient.Id,
                     DoctorId = addInquiryDTO.DoctorId,
                     Symptoms = addInquiryDTO.Symptoms,
                     Notes = addInquiryDTO.Notes,
@@ -54,6 +65,13 @@ namespace Diagnosis.Infrastracture.Repositories
                 Success = true,
                 Message = "Inquiry sent successfully"
             };
+        }
+        public async Task<int> GetPatientAsync(string userId)
+        {
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (patient == null)
+                throw new ArgumentNullException(nameof(patient));
+            return patient.Id;
         }
     }
 }

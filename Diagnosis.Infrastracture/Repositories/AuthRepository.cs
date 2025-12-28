@@ -1,12 +1,17 @@
 ﻿using Diagnosis.Application.DTOs.Auth;
+using Diagnosis.Application.DTOs.DoctorManagement;
+using Diagnosis.Application.DTOs.SystemSettings;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
+using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using MimeKit.Encodings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -20,18 +25,18 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IJwtTokenGenerator jwtTokenGenerator;
         private readonly IEmailSender emailSender;
-
-        public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, IEmailSender emailSender)
+        private readonly ApplicationDbContext _context;
+        public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, IEmailSender emailSender, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.jwtTokenGenerator = jwtTokenGenerator;
             this.emailSender = emailSender;
+            _context = context;
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterDTO registerDTO)
         {
-            var user = userManager.FindByEmailAsync(registerDTO.Email!);
-            if (user == null)
+            if (registerDTO.Email == null)
             {
                 return new RegisterResponse
                 {
@@ -39,57 +44,190 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Invalid Email"
                 };
             }
-
-            ApplicationUser newUser = new ApplicationUser
-            {
-                Email = registerDTO.Email,
-                UserName = registerDTO.UserName,
-                PhoneNumber = registerDTO.PhoneNumber
-            };
-
-            var result = await userManager.CreateAsync(newUser, registerDTO.Password!);
-
-            if (!result.Succeeded)
-            {
-                return new RegisterResponse
-                {
-                    Success = false,
-                    ErrorMessage = "Error occured while creating user"
-                };
-            }
+            ApplicationUser? user = null;
 
             try
             {
-                await userManager.AddToRoleAsync(newUser, "Patient");
+                user = new ApplicationUser
+                {
+                    Email = registerDTO.Email,
+                    UserName = registerDTO.UserName,
+                    PhoneNumber = registerDTO.PhoneNumber
+                };
+                var result = await userManager.CreateAsync(user, registerDTO.Password!);
+
+                if (!result.Succeeded)
+                {
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description))
+                    };
+                }
+                if (string.IsNullOrEmpty(user.Id))
+                {
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "User ID is null after creation"
+                    };
+                }
+
+                await userManager.AddToRoleAsync(user, "Patient");
+
+            var patient = new Patient
+            {
+                UserId = user.Id,
+                FName = registerDTO.FName!,
+                LName = registerDTO.LName!,
+                Gender = registerDTO.Gender!,
+                DateOfBirth = registerDTO.BirthDate
+                };
+
+                await _context.Patients.AddAsync(patient);
+                await _context.SaveChangesAsync();
+            }
+                catch (Exception ex)
+                {
+                    if (user != null)
+                        await userManager.DeleteAsync(user);
+
+                      var errorMessage = ex.InnerException != null
+                            ? ex.InnerException.Message
+                            : ex.Message;
+
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "Error: " + errorMessage + " | StackTrace: " + ex.StackTrace
+                    };
+                }
+
+                    await SendConfirmationEmail(user, registerDTO.ClientUri!);
+                    return new RegisterResponse
+                    {
+                        Success = true,
+                        ErrorMessage = "Check your Email for Confirmation"
+                    };
+            }
+            
+
+        public async Task<AddDoctorRespose> AddDoctorAsync(AddDoctorDTO addDoctorDTO)
+        {
+            if (addDoctorDTO == null)
+            {
+                return new AddDoctorRespose
+                {
+                    Success = false,
+                    Message = "Doctor's Details cannot be null"
+                };
+            }
+            ApplicationUser? user = null;
+
+            try
+            {
+                user = new ApplicationUser
+                {
+                    Email = addDoctorDTO.Email,
+                    UserName = addDoctorDTO.UserName,
+                    PhoneNumber = addDoctorDTO.PhoneNumber
+                };
+
+                var result = await userManager.CreateAsync(user, addDoctorDTO.Password!);
+                if (!result.Succeeded)
+                {
+                    return new AddDoctorRespose
+                    {
+                        Success = false,
+                        Message = "Doctor user creation failed"
+                    };
+                }
+                await userManager.AddToRoleAsync(user ,"Doctor");
+
+                var doctor = new Doctor
+                {
+                    UserId = user.Id,
+                    ExperienceYears = addDoctorDTO.ExperienceYears,
+                    NationalId = addDoctorDTO.NationalId,
+                    BirhDate = addDoctorDTO.BirhDate,
+                    Address = addDoctorDTO.Address,
+                    Gender = addDoctorDTO.Gender
+                };
+
+
+                await _context.Doctors.AddAsync(doctor);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
 
-                return new RegisterResponse
+                return new AddDoctorRespose
                 {
                     Success = false,
-                    ErrorMessage = "Error with assigning role: " + ex.Message
+                    Message = "Error while adding Doctor Data: " + ex.Message
                 };
             }
-            await SendConfirmationEmail(newUser, registerDTO.ClientUri!);
-            return new RegisterResponse
+            await SendConfirmationEmail(user, addDoctorDTO.ClientUri!);
+            return new AddDoctorRespose
             {
                 Success = true,
-                ErrorMessage = "Check your Email for Confirmation"
+                Message = "Doctor was added successfully, please notify him to check for Confirmation Email"
             };
         }
 
-        public async Task<> AddDoctorAsync()
+        public async Task<AddAdminResponse> AddAdminAsync(AddAdminDTO addAdminDTO)
         {
+            if (addAdminDTO == null)
+            {
+                return new AddAdminResponse
+                {
+                    Success = false,
+                    Message = "Admin's Details cannot be null"
+                };
+            }
+            ApplicationUser? user = null;
+            try
+            {
+                user = new ApplicationUser
+                {
+                    UserName = addAdminDTO.UserName,
+                    Email = addAdminDTO.Email,
+                    EmailConfirmed = true
+                };
 
+                var result = await userManager.CreateAsync(user, addAdminDTO.Password!);
+                if (!result.Succeeded)
+                {
+                    return new AddAdminResponse
+                    {
+                        Success = false,
+                        Message = string.Join(", ", result.Errors.Select(e => e.Description))
+                    };
+                }
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
+            catch (Exception ex)
+            {
+                return new AddAdminResponse
+                {
+                    Success = false,
+                    Message = "Error while adding Admin Data: " + ex.Message
+                };
+            }
+
+            return new AddAdminResponse
+            {
+                Success = true,
+                Message = "Admin user was added successfully"
+            };
         }
         public async Task SendConfirmationEmail(ApplicationUser user, string clientUri)
         {
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             var param = new Dictionary<string, string?>
             {
-                { "token", token},
+                { "token", encodedToken},
                 { "email", user.Email!}
             };
 
@@ -122,22 +260,35 @@ namespace Diagnosis.Infrastracture.Repositories
 
             try
             {
-                 await userManager.ConfirmEmailAsync(user, confirmEmailDTO.Token);
-            }
-            catch (Exception ex)
-            {
+                var decodedToken = Encoding.UTF8.GetString(
+                    WebEncoders.Base64UrlDecode(confirmEmailDTO.Token)
+                );
+
+                var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+
+                if (!result.Succeeded)
+                {
                     return new RegisterResponse
                     {
                         Success = false,
-                        ErrorMessage = "Error with confirming Email" + ex
-                    };               
+                        ErrorMessage = string.Join(", ", result.Errors.Select(e => e.Description))
+                    };
+                }
+
+                return new RegisterResponse
+                {
+                    Success = true,
+                    ErrorMessage = "Email confirmed successfully"
+                };
             }
-            
-            return new RegisterResponse
+            catch (Exception ex)
             {
-                Success = true,
-                ErrorMessage = "Email confirmed Successfully"
-            };
+                return new RegisterResponse
+                {
+                    Success = false,
+                    ErrorMessage = $"Invalid token format: {ex.Message}"
+                };
+            }
         }
         public async Task<LoginResponseDTO> LoginAsync(string email, string password)
         {
@@ -151,6 +302,17 @@ namespace Diagnosis.Infrastracture.Repositories
                 });
             }
 
+            var roles = await userManager.GetRolesAsync(user);
+
+            if (!user.EmailConfirmed)
+            {
+                return (new LoginResponseDTO
+                {
+                    Success = false,
+                    ErrorMessage = "You must confirm your Email, please return to your gmail"
+                });
+            }
+
             var isPasswordValid = await userManager.CheckPasswordAsync(user, password);
             if (!isPasswordValid)
             {
@@ -160,8 +322,6 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Invalid email or password"
                 });
             }
-
-            var roles = await userManager.GetRolesAsync(user);
      
             var (token, expiresAt) = await jwtTokenGenerator.GenerateTokenAsync(user, roles);
 
@@ -201,14 +361,15 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);         
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            
+
             if (!string.IsNullOrEmpty(forgotPasswordDTO.ClientUri))
             {
                 var param = new Dictionary<string, string?>
                 {
-                    { "token", token },
+                    { "token", encodedToken },
                     { "email", forgotPasswordDTO.Email! }
                 };
 
@@ -275,11 +436,13 @@ namespace Diagnosis.Infrastracture.Repositories
 
             
             string token = resetPasswordDTO.Token;
+            var decodedToken = Encoding.UTF8.GetString(
+                      WebEncoders.Base64UrlDecode(token)
+);
 
-            
             var resetPassResult = await userManager.ResetPasswordAsync(
                 user,
-                token,
+                decodedToken,
                 resetPasswordDTO.Password!
             );
 

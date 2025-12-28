@@ -1,4 +1,4 @@
-using Diagnosis.Application.Interfaces;
+﻿using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
@@ -18,20 +18,22 @@ namespace Diagnosis.Infrastracture.Repositories
 {
     public class ConsultationRepository : Repository<Consultation>, IConsultationRepository
     {
-      
         private readonly ApplicationDbContext _context;
 
-        public ConsultationRepository(ApplicationDbContext context) : base(context) 
+        public ConsultationRepository(ApplicationDbContext context) : base(context)
         {
-        
             _context = context;
-            
-         
         }
-       public async Task<List<Consultation>> GetByDoctorIdAsync(int doctorId)
+
+        // 🔥 NEW: Dashboard support
+        public IQueryable<Consultation> GetQueryable()
+        {
+            return _context.Consultations.AsQueryable();
+        }
+
+        public async Task<List<Consultation>> GetByDoctorIdAsync(int doctorId)
         {
             return await _context.Consultations
-              
                 .Where(c => c.DoctorId == doctorId)
                 .Include(c => c.Patient)
                 .AsNoTracking()
@@ -46,7 +48,6 @@ namespace Diagnosis.Infrastracture.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
-
 
         public async Task<List<Consultation>> GetByStatusAsync(ConsultationStatus status)
         {
@@ -64,7 +65,6 @@ namespace Diagnosis.Infrastracture.Repositories
                 .FirstOrDefaultAsync(c => c.Id == consultationId);
         }
 
-        //get consultation details
         public async Task<ConsultationDetailsDTO> GetConsultationDetailsAsync(int consultationId)
         {
             var consultation = await _context.Consultations
@@ -89,18 +89,16 @@ namespace Diagnosis.Infrastracture.Repositories
                 PatientGender = consultation.Patient.Gender,
                 Notes = consultation.Notes,
                 Attachments = consultation.FileUrls.ToList(),
-               
                 Symptoms = consultation.Symptoms,
                 Response = consultation.Notes,
-                
                 RequestDate = consultation.Date,
                 Success = true
             };
         }
 
-        public async Task<ConsultationResponseDTO> RejectConsultationAsync(RejectConsultationDTO dto , int consultationId)
+        public async Task<ConsultationResponseDTO> RejectConsultationAsync(RejectConsultationDTO dto, int consultationId)
         {
-            var consultation = await _context.Consultations.FindAsync(consultationId); ;
+            var consultation = await _context.Consultations.FindAsync(consultationId);
             if (consultation == null)
             {
                 return new ConsultationResponseDTO
@@ -109,11 +107,12 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Consultation not found"
                 };
             }
+
             consultation.Status = ConsultationStatus.Rejected;
             consultation.RejectReason = dto.Reason;
             consultation.RejectNotes = dto.Notes;
+
             _context.Consultations.Update(consultation);
-            //add notification to patient about rejection here
             await _context.SaveChangesAsync();
 
             return new ConsultationResponseDTO
@@ -124,7 +123,10 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<ModifyConsultationDTO> GetModifyDataAsync(int consultationId)
         {
-            var consultation = await _context.Consultations.Include(c => c.Patient).FirstOrDefaultAsync(c => c.Id == consultationId);
+            var consultation = await _context.Consultations
+                .Include(c => c.Patient)
+                .FirstOrDefaultAsync(c => c.Id == consultationId);
+
             if (consultation == null)
             {
                 return new ModifyConsultationDTO
@@ -143,7 +145,10 @@ namespace Diagnosis.Infrastracture.Repositories
                 Success = true
             };
         }
-        public async Task<ModifyConsultationResponseDTO> ModifyConsultationAsync(ModifyConsultationRequestDTO dto, int consultationId)
+
+        public async Task<ModifyConsultationResponseDTO> ModifyConsultationAsync(
+            ModifyConsultationRequestDTO dto,
+            int consultationId)
         {
             var consultation = await _context.Consultations.FindAsync(consultationId);
             if (consultation == null)
@@ -155,18 +160,18 @@ namespace Diagnosis.Infrastracture.Repositories
                 };
             }
 
-           
             consultation.Symptoms = dto.Description;
             consultation.Notes = dto.Notes;
 
             _context.Consultations.Update(consultation);
             await _context.SaveChangesAsync();
+
             return new ModifyConsultationResponseDTO
             {
                 Success = true
             };
         }
-        //accept consultation
+
         public async Task<ConsultationResponseDTO> AcceptConsultationAsync(int consultationId)
         {
             var consultation = await _context.Consultations.FindAsync(consultationId);
@@ -180,13 +185,20 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             consultation.Status = ConsultationStatus.Accepted;
-
             _context.Consultations.Update(consultation);
             await _context.SaveChangesAsync();
+
             return new ConsultationResponseDTO
             {
                 Success = true
             };
         }
+        public async Task<int> GetDoctorAsync(string userId)
+        {
+            var doctor = await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (doctor == null)
+                throw new ArgumentNullException(nameof(doctor));
+            return doctor.Id;
+        }
     }
-} 
+}

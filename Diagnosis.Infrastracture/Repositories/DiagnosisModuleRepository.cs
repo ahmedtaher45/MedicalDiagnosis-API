@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Application.DTOs.DiagnosisModule;
+using Diagnosis.Application.DTOs.Inquiry;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Models.Entites;
@@ -27,7 +28,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _provider = provider;
         }
 
-        public async Task<ProviderResponse> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO)
+        public async Task<ProviderResponse> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
         {
             foreach (var file in createDiagnosisDTO.Files!)
             {
@@ -48,9 +49,13 @@ namespace Diagnosis.Infrastracture.Repositories
                 createDiagnosisDTO.Description!
             );
 
+            var patient = _context.Patients.FirstOrDefault(p => p.UserId == userId);
+            if (patient == null)
+                throw new Exception("Error with Id");
+
             var consultaion = new Consultation
             {
-                PatientId = createDiagnosisDTO.PatientId,
+                PatientId = patient.Id,
                 DoctorId = createDiagnosisDTO.DoctorId,
                 Symptoms = createDiagnosisDTO.Symptoms,
                 Notes = createDiagnosisDTO.Description,
@@ -66,7 +71,7 @@ namespace Diagnosis.Infrastracture.Repositories
             await _context.Consultations.AddAsync(consultaion);
             await _context.SaveChangesAsync();
 
-            Diagnosis.InquiryId = consultaion.Id;
+            Diagnosis.DiagnosisId = consultaion.Id;
             return Diagnosis;
         }
 

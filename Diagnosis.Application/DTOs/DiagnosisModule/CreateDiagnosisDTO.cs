@@ -9,7 +9,6 @@ namespace Diagnosis.Application.DTOs.DiagnosisModule
 {
     public class CreateDiagnosisDTO
     {
-        public int PatientId { get; set; }
         public int DoctorId { get; set; }
         public ICollection<IFormFile>? Files { get; set; }
         public string? Symptoms { get; set; }
