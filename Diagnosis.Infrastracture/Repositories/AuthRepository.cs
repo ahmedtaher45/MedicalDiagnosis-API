@@ -79,6 +79,10 @@ namespace Diagnosis.Infrastracture.Repositories
             };
         }
 
+        public async Task<> AddDoctorAsync()
+        {
+
+        }
         public async Task SendConfirmationEmail(ApplicationUser user, string clientUri)
         {
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
