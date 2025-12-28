@@ -13,9 +13,9 @@ namespace Diagnosis.API.Controllers
     public class DoctorManagementController: ControllerBase
     {
 
-        private readonly IUnitOfWork _unitOfWork;
+        
         private readonly ILogger<DoctorManagementController> _logger;
-        public DoctorManagementController(IUnitOfWork unitOfWork, ILogger<DoctorManagementController> logger)
+        public DoctorManagementController(ILogger<DoctorManagementController> logger)
         {
             //  _unitOfWork = unitOfWork;
             _logger = logger;
