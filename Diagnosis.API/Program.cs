@@ -83,6 +83,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetFaqsUseCase>();
             builder.Services.AddScoped<IFaq , FaqRepository>();
             builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
+            builder.Services.AddScoped<AddSuportTicketReplyUseCase>();
+            builder.Services.AddScoped<GetSuportTicketReplyUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
