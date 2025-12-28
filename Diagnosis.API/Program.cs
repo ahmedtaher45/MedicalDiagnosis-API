@@ -10,6 +10,7 @@ using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
 using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Application.UseCases.Profile;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
@@ -74,6 +75,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
+            builder.Services.AddScoped<GetDoctorUseCase>(); 
+            builder.Services.AddScoped<GetPatientUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
@@ -97,10 +100,8 @@ namespace Diagnosis.API
             ///// ====== Profiles (Today Work) ======
 
             // Doctor & Patient repositories
-            builder.Services.AddScoped<IRepository<Doctor>, DoctorRepository>();
-            builder.Services.AddScoped<IRepository<Patient>, PatientRepository>();
-            builder.Services.AddScoped<IPatientManagement, PatientRepository>(); 
-            builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
+
+          
 
 
 

@@ -52,6 +52,8 @@ namespace Diagnosis.Infrastracture.Repositories
             Consultation = new ConsultationRepository(_context);
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            Patient = new PatientRepository(_context);
+            Doctor = new DoctorRepository(_context);
 
         }
 
