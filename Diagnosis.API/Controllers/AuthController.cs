@@ -1,6 +1,4 @@
-﻿using Diagnosis.Application.DTOs;
-using Diagnosis.Application.Services.EmailService;
-using Diagnosis.Application.UseCases;
+﻿using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.WebUtilities;
+using Diagnosis.Application.DTOs.Auth;
+using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases;
 
 namespace Diagnosis.API.Controllers
 {
@@ -27,7 +28,19 @@ namespace Diagnosis.API.Controllers
             }
             return Ok(result);
         }
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(
+            [FromServices] ConfirmEmailUseCase confirmEmailUseCase,
+            [FromBody] ConfirmEmailDTO confirmEmailDTO)
+        {
+            var result = await confirmEmailUseCase.ExcuteAsync(confirmEmailDTO);
 
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
         /// <summary>
         /// Change user password - requires authentication
         /// </summary>
@@ -85,10 +98,11 @@ namespace Diagnosis.API.Controllers
             var result = await loginUseCase.Login(loginDTO);
             if (!result.Success)
             {
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             }
             return Ok(result);
         }
+
         [HttpPost("forget-password")]
         public async Task<IActionResult> ForgotPassword(
             [FromBody]ForgotPasswordDTO forgotPasswordDTO, 

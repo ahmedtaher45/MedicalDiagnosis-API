@@ -5,18 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diagnosis.Domain.Entites
+namespace Diagnosis.Domain.Models.Entites
 {
+    public enum RequestStatus
+    {
+        Peding = 0,
+        Replied = 1
+    }
     public class Request: BaseEntity
     {
-        public int PatientId { get; set; }
-        public int DoctorId { get; set; }
-        public string RequestType { get; set; }
-        public DateTime RequestDate { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
-        public string Message { get; set; }
-        public Patient Patient { get; set; }
-        public Doctor Doctor { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Message { get; set; }
+        public RequestStatus Status { get; set; }
+        public string? Reply { get; set; }
     }
 }
