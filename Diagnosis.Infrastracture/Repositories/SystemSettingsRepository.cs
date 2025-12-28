@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class SystemSettingsRepository: Repository
+    public class SystemSettingsRepository
     {
     }
 }

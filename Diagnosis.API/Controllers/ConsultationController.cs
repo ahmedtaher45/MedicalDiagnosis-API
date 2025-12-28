@@ -17,12 +17,13 @@ namespace Diagnosis.API.Controllers
     {
        
         [Authorize(Roles = "Doctor")]
-        [HttpGet("doctor/{doctorId}")]
+        [HttpGet("all")]
         public async Task<IActionResult> GetConsultationsByDoctorId(
-            [FromRoute] int doctorId,
-            [FromServices] GetDoctorConsultationsUseCase _getDoctorConsultationsUseCase)
+            [FromServices] GetDoctorConsultationsUseCase _getDoctorConsultationsUseCase
+            )
         {
-            var consultations = await _getDoctorConsultationsUseCase.GetDoctorConsultations(doctorId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var consultations = await _getDoctorConsultationsUseCase.GetDoctorConsultations(userId);
             return Ok(consultations);
         }
 

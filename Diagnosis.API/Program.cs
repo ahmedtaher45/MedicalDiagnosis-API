@@ -11,6 +11,7 @@ using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Faq;
 using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Application.UseCases.SupportTicket;
+using Diagnosis.Application.UseCases.SystemSittings;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -79,6 +80,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
             builder.Services.AddScoped<AddDoctorUseCase>();
+            builder.Services.AddScoped<AddAdminUseCase>();
             builder.Services.AddScoped<AddSupportTicketUseCase>();
             builder.Services.AddScoped<GetSupportTicketsUseCase>();
             builder.Services.AddScoped<GetFaqsUseCase>();

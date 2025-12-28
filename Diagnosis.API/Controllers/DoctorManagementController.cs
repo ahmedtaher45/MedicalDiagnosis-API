@@ -4,6 +4,7 @@ using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Infrastracture.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,7 @@ namespace Diagnosis.API.Controllers
             _logger = logger;
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-doctor")]
         public async Task<IActionResult> AddDoctor(
             [FromServices] AddDoctorUseCase addDoctorUseCase,

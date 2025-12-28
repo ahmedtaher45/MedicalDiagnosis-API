@@ -112,7 +112,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         .Property(p => p.Status)
         .HasConversion<string>();
 
-        modelBuilder.Entity<DoctorDiagnosis>(d => 
         modelBuilder.Entity<Faq>()
             .Property(p => p.Type)
             .HasConversion<string>();

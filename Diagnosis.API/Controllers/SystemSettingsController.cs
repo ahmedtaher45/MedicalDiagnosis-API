@@ -9,7 +9,7 @@ namespace Diagnosis.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize(Roles = "Admin")]
     public class SystemSettingsController : ControllerBase
     {
         [HttpPost("add-admin")]

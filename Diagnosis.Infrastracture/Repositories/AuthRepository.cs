@@ -122,14 +122,17 @@ namespace Diagnosis.Infrastracture.Repositories
                     Message = "Doctor's Details cannot be null"
                 };
             }
-            var user = new ApplicationUser
-            {
-                Email = addDoctorDTO.Email,
-                UserName = addDoctorDTO.UserName,
-                PhoneNumber = addDoctorDTO.PhoneNumber
-            };
+            ApplicationUser? user = null;
+
             try
             {
+                user = new ApplicationUser
+                {
+                    Email = addDoctorDTO.Email,
+                    UserName = addDoctorDTO.UserName,
+                    PhoneNumber = addDoctorDTO.PhoneNumber
+                };
+
                 var result = await userManager.CreateAsync(user, addDoctorDTO.Password!);
                 if (!result.Succeeded)
                 {
@@ -168,7 +171,7 @@ namespace Diagnosis.Infrastracture.Repositories
             return new AddDoctorRespose
             {
                 Success = true,
-                Message = "Doctor was added successfully, please botify him to check for Confirmation Email"
+                Message = "Doctor was added successfully, please notify him to check for Confirmation Email"
             };
         }
 
@@ -182,20 +185,23 @@ namespace Diagnosis.Infrastracture.Repositories
                     Message = "Admin's Details cannot be null"
                 };
             }
-            var user = new ApplicationUser
-            { 
-                UserName = addAdminDTO.UserName,
-                Email = addAdminDTO.Email
-            };
+            ApplicationUser? user = null;
             try
             {
+                user = new ApplicationUser
+                {
+                    UserName = addAdminDTO.UserName,
+                    Email = addAdminDTO.Email,
+                    EmailConfirmed = true
+                };
+
                 var result = await userManager.CreateAsync(user, addAdminDTO.Password!);
                 if (!result.Succeeded)
                 {
                     return new AddAdminResponse
                     {
                         Success = false,
-                        Message = "Admin user creation failed"
+                        Message = string.Join(", ", result.Errors.Select(e => e.Description))
                     };
                 }
                 await userManager.AddToRoleAsync(user, "Admin");
@@ -296,6 +302,8 @@ namespace Diagnosis.Infrastracture.Repositories
                 });
             }
 
+            var roles = await userManager.GetRolesAsync(user);
+
             if (!user.EmailConfirmed)
             {
                 return (new LoginResponseDTO
@@ -314,8 +322,6 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Invalid email or password"
                 });
             }
-
-            var roles = await userManager.GetRolesAsync(user);
      
             var (token, expiresAt) = await jwtTokenGenerator.GenerateTokenAsync(user, roles);
 
@@ -355,14 +361,15 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);         
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            
+
             if (!string.IsNullOrEmpty(forgotPasswordDTO.ClientUri))
             {
                 var param = new Dictionary<string, string?>
                 {
-                    { "token", token },
+                    { "token", encodedToken },
                     { "email", forgotPasswordDTO.Email! }
                 };
 
@@ -429,11 +436,13 @@ namespace Diagnosis.Infrastracture.Repositories
 
             
             string token = resetPasswordDTO.Token;
+            var decodedToken = Encoding.UTF8.GetString(
+                      WebEncoders.Base64UrlDecode(token)
+);
 
-            
             var resetPassResult = await userManager.ResetPasswordAsync(
                 user,
-                token,
+                decodedToken,
                 resetPasswordDTO.Password!
             );
 

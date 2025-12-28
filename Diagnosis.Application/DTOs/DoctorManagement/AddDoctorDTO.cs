@@ -35,7 +35,6 @@ namespace Diagnosis.Application.DTOs.DoctorManagement
         public string? NationalId { get; set; }
         public DateTime BirhDate { get; set; }
         public string? Address { get; set; }
-        public string? Bio { get; set; }
         public int? ExperienceYears { get; set; }
 
         [Required(ErrorMessage = "ClientUri is required")]

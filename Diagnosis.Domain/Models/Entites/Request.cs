@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.Domain.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Diagnosis.Domain.Models.Entites
         Peding = 0,
         Replied = 1
     }
-    public class Request
+    public class Request: BaseEntity
     {
         public string? Name { get; set; }
         public string? Email { get; set; }
