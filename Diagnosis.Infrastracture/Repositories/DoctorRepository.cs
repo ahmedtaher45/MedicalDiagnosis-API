@@ -72,7 +72,6 @@ namespace Diagnosis.Infrastracture.Repositories
         //    await _context.SaveChangesAsync();
         //    return true;
         //}
-         //========== IDoctorManagement Implementation ==========
         public async Task<DoctorProfileDto?> GetDoctorProfileAsync(int doctorId)
         {
             var doctor = await _context.Set<Doctor>()

@@ -91,6 +91,9 @@ namespace Diagnosis.Infrastracture.Repositories
                 LName = patient.LName,
                 Email = patient.User.Email,
                 Gender = patient.Gender,
+
+
+
             };
         }
     }
