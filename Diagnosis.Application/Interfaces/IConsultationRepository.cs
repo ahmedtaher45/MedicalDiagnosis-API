@@ -26,5 +26,8 @@ namespace Diagnosis.Application.Interfaces
         Task<ConsultationResponseDTO> CancelConsultationAsync(int consultationId);
         Task<Dictionary<string, int>> GetConsultationCountByDayAsync(int patientId);
         Task<TopSymptomsDTO> GetTopSymptomsThisWeek(int patientId);
+
+        Task<int> GetDoctorAsync(string userId);
+
     }
 }

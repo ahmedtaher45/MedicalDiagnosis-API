@@ -1,4 +1,6 @@
 ﻿using Diagnosis.Application.DTOs.Auth;
+using Diagnosis.Application.DTOs.DoctorManagement;
+using Diagnosis.Application.DTOs.SystemSettings;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +15,8 @@ namespace Diagnosis.Application.Interfaces
     public interface IAuth
     {
         Task<RegisterResponse> RegisterAsync(RegisterDTO registerDTO);
+        Task<AddDoctorRespose> AddDoctorAsync(AddDoctorDTO addDoctorDTO);
+        Task<AddAdminResponse> AddAdminAsync(AddAdminDTO addAdminDTO);
         Task<LoginResponseDTO> LoginAsync(string email, string password);
         Task SendConfirmationEmail(ApplicationUser user, string clientUri);
         Task<RegisterResponse> ConfirmEmailAsync(ConfirmEmailDTO confirmEmailDTO);

@@ -9,6 +9,8 @@ namespace Diagnosis.Application.Interfaces
     public interface IUnitOfWork
     {
         IAuth Auth { get; }
+        IFaq Faq { get; }
+        ISupportTicket SupportTicket { get; }
         IDiagnosisModuleRepository DiagnosisModule { get; }
         IInquiryRepository Inquiry { get; }
         ITreatmentProvider TreatmentProvider { get; }
@@ -17,6 +19,10 @@ namespace Diagnosis.Application.Interfaces
         IProfileRepository Profile { get; }
         IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; }
         ISettingsRepository Settings { get; }
+        IPatientManagement Patient { get; }
+        IDoctorManagement Doctor { get; }
+        IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
+
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
 

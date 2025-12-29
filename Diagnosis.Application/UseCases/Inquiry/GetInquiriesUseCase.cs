@@ -17,10 +17,11 @@ namespace Diagnosis.Application.UseCases.Inquiry
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ICollection<InquiryItemResponse>> ExecuteAsync(int patientId)
+        public async Task<ICollection<InquiryItemResponse>> ExecuteAsync(string userId)
         {
             try
             {
+                var patientId = await _unitOfWork.Inquiry.GetPatientAsync(userId);
                 var inquiries = await _unitOfWork.Inquiry.GetManyAsync(c => c.PatientId == patientId
                 && c.Type == Domain.Models.Entites.ConsultationType.Inquiry);
 
@@ -40,13 +41,16 @@ namespace Diagnosis.Application.UseCases.Inquiry
                             Date = inquiry.Date
                         });
                     }
-                    dto.Add(new InquiryItemResponse
+                    else
                     {
-                        Status = "Replied",
-                        Symptoms = inquiry.Symptoms,
-                        InquiryId = inquiry.Id,
-                        Date = inquiry.Date
-                    });
+                        dto.Add(new InquiryItemResponse
+                        {
+                            Status = "Replied",
+                            Symptoms = inquiry.Symptoms,
+                            InquiryId = inquiry.Id,
+                            Date = inquiry.Date
+                        });
+                    }
                 }
                 return dto;
             }

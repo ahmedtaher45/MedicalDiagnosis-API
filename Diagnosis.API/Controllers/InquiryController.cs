@@ -4,12 +4,13 @@ using Diagnosis.Application.UseCases.PatientDashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Diagnosis.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Patient")]
+    [Authorize(Roles = "Patient")]
     public class InquiryController : ControllerBase
     {
         [HttpPost]
@@ -17,7 +18,8 @@ namespace Diagnosis.API.Controllers
             [FromServices] AddInquiryUseCase addInquiryUseCase,
             [FromForm] AddInquiryDTO addInquiryDTO)
         {
-            var result = await addInquiryUseCase.ExecuteAsync(addInquiryDTO);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await addInquiryUseCase.ExecuteAsync(addInquiryDTO, userId);
 
             if (!result.Success)
                 return BadRequest(result);
@@ -26,22 +28,23 @@ namespace Diagnosis.API.Controllers
         }
     
 
-        [HttpGet("inquiries/{patientId}")]
+        [HttpGet("inquiries")]
         public async Task<IActionResult> GetInquiries(
-        [FromRoute] int patientId,
         [FromServices] GetInquiriesUseCase getInquiriesUseCase)
         {
-            var result = await getInquiriesUseCase.ExecuteAsync(patientId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await getInquiriesUseCase.ExecuteAsync(userId);
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("{inquiryId}")]
         public async Task<IActionResult> GetInquiry(
-            [FromQuery] int patientId,
-            [FromQuery] int inquiryId,
+            [FromRoute] int inquiryId,
             [FromServices] GetInquiryUseCase getInquiryUseCase)
         {
-            var result = await getInquiryUseCase.ExecuteAsync(patientId, inquiryId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+
+            var result = await getInquiryUseCase.ExecuteAsync(userId, inquiryId);
             return Ok(result);
         }
 

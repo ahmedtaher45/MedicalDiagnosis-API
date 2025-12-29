@@ -13,8 +13,9 @@ namespace Diagnosis.Application.UseCases.Consultation
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<List<ConsultationDTO>> GetDoctorConsultations(int doctorId)
+        public async Task<List<ConsultationDTO>> GetDoctorConsultations(string userId)
         {
+            var doctorId = await _unitOfWork.Consultation.GetDoctorAsync(userId);
             var consultation = await _unitOfWork.Consultation.GetByDoctorIdAsync(doctorId);
 
             return consultation.Select(c => new ConsultationDTO
