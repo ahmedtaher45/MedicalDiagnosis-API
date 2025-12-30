@@ -53,6 +53,11 @@ namespace Diagnosis.Infrastracture.Repositories
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
+
+            Faq = new FaqRepository(_context);
+            SupportTicket = new SupportTicketRepository(_context);
+            Treatment = new TreatmentRepository(_context); 
+
         }
 
         public IAuth Auth { get; private set; }
@@ -62,6 +67,9 @@ namespace Diagnosis.Infrastracture.Repositories
         public IInquiryRepository Inquiry { get; private set; }
         public ITreatmentProvider TreatmentProvider { get; private set; }
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
+
+        public ITreatmentRepository Treatment { get; private set; }
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
