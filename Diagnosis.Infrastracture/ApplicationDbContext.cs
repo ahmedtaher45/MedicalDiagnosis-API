@@ -22,6 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Symptom> Symptoms { get; set; }
     public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
     public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
+    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

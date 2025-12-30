@@ -77,6 +77,10 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
+            builder.Services.AddScoped<GetAdminDashboardUseCase>();
+            builder.Services.AddScoped<GetDoctorDashboardUseCase>();
+            builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
+            builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
