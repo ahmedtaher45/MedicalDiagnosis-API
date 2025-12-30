@@ -22,5 +22,6 @@ namespace Diagnosis.Application.Interfaces
         Task<ModifyConsultationDTO> GetModifyDataAsync(int consultationId);
         Task<ModifyConsultationResponseDTO> ModifyConsultationAsync(ModifyConsultationRequestDTO dto, int consultationId);
         Task<ConsultationResponseDTO> AcceptConsultationAsync(int consultationId);
+        Task<int> GetDoctorAsync(string userId);
     }
 }

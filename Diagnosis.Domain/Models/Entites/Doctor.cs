@@ -15,14 +15,14 @@ namespace Diagnosis.Domain.Entites
         public string? FName { get; set; }
         public string? LName { get; set; }
         public string? Specialization { get; set; }
-        public string? Bio { get; set; }
+        public string? NationalId { get; set; }
+        public DateTime BirhDate { get; set; }
+        public string? Gender { get; set; }
+        public string? Address { get; set; }
         public int? ExperienceYears { get; set; }
         public decimal? Rating { get; set; }
-        public string? LicenseNumber { get; set; }
         public string? ProfileImageUrl { get; set; }
         public ICollection<Payment>? Payments { get; set; }
-        public ICollection<Prescription>? Prescriptions { get; set; }
-        public ICollection<LabResult>? LabResults { get; set; }
         public ICollection<Consultation>? Consultations { get; set; }
         public ICollection<SupportTicket>? SupportTickets { get; set; }
 

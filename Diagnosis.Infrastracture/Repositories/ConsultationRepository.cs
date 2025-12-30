@@ -193,5 +193,12 @@ namespace Diagnosis.Infrastracture.Repositories
                 Success = true
             };
         }
+        public async Task<int> GetDoctorAsync(string userId)
+        {
+            var doctor = await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (doctor == null)
+                throw new ArgumentNullException(nameof(doctor));
+            return doctor.Id;
+        }
     }
 }

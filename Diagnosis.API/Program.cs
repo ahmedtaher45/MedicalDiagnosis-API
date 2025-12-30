@@ -10,7 +10,9 @@ using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Faq;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Application.UseCases.MedicalFiles;
 using Diagnosis.Application.UseCases.SupportTicket;
+using Diagnosis.Application.UseCases.SystemSittings;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -75,17 +77,26 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
+            builder.Services.AddScoped<GetAdminDashboardUseCase>();
+            builder.Services.AddScoped<GetDoctorDashboardUseCase>();
+            builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
+            builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
+            builder.Services.AddScoped<AddDoctorUseCase>();
+            builder.Services.AddScoped<AddAdminUseCase>();
             builder.Services.AddScoped<AddSupportTicketUseCase>();
             builder.Services.AddScoped<GetSupportTicketsUseCase>();
             builder.Services.AddScoped<GetFaqsUseCase>();
             builder.Services.AddScoped<IFaq , FaqRepository>();
             builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
+            builder.Services.AddScoped<AddFileUseCase>();
+            builder.Services.AddScoped<GetFileUseCase>();
+            builder.Services.AddScoped<GetFilesForPatientUseCase>();
+            builder.Services.AddScoped<DeleteFileUseCase>();
             builder.Services.AddScoped<AddSuportTicketReplyUseCase>();
             builder.Services.AddScoped<GetSuportTicketReplyUseCase>();
-
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -106,6 +117,17 @@ namespace Diagnosis.API
             {
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
+
+
+            /////
+            ///// ====== Profiles (Today Work) ======
+
+            // Doctor & Patient repositories
+
+            builder.Services.AddScoped<IPatientManagement, PatientRepository>(); 
+            builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
+
+
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
