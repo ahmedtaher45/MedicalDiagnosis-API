@@ -20,6 +20,7 @@ namespace Diagnosis.Application.Interfaces
         IDoctorDashboardRepository DoctorDashboard { get; }
 
         // ✨ New Repositories
+        IMedicalFilesRepository MedicalFiles { get; }
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
