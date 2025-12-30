@@ -80,6 +80,10 @@ namespace Diagnosis.API
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
             builder.Services.AddScoped<GetDoctorUseCase>(); 
             builder.Services.AddScoped<GetPatientUseCase>();
+            builder.Services.AddScoped<ResetDoctorPasswordUseCase>();
+            builder.Services.AddScoped<ChangeDoctorStatusUseCase>();
+            builder.Services.AddScoped<GetDoctorsListUseCase>();
+
 
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
@@ -120,7 +124,7 @@ namespace Diagnosis.API
 
             builder.Services.AddScoped<IPatientManagement, PatientRepository>(); 
             builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
-            builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
+           // builder.Services.AddScoped<IDoctorManagement, DoctorRepository>();
 
 
 

@@ -19,6 +19,7 @@ namespace Diagnosis.Application.DTOs.Profile
         public string Address { get; set; } 
         public string Specialization { get; set; } 
         public bool IsActive { get; set; }
+        public int ConsultationsCount { get; set; }
 
         // Statistics - من الصورة
         public int TotalPatients { get; set; }
