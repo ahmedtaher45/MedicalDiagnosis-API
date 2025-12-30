@@ -10,6 +10,7 @@ using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Faq;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Application.UseCases.MedicalFiles;
 using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Application.UseCases.SystemSittings;
 using Diagnosis.Domain.Models.Entites;
@@ -86,6 +87,10 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetFaqsUseCase>();
             builder.Services.AddScoped<IFaq , FaqRepository>();
             builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
+            builder.Services.AddScoped<AddFileUseCase>();
+            builder.Services.AddScoped<GetFileUseCase>();
+            builder.Services.AddScoped<GetFilesForPatientUseCase>();
+            builder.Services.AddScoped<DeleteFileUseCase>();
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {

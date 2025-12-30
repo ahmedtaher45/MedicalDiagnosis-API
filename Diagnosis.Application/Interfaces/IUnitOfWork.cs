@@ -16,7 +16,7 @@ namespace Diagnosis.Application.Interfaces
         ITreatmentProvider TreatmentProvider { get; }
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
-        // ✨ New Repositories
+        IMedicalFilesRepository MedicalFiles { get; }
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
