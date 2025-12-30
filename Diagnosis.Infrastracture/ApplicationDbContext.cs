@@ -27,6 +27,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Symptom> Symptoms { get; set; }
     public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
     public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
+    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -51,6 +52,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne(p => p.User)
             .HasForeignKey<Patient>(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<ApplicationUser>()
+          .HasMany(u => u.SupportTickets)
+          .WithOne(p => p.User)
+          .HasForeignKey(p => p.userId)
+          .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ApplicationUser>()
             .HasMany(u => u.Notifications)
@@ -102,6 +108,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Notification>()
             .Property(p => p.NotificationType)
             .HasConversion<string>();
+
+        modelBuilder.Entity<Request>()
+        .Property(p => p.Status)
+        .HasConversion<string>();
 
         modelBuilder.Entity<Faq>()
             .Property(p => p.Type)

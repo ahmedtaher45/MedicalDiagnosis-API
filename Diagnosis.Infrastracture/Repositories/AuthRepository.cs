@@ -1,4 +1,6 @@
 ﻿using Diagnosis.Application.DTOs.Auth;
+using Diagnosis.Application.DTOs.DoctorManagement;
+using Diagnosis.Application.DTOs.SystemSettings;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Entites;
@@ -82,7 +84,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 DateOfBirth = registerDTO.BirthDate
                 };
 
-                _context.Patients.Add(patient);
+                await _context.Patients.AddAsync(patient);
                 await _context.SaveChangesAsync();
             }
                 catch (Exception ex)
@@ -110,6 +112,115 @@ namespace Diagnosis.Infrastracture.Repositories
             }
             
 
+        public async Task<AddDoctorRespose> AddDoctorAsync(AddDoctorDTO addDoctorDTO)
+        {
+            if (addDoctorDTO == null)
+            {
+                return new AddDoctorRespose
+                {
+                    Success = false,
+                    Message = "Doctor's Details cannot be null"
+                };
+            }
+            ApplicationUser? user = null;
+
+            try
+            {
+                user = new ApplicationUser
+                {
+                    Email = addDoctorDTO.Email,
+                    UserName = addDoctorDTO.UserName,
+                    PhoneNumber = addDoctorDTO.PhoneNumber
+                };
+
+                var result = await userManager.CreateAsync(user, addDoctorDTO.Password!);
+                if (!result.Succeeded)
+                {
+                    return new AddDoctorRespose
+                    {
+                        Success = false,
+                        Message = "Doctor user creation failed"
+                    };
+                }
+                await userManager.AddToRoleAsync(user ,"Doctor");
+
+                var doctor = new Doctor
+                {
+                    UserId = user.Id,
+                    ExperienceYears = addDoctorDTO.ExperienceYears,
+                    NationalId = addDoctorDTO.NationalId,
+                    BirhDate = addDoctorDTO.BirhDate,
+                    Address = addDoctorDTO.Address,
+                    Gender = addDoctorDTO.Gender
+                };
+
+
+                await _context.Doctors.AddAsync(doctor);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                return new AddDoctorRespose
+                {
+                    Success = false,
+                    Message = "Error while adding Doctor Data: " + ex.Message
+                };
+            }
+            await SendConfirmationEmail(user, addDoctorDTO.ClientUri!);
+            return new AddDoctorRespose
+            {
+                Success = true,
+                Message = "Doctor was added successfully, please notify him to check for Confirmation Email"
+            };
+        }
+
+        public async Task<AddAdminResponse> AddAdminAsync(AddAdminDTO addAdminDTO)
+        {
+            if (addAdminDTO == null)
+            {
+                return new AddAdminResponse
+                {
+                    Success = false,
+                    Message = "Admin's Details cannot be null"
+                };
+            }
+            ApplicationUser? user = null;
+            try
+            {
+                user = new ApplicationUser
+                {
+                    UserName = addAdminDTO.UserName,
+                    Email = addAdminDTO.Email,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(user, addAdminDTO.Password!);
+                if (!result.Succeeded)
+                {
+                    return new AddAdminResponse
+                    {
+                        Success = false,
+                        Message = string.Join(", ", result.Errors.Select(e => e.Description))
+                    };
+                }
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
+            catch (Exception ex)
+            {
+                return new AddAdminResponse
+                {
+                    Success = false,
+                    Message = "Error while adding Admin Data: " + ex.Message
+                };
+            }
+
+            return new AddAdminResponse
+            {
+                Success = true,
+                Message = "Admin user was added successfully"
+            };
+        }
         public async Task SendConfirmationEmail(ApplicationUser user, string clientUri)
         {
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -191,6 +302,8 @@ namespace Diagnosis.Infrastracture.Repositories
                 });
             }
 
+            var roles = await userManager.GetRolesAsync(user);
+
             if (!user.EmailConfirmed)
             {
                 return (new LoginResponseDTO
@@ -209,8 +322,6 @@ namespace Diagnosis.Infrastracture.Repositories
                     ErrorMessage = "Invalid email or password"
                 });
             }
-
-            var roles = await userManager.GetRolesAsync(user);
      
             var (token, expiresAt) = await jwtTokenGenerator.GenerateTokenAsync(user, roles);
 
@@ -250,14 +361,15 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);         
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            
+
             if (!string.IsNullOrEmpty(forgotPasswordDTO.ClientUri))
             {
                 var param = new Dictionary<string, string?>
                 {
-                    { "token", token },
+                    { "token", encodedToken },
                     { "email", forgotPasswordDTO.Email! }
                 };
 
@@ -324,11 +436,13 @@ namespace Diagnosis.Infrastracture.Repositories
 
             
             string token = resetPasswordDTO.Token;
+            var decodedToken = Encoding.UTF8.GetString(
+                      WebEncoders.Base64UrlDecode(token)
+);
 
-            
             var resetPassResult = await userManager.ResetPasswordAsync(
                 user,
-                token,
+                decodedToken,
                 resetPasswordDTO.Password!
             );
 

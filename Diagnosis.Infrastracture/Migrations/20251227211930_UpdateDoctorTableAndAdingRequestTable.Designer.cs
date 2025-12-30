@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251226195008_updateinSupportTicketTable")]
-    partial class updateinSupportTicketTable
+    [Migration("20251227211930_UpdateDoctorTableAndAdingRequestTable")]
+    partial class UpdateDoctorTableAndAdingRequestTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,8 +32,14 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BirhDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -44,6 +50,9 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -57,6 +66,9 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("NationalId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfileImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -83,6 +95,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = -1,
                             Bio = "Skin specialist",
+                            BirhDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ExperienceYears = 8,
                             FName = "Ahmed",
                             IsDeleted = false,
@@ -550,7 +563,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d924104b-108d-470e-a0c2-448136dc4d4d",
+                            ConcurrencyStamp = "36defe16-8b64-48fd-956b-1a725dccb37a",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -558,7 +571,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c4d386f0-65e2-48a3-a6ae-3e99ee2c21ee",
+                            SecurityStamp = "8a631c7a-0009-4521-a99d-9a45f083dcbd",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -566,7 +579,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f1f55efc-1c42-4042-b16f-7b07b447b7e6",
+                            ConcurrencyStamp = "f82c6e37-0c4f-4ed1-a441-7678fe5e62b2",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -582,7 +595,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2590a673-18c7-42a9-923f-1973742cf718",
+                            ConcurrencyStamp = "c7f60e99-5871-447f-99f3-ca6960b8851a",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -945,6 +958,44 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Request", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reply")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Request");
+                });
+
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SuggestedMedication", b =>
                 {
                     b.Property<int>("Id")
@@ -1081,11 +1132,16 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("SupportTickets");
                 });
@@ -1506,19 +1562,20 @@ namespace Diagnosis.Infrastracture.Migrations
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SupportTicket", b =>
                 {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
+                    b.HasOne("Diagnosis.Domain.Entites.Doctor", null)
                         .WithMany("SupportTickets")
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", null)
+                        .WithMany("SupportTickets")
+                        .HasForeignKey("PatientId");
+
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
+                        .WithMany("SupportTickets")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("SupportTickets")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
@@ -1619,6 +1676,8 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Patient");
+
+                    b.Navigation("SupportTickets");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>

@@ -17,7 +17,7 @@ namespace Diagnosis.API.Controllers
             [FromServices] AddInquiryUseCase addInquiryUseCase,
             [FromForm] AddInquiryDTO addInquiryDTO)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.ToString();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
             var result = await addInquiryUseCase.ExecuteAsync(addInquiryDTO, userId);
 
             if (!result.Success)
@@ -31,7 +31,7 @@ namespace Diagnosis.API.Controllers
         public async Task<IActionResult> GetInquiries(
         [FromServices] GetInquiriesUseCase getInquiriesUseCase)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.ToString();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
             var result = await getInquiriesUseCase.ExecuteAsync(userId);
             return Ok(result);
         }
@@ -41,7 +41,7 @@ namespace Diagnosis.API.Controllers
             [FromRoute] int inquiryId,
             [FromServices] GetInquiryUseCase getInquiryUseCase)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.ToString();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
 
             var result = await getInquiryUseCase.ExecuteAsync(userId, inquiryId);
             return Ok(result);

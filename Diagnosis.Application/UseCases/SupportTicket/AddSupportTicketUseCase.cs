@@ -17,9 +17,10 @@ namespace Diagnosis.Application.UseCases.SupportTicket
             _unitOfWork = unitOfWork;
         }        
 
-        public async Task CreateSupportTicketAsync(SupportTicketDTO supportTicketDTO)
+        public async Task CreateSupportTicketAsync(string userId , SupportTicketDTO supportTicketDTO)
         {
-            await _unitOfWork.SupportTicket.CreateSupportTicketAsync(supportTicketDTO);
+
+            await _unitOfWork.SupportTicket.CreateSupportTicketAsync(supportTicketDTO , userId);
         }
     }
 }

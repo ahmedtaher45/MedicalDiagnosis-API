@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251226000754_AddHelpTables")]
-    partial class AddHelpTables
+    [Migration("20251227172608_initial-create")]
+    partial class initialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -550,7 +550,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "200d2086-35e1-492c-be5f-0ae3016a02cd",
+                            ConcurrencyStamp = "83cff965-e2da-452d-b78f-5e7fa5c1f7a0",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -558,7 +558,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2b2966e6-91b1-4b6d-b079-1f899e3fd893",
+                            SecurityStamp = "b10ee2e6-4d76-4a41-9378-5089a2b3d053",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -566,7 +566,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "372a132b-c07b-4c7b-ba8d-afc082511200",
+                            ConcurrencyStamp = "cd2aac68-434e-4fe3-bd02-5c9fa2706959",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -582,7 +582,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a456e807-17f5-40ff-b6b0-be5ff82dfd8e",
+                            ConcurrencyStamp = "1b76410a-7b6b-4a9e-93d8-048b018b9109",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1060,7 +1060,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DoctorId")
+                    b.Property<int?>("DoctorId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -1069,7 +1069,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PatientId")
+                    b.Property<int?>("PatientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Reply")
@@ -1081,11 +1081,16 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("SupportTickets");
                 });
@@ -1506,21 +1511,20 @@ namespace Diagnosis.Infrastracture.Migrations
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SupportTicket", b =>
                 {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
+                    b.HasOne("Diagnosis.Domain.Entites.Doctor", null)
                         .WithMany("SupportTickets")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("DoctorId");
 
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", null)
                         .WithMany("SupportTickets")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("PatientId");
 
-                    b.Navigation("Doctor");
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
+                        .WithMany("SupportTickets")
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Patient");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
@@ -1621,6 +1625,8 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Patient");
+
+                    b.Navigation("SupportTickets");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>

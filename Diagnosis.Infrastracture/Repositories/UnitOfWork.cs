@@ -51,7 +51,7 @@ namespace Diagnosis.Infrastracture.Repositories
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
 
             Faq = new FaqRepository(_context);
-            SupportTicket = new SupportTicketRepository(_context);
+            SupportTicket = new SupportTicketRepository(_context , _userManager);
 
         }
 
@@ -71,6 +71,16 @@ namespace Diagnosis.Infrastracture.Repositories
         public IDoctorDashboardRepository DoctorDashboard { get; private set; }
 
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
+        /// <summary>
+        /// //
+        /// </summary>
+        public IPatientManagement Patient { get; private set; } 
+
+        public IDoctorManagement Doctor { get; private set; }
+
+
+        public ITreatmentRepository Treatment { get; private set; }
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

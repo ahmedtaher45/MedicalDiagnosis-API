@@ -19,7 +19,11 @@ namespace Diagnosis.Application.Interfaces
         IAdminDashboardRepository AdminDashboard { get; }
         IDoctorDashboardRepository DoctorDashboard { get; }
 
+        // ✨ New Repositories
+        IPatientManagement Patient { get; }
+        IDoctorManagement Doctor { get; }
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
+        ITreatmentRepository Treatment { get; }
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
     }

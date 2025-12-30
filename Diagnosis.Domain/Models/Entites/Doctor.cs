@@ -15,6 +15,10 @@ namespace Diagnosis.Domain.Entites
         public string? FName { get; set; }
         public string? LName { get; set; }
         public string? Specialization { get; set; }
+        public string? NationalId { get; set; }
+        public DateTime BirhDate { get; set; }
+        public string? Gender { get; set; }
+        public string? Address { get; set; }
         public string? Bio { get; set; }
         public int? ExperienceYears { get; set; }
         public decimal? Rating { get; set; }
