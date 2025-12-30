@@ -25,6 +25,7 @@ namespace Diagnosis.Domain.Entites
         public ICollection<Prescription>? Prescriptions { get; set; }
         public ICollection<LabResult>? LabResults { get; set; }
         public ICollection<Consultation>? Consultations { get; set; }
+        public ICollection<SupportTicket>? SupportTickets { get; set; }
 
     }
 }

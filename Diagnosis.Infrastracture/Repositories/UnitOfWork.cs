@@ -55,18 +55,29 @@ namespace Diagnosis.Infrastracture.Repositories
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
 
             Faq = new FaqRepository(_context);
-            SupportTicket = new SupportTicketRepository(_context);
-            Treatment = new TreatmentRepository(_context); 
+            SupportTicket = new SupportTicketRepository(_context , _userManager);
 
         }
 
         public IAuth Auth { get; private set; }
+
+        public IFaq Faq { get; private set; }
+
+        public ISupportTicket SupportTicket { get; private set; }
+
         public IDiagnosisModuleRepository DiagnosisModule { get; private set; }
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
         public ITreatmentProvider TreatmentProvider { get; private set; }
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
+        /// <summary>
+        /// //
+        /// </summary>
+        public IPatientManagement Patient { get; private set; } 
+
+        public IDoctorManagement Doctor { get; private set; }
+
 
         public ITreatmentRepository Treatment { get; private set; }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251227211930_UpdateDoctorTableAndAdingRequestTable")]
+    partial class UpdateDoctorTableAndAdingRequestTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
 
                     b.HasData(
                         new
@@ -154,7 +157,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("LabResults", (string)null);
+                    b.ToTable("LabResults");
 
                     b.HasData(
                         new
@@ -226,7 +229,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.HasIndex("UserId", "IsRead")
                         .HasDatabaseName("idx_user_unread");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
 
                     b.HasData(
                         new
@@ -302,7 +305,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
 
                     b.HasData(
                         new
@@ -370,7 +373,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.HasIndex("PaymentDate")
                         .HasDatabaseName("idx_payment_date");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
 
                     b.HasData(
                         new
@@ -433,7 +436,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Prescriptions", (string)null);
+                    b.ToTable("Prescriptions");
 
                     b.HasData(
                         new
@@ -479,7 +482,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PrescriptionId");
 
-                    b.ToTable("PrescriptionItems", (string)null);
+                    b.ToTable("PrescriptionItems");
 
                     b.HasData(
                         new
@@ -639,7 +642,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("DiagnosisId");
 
-                    b.ToTable("ClinicalFindings", (string)null);
+                    b.ToTable("ClinicalFindings");
 
                     b.HasData(
                         new
@@ -741,12 +744,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Rating")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("RejectNotes")
                         .HasColumnType("nvarchar(max)");
 
@@ -770,7 +767,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Consultations", (string)null);
+                    b.ToTable("Consultations");
 
                     b.HasData(
                         new
@@ -820,7 +817,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Diagnosises", (string)null);
+                    b.ToTable("Diagnosises");
 
                     b.HasData(
                         new
@@ -1032,7 +1029,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("DiagnosisId");
 
-                    b.ToTable("SuggestedMedications", (string)null);
+                    b.ToTable("SuggestedMedications");
 
                     b.HasData(
                         new
@@ -1149,50 +1146,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.ToTable("SupportTickets");
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SupportTicket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reply")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subject")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("SupportTickets", (string)null);
-                });
-
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
                 {
                     b.Property<int>("Id")
@@ -1220,7 +1173,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("DiagnosisId");
 
-                    b.ToTable("Symptoms", (string)null);
+                    b.ToTable("Symptoms");
 
                     b.HasData(
                         new
