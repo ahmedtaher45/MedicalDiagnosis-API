@@ -20,7 +20,6 @@ namespace Diagnosis.Domain.Models.Entites
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
-        public ICollection<Prescription>? Prescriptions { get; set; }
     }
 
 }

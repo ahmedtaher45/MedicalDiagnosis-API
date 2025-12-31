@@ -13,6 +13,7 @@ using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Application.UseCases.MedicalFiles;
 using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Application.UseCases.SystemSittings;
+using Diagnosis.Application.UseCases.Treatment;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -77,8 +78,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
-            builder.Services.AddScoped<GetAdminDashboardUseCase>();
-            builder.Services.AddScoped<GetDoctorDashboardUseCase>();
+
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
