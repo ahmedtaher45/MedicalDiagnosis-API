@@ -25,6 +25,7 @@ namespace Diagnosis.API.Controllers
             return Ok(new { Message = "Support ticket created successfully." });
 
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet("SupportTicket")]
         public async Task<ActionResult<List<GetSupportTicketDTO>>> GetSupportTicketsAsync([FromServices]GetSupportTicketsUseCase getSupportTicketsUseCase)
         {
@@ -32,6 +33,7 @@ namespace Diagnosis.API.Controllers
             var tickets = await getSupportTicketsUseCase.GetSupportTicketsAsync();
             return Ok(tickets);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("Reply")]
         public async Task<IActionResult> AddSupportTicketReplyAsync([FromBody]SupportTicketReplyDTO supportTicketReplyDTO , [FromServices]AddSuportTicketReplyUseCase addSuportTicketReplyUseCase)
         {
