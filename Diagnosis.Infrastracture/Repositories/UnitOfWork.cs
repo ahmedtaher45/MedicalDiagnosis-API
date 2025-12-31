@@ -56,6 +56,7 @@ namespace Diagnosis.Infrastracture.Repositories
             MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
             SupportTicket = new SupportTicketRepository(_context , _userManager);
+            SystemSetting = new SystemSettingsRepository(_context , _emailSender);
 
         }
 
@@ -74,6 +75,8 @@ namespace Diagnosis.Infrastracture.Repositories
 
 
         public ITreatmentRepository Treatment { get; private set; }
+
+        public ISystemSetting SystemSetting {  get; private set; }
 
         public async Task<int> CompleteAsync()
         {

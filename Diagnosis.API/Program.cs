@@ -77,10 +77,10 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
-            builder.Services.AddScoped<GetAdminDashboardUseCase>();
-            builder.Services.AddScoped<GetDoctorDashboardUseCase>();
-            builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
-            builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
+            //builder.Services.AddScoped<GetAdminDashboardUseCase>();
+            //builder.Services.AddScoped<GetDoctorDashboardUseCase>();
+            //builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
+            //builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
@@ -97,6 +97,11 @@ namespace Diagnosis.API
             builder.Services.AddScoped<DeleteFileUseCase>();
             builder.Services.AddScoped<AddSuportTicketReplyUseCase>();
             builder.Services.AddScoped<GetSuportTicketReplyUseCase>();
+            builder.Services.AddScoped<AddContactMessageUseCase>();
+            builder.Services.AddScoped<GetContactMessageUseCase>();
+            builder.Services.AddScoped<AddReplyToRequestUseCase>();
+            builder.Services.AddScoped<GetReplyToRequestUseCase>();
+
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
