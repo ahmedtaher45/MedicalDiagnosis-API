@@ -8,6 +8,7 @@ using NETCore.MailKit.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Request = Diagnosis.Domain.Models.Entites.Request;
@@ -33,7 +34,7 @@ namespace Diagnosis.Infrastracture.Repositories
                     FullName = request.Name,
                     Email = request.Email,
                     Message = request.Message,
-                    Status = RequestStatus.Peding
+                    Status = request.Status.ToString()
                 })
                 .ToListAsync();
             return requests;
@@ -66,10 +67,20 @@ namespace Diagnosis.Infrastracture.Repositories
 
             await _context.SaveChangesAsync();
 
+            var assembly = Assembly.Load("Diagnosis.Application");
+            using var stream = assembly.GetManifestResourceStream("Diagnosis.Application.Template.ContactEmail.html");
+
+            if (stream == null) throw new Exception("stream file of Email template is not correct");
+
+            using var reader = new StreamReader(stream);
+            var htmlTemplate = await reader.ReadToEndAsync();
+
+            var html = (htmlTemplate.Replace("{{Name}}", request.Name)).Replace("{{AdminReply}}", request.Reply);
+
             var message = new Message(
-                new[] { requestDTO.Email },
+                new[] { requestDTO.Email! },
                 "Reply to your request",
-                requestDTO.Reply
+                html
                 );
 
             await _emailsender.SendEmailAsync(message);
