@@ -30,6 +30,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Diagnosis.Application.UseCases.PhysiotherapyExercise;
 using Diagnosis.Application.UseCases.PatientDashboard;
+using Diagnosis.Application.UseCases.Notification;
 
 
 
@@ -104,6 +105,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetFaqsUseCase>();
             builder.Services.AddScoped<IFaq , FaqRepository>();
             builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
+            builder.Services.AddScoped<GetUserNotificationsUseCase>();
+            builder.Services.AddScoped<MarkNotificationsAsDoneUseCase>();
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>

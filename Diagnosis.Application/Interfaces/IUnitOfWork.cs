@@ -22,6 +22,7 @@ namespace Diagnosis.Application.Interfaces
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
+        INotificationRepository Notifications { get; }
 
         Task<int> CompleteAsync();
         Task SaveChangesAsync();

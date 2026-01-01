@@ -504,14 +504,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             {
                 Id = -1,
                 UserId = "user-2",
-                UserType = "Patient",
                 Title = "Appointment Confirmed",
                 Message = "Your appointment is confirmed.",
-                NotificationType = "Appointment",
+                NotificationType = NotificationType.Consultation,
                 IsRead = false,
                 RelatedId = -1,
-                RelatedType = "Appointment",
-                ReadAt = null,
                 ModifiedOn = null,
                 IsDeleted = false
             }
@@ -604,7 +601,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             DurationMinutes = 5,
             YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU",
             ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg"
-        },
+        });
 
      
         // --------------------
@@ -672,7 +669,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         Answer = "Payments are transferred to your registered bank account."
 
     }
-));
+);
     }
 
 

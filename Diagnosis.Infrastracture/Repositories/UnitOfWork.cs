@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
+using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -62,6 +63,9 @@ namespace Diagnosis.Infrastracture.Repositories
             Faq = new FaqRepository(_context);
             SupportTicket = new SupportTicketRepository(_context , _userManager);
             Settings  = new SettingsRepository(_context);
+            Notifications = new NotificationRepository(_context);
+            Patient = new PatientRepository(_context);
+            Doctor = new DoctorRepository(_context);
 
         }
 
@@ -82,6 +86,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
         public ISettingsRepository Settings { get; private set; }
+        public INotificationRepository Notifications { get; private set; }
         /// <summary>
         /// //
         /// </summary>

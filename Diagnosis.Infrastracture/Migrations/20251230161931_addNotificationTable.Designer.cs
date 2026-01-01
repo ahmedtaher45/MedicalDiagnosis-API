@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251230161931_addNotificationTable")]
+    partial class addNotificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,7 +204,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NotificationType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RelatedId")
@@ -212,6 +214,9 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -231,10 +236,11 @@ namespace Diagnosis.Infrastracture.Migrations
                             IsDeleted = false,
                             IsRead = false,
                             Message = "Your appointment is confirmed.",
-                            NotificationType = "Consultation",
+                            NotificationType = "Appointment",
                             RelatedId = -1,
                             Title = "Appointment Confirmed",
-                            UserId = "user-2"
+                            UserId = "user-2",
+                            UserType = "Patient"
                         });
                 });
 
@@ -655,7 +661,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bcbfb5d9-551c-40fb-a980-bba41a6d97b9",
+                            ConcurrencyStamp = "5bdfa625-3dda-476d-ac62-37d58c0940d4",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -664,7 +670,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
                             ReceiveEmailNotifications = true,
-                            SecurityStamp = "ce49daad-fd21-4a60-b379-d98a73b53d73",
+                            SecurityStamp = "8ab23308-f2f4-4df1-b283-17b9f629155e",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -672,7 +678,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d4e8d78b-5e71-4835-ae3d-e05bcaf3e4ad",
+                            ConcurrencyStamp = "925a76a2-ddbf-49a8-b35f-3f09437393f9",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -689,7 +695,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2e558924-6f53-4543-aa6b-9d5fde6c9365",
+                            ConcurrencyStamp = "2dc3a3a2-3a93-4ed1-911e-7e33c9a11558",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,

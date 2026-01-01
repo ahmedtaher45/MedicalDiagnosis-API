@@ -51,6 +51,7 @@ namespace Diagnosis.Infrastracture.Repositories
                     Date = DateTime.Now,
                     FileUrls = fileUrls
                 });
+                
             }
             catch (Exception ex)
             {

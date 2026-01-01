@@ -23,7 +23,7 @@ namespace Diagnosis.Application.UseCases.Settings
             var user = await _unitOfWork.Profile.GetUserProfile(userId);
             if (user == null) return false;
 
-            user.ReceiveEmailNotifications = dto.ReceiveEmailNotifications;
+         //   user.ReceiveEmailNotifications = dto.ReceiveEmailNotifications;
             user.TwoFactorEnabled = dto.TwoFactorEnabled;
 
             return await _unitOfWork.Settings.UpdateUserSettings(user);
