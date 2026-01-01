@@ -32,7 +32,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<List<ContactMessageResponseDTO>> GetContactMessageRequests()
         {
-            var requests = await _context.request
+            var requests = await _context.Requests
                 .ToListAsync();
 
             var contactResponses = new List<ContactMessageResponseDTO>();
@@ -80,7 +80,7 @@ namespace Diagnosis.Infrastracture.Repositories
         }
         public async Task ReplyToRequestAsync(SupportRequestDTO requestDTO)
         {
-            var request = await _context.request
+            var request = await _context.Requests
                 .FirstOrDefaultAsync(x => x.Id == requestDTO.RequestId);
 
             if (request == null)
@@ -112,7 +112,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<SupportRequestResponseDTO> GetRequestaReplyAsync(int requestID)
         {
-            var request = await _context.request
+            var request = await _context.Requests
                .FirstOrDefaultAsync(x => x.Id == requestID);
 
             if (request == null)

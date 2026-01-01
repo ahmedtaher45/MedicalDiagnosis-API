@@ -13,7 +13,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    public DbSet<MedicalFiles> LabResults { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Faq> Faqs { get; set; }
     public DbSet<SupportTicket> SupportTickets { get; set; }
@@ -23,12 +22,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
     public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
     public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
-    public DbSet<Request> Request { get; set; }
+    public DbSet<Request> Requests { get; set; }
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
+    public DbSet<UserSettings> UserSettings { get; set; }
     public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
 
-    public DbSet<Request> request { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
