@@ -4,6 +4,7 @@ using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.UseCases.DiagnosisModule;
 using Diagnosis.Application.UseCases.Profile;
 using Diagnosis.Domain.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ namespace Diagnosis.API.Controllers
 
     [Route("[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class PatientsController: ControllerBase
     {
         //private readonly IUnitOfWork _unitOfWork;
@@ -23,35 +25,58 @@ namespace Diagnosis.API.Controllers
             _logger = logger;
         }
 
-
+        // 1) Patient Table (قائمة المرضى)
+        [HttpGet]
+        public async Task<IActionResult> GetPatients(
+            [FromServices] GetPatientsListUseCase useCase,
+            [FromQuery] string? search,
+            [FromQuery] string? status)   // "All" / "Active" / "Deleted"
+        {
+            var patients = await useCase.ExecuteAsync(search, status);
+            return Ok(patients);
+        }
 
 
         /// <summary>
         /// احصل على بروفايل مريض
         /// GET: api/patient/{id}
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPatientProfileAsync(int id,
-        [FromServices] GetPatientUseCase Patient)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetPatientProfileAsync(int id,   [FromServices] GetPatientUseCase useCase)
+    
+ 
         {
-                try
+            if (id <= 0)
+                return BadRequest(new { message = "رقم مريض غير صالح" });
+
+            try
+            {
+                var patient = await useCase.GetPatientProfileAsync(id);
+
+                if (patient == null)
                 {
-                    var patient = await Patient.GetPatientProfileAsync(id);
-
-                    if (patient == null)
-                    {
-                        _logger.LogWarning($"Patient with ID {id} not found");
-                        return NotFound(new { message = "المريض غير موجود" });
-                    }
-
-                    return Ok(patient);
+                    _logger.LogWarning("Patient with ID {Id} not found", id);
+                    return NotFound(new { message = "المريض غير موجود" });
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Error retrieving patient profile for ID {id}");
-                    return StatusCode(500, new { message = $"{ex.Message}حدث خطأ في النظام" });
-                 }
 
+                return Ok(patient);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving patient profile for ID {Id}", id);
+                return StatusCode(500, new { message = "حدث خطأ في النظام" });
+            }
+        }
+        // 3) Delete Patient (تحويله لحالة Deleted)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeletePatient(
+            int id,
+            [FromServices] ChangePatientStatusUseCase useCase)
+        {
+            var ok = await useCase.ExecuteAsync(id, isDeleted: true);
+            if (!ok)
+                return NotFound(new { message = "المريض غير موجود" });
+
+            return NoContent();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Diagnosis.Application.DTOs.Profile;
+﻿using Diagnosis.Application.DTOs.Consultation;
+using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,78 @@ namespace Diagnosis.Infrastracture.Repositories
 
         }
 
+        // 1) Patient Table
+        public async Task<IEnumerable<PatientListItemDto>> GetPatientsAsync(string? search, string? status)
+            
+           
+        {
+            var query = _context.Set<Patient>()
+                .Include(p => p.Consultations)   // Changed from Diagnoses to Consultations
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(p =>
+                    (p.FName + " " + p.LName).Contains(search));
+
+            if (!string.IsNullOrWhiteSpace(status) && status != "All")
+            {
+                bool isDeleted = status == "Deleted";
+                query = query.Where(p => p.IsDeleted == isDeleted);
+            }
+
+            return await query
+                .Select(p => new PatientListItemDto
+                {
+                    Id = p.Id,
+                    FullName = p.FName + " " + p.LName,
+                   // Age = p.Age,                      // أو احسبي من BirthDate
+                    Gender = p.Gender,
+                    DiagnosesCount = p.Consultations.Count, // Changed from Diagnoses to Consultations
+                    LastDiagnosisDate = p.Consultations
+                        .OrderByDescending(d => d.CreatedOn)   // Changed from Diagnoses.Date to Consultations.CreatedOn
+                        .Select(d => d.CreatedOn)
+                        .FirstOrDefault(),
+                    Status = p.IsDeleted ? "Deleted" : "Active"
+                })
+                .ToListAsync();
+        }
+
+
+        public async Task<PatientProfileDto?> GetPatientProfileAsync(int patientId)
+        {
+            var patient = await _context.Patients
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == patientId);
+
+            if (patient == null) return null;
+
+            return new PatientProfileDto
+            {
+                Id = patient.Id,
+                FName = patient.FName,
+                LName = patient.LName,
+                Email = patient.User.Email,
+                Gender = patient.Gender,
+                ConsultationHistory = patient.Consultations
+                .Select(c => new ConsultationDTO
+                {
+                    // املأي خصائص الـ ConsultationDTO من الـ entity
+                })
+                .ToList()
+            };
+        }
+        // 3) تغيير حالة المريض (Active / Deleted)
+        public async Task<bool> SetPatientStatusAsync(int patientId, bool isDeleted)
+        {
+            var patient = await _context.Set<Patient>()
+                .FirstOrDefaultAsync(p => p.Id == patientId);
+
+            if (patient == null) return false;
+
+            patient.IsDeleted = isDeleted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
         //public IQueryable<Patient> Query()
         //=> _context.Set<Patient>().AsQueryable();
 
@@ -76,25 +149,5 @@ namespace Diagnosis.Infrastracture.Repositories
         //    await _context.SaveChangesAsync();
         //    return true;
         //}
-        public async Task<PatientProfileDto?> GetPatientProfileAsync(int patientId)
-        {
-            var patient = await _context.Patients
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(p => p.Id == patientId);
-
-            if (patient == null) return null;
-
-            return new PatientProfileDto
-            {
-                Id = patient.Id,
-                FName = patient.FName,
-                LName = patient.LName,
-                Email = patient.User.Email,
-                Gender = patient.Gender,
-
-
-
-            };
-        }
     }
 }

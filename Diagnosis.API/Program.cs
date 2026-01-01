@@ -83,6 +83,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ResetDoctorPasswordUseCase>();
             builder.Services.AddScoped<ChangeDoctorStatusUseCase>();
             builder.Services.AddScoped<GetDoctorsListUseCase>();
+            builder.Services.AddScoped<GetPatientsListUseCase>();
+            builder.Services.AddScoped<ChangePatientStatusUseCase>();
 
 
             builder.Services.AddScoped<GetTemplateUseCase>();
