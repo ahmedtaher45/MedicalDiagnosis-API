@@ -19,6 +19,15 @@ namespace Diagnosis.Application.UseCases.DiagnosisModule
 
         public async Task<ProviderResponse> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
         {
+            var canUseAI = await _unitOfWork.systemSettings.CanUseAiAsync(userId);
+            if (!canUseAI)
+            {
+                return new ProviderResponse
+                {
+                    Success = false,
+                    Message = "You have reached the limit of using AI requests per day"
+                };
+            }
             return await _unitOfWork.DiagnosisModule.CreateDiagnosisAsync(createDiagnosisDTO, userId);
         }
     }

@@ -25,5 +25,47 @@ namespace Diagnosis.API.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPut("ai/rate-limit")]
+        public async Task<IActionResult> DefineMaxAiRequest(
+            [FromBody] MaxRequestDTO maxRequestDTO,
+            [FromServices] DefineMaxAiRequestUseCase maxAiRequestUseCase
+            )
+        {
+            var result = await maxAiRequestUseCase.ExecuteAsync(maxRequestDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        [HttpPut("doctor/rate-limit")]
+        public async Task<IActionResult> DefineMaxDoctorDiagnosis(
+            [FromBody] MaxRequestDTO maxRequestDTO,
+            [FromServices] DefineMaxDoctorDiagnosisUseCase maxDoctorDiagnosisUseCase
+            )
+        {
+            var result = await maxDoctorDiagnosisUseCase.ExecuteAsync(maxRequestDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut("ai/toggle")]
+        public async Task<IActionResult> ToggleAi(
+            [FromBody] EnableAiDTO enableAiDTO,
+            [FromServices] ToggleAiUseCase toggleAiUseCase
+            )
+        {
+            var result = await toggleAiUseCase.ExecuteAsync(enableAiDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
     }
 }

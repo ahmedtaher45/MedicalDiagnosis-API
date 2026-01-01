@@ -1,5 +1,6 @@
 ﻿
 using Diagnosis.API.Middleware;
+using Diagnosis.API.Middlewares;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
@@ -196,7 +197,7 @@ namespace Diagnosis.API
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+            app.UseMiddleware<AiEnablingMiddleware>();
             app.MapControllers();
 
             using (var scope = app.Services.CreateScope())

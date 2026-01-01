@@ -1,13 +1,14 @@
+using Diagnosis.API.Attributes;
+using Diagnosis.Application.DTOs.Consultation;
 using Diagnosis.Application.Services.EmailService;
+using Diagnosis.Application.UseCases.Consultation;
 using Diagnosis.Domain.Models.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.WebUtilities;
-using Diagnosis.Application.DTOs.Consultation;
-using Diagnosis.Application.UseCases.Consultation;
+using System.Security.Claims;
 
 namespace Diagnosis.API.Controllers
 {
@@ -42,7 +43,8 @@ namespace Diagnosis.API.Controllers
        }
        [Authorize(Roles = "Doctor")]
        [HttpPost("modify/{consultationId}")]
-       public async Task<IActionResult> ModifyConsultation(
+       [Diagnosis]
+        public async Task<IActionResult> ModifyConsultation(
            [FromBody] ModifyConsultationRequestDTO modifyConsultationDTO,
            [FromRoute] int consultationId,
            [FromServices] ModifyConsultationsUseCase _modifyConsultationUseCase)

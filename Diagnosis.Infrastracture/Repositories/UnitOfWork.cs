@@ -46,7 +46,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _diagnosisModuleProvider = diagnosisModuleProvider;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
-
+            systemSettings = new SystemSettingsRepository(_context);
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
             Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
@@ -71,8 +71,7 @@ namespace Diagnosis.Infrastracture.Repositories
         public IMedicalFilesRepository MedicalFiles { get; private set; }
         public IPatientManagement Patient { get; private set; } 
         public IDoctorManagement Doctor { get; private set; }
-
-
+        public ISystemSettingsRepository systemSettings { get; private set; }
         public ITreatmentRepository Treatment { get; private set; }
 
         public async Task<int> CompleteAsync()
