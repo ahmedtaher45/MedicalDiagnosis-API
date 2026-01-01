@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Application.DTOs.Inquiry;
+using Diagnosis.Application.DTOs.PatientDashboard;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Models.Entites;
@@ -64,6 +65,36 @@ namespace Diagnosis.Infrastracture.Repositories
             {
                 Success = true,
                 Message = "Inquiry sent successfully"
+            };
+        }
+
+       
+        public async Task<List<InquiriesDto>> GetRecentInquiriesAsync(int patientId)
+        {
+            return await _context.Consultations
+                .Where(c => c.PatientId == patientId && c.Type == ConsultationType.Inquiry)
+                .Select(c => new InquiriesDto
+                {
+                    Id = c.Id,
+                    DoctorName = c.Doctor.FName + " " + c.Doctor.LName,
+                    Subject = c.Description,
+                    Date = c.Date,
+                    Time = c.Date,
+                    Status = c.Status.ToString(),
+                })
+                .OrderByDescending(c => c.Date)
+                .Take(3)
+                .ToListAsync();
+        }
+        //get pending inquiries count by patient id
+        public async Task<GetPendingCountDTO> GetPendingInquiriesCount(int patientId)
+        {
+            var count = await _context.Consultations
+                .CountAsync(c => c.PatientId == patientId && c.Type == ConsultationType.Inquiry && c.Status == ConsultationStatus.Pending);
+
+            return new GetPendingCountDTO
+            {
+                PendingInquiriesCount = count
             };
         }
         public async Task<int> GetPatientAsync(string userId)

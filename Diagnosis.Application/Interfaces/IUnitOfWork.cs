@@ -22,7 +22,15 @@ namespace Diagnosis.Application.Interfaces
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
         ISystemSettingsRepository systemSettings { get; }
         ITreatmentRepository Treatment { get; }
+
+        IProfileRepository Profile { get; }
+        IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; }
+        ISettingsRepository Settings { get; }
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
+
+       // IAppointmentRepository Appointment { get; }
+     
+       
     }
 }

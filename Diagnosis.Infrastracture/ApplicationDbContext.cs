@@ -26,6 +26,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Request> Request { get; set; }
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
+    public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -548,6 +550,75 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             Answer = "Payments are transferred to your registered bank account."
         }
         );  
+
+        modelBuilder.Entity<PhysiotherapyExercise>().HasData(
+
+        // 🔹 BACK
+        new PhysiotherapyExercise
+        {
+            Id = 1,
+            Title = "Back Stretch Exercise",
+            BodyPart = "Back",
+            Difficulty = "Easy",
+            DurationMinutes = 4,
+            YoutubeUrl = "https://www.youtube.com/watch?v=4BOTvaRaDjI",
+            ThumbnailUrl = "https://img.youtube.com/vi/4BOTvaRaDjI/hqdefault.jpg"
+        },
+        new PhysiotherapyExercise
+        {
+            Id = 2,
+            Title = "Lower Back Mobility Routine",
+            BodyPart = "Back",
+            Difficulty = "Easy",
+            DurationMinutes = 6,
+            YoutubeUrl = "https://www.youtube.com/watch?v=DWmGArQBtFI",
+            ThumbnailUrl = "https://img.youtube.com/vi/DWmGArQBtFI/hqdefault.jpg"
+        },
+
+        // 🔹 SHOULDER
+        new PhysiotherapyExercise
+        {
+            Id = 3,
+            Title = "Shoulder Strengthening Exercise",
+            BodyPart = "Shoulder",
+            Difficulty = "Medium",
+            DurationMinutes = 5,
+            YoutubeUrl = "https://www.youtube.com/watch?v=1g6L2HkZz9Y",
+            ThumbnailUrl = "https://img.youtube.com/vi/1g6L2HkZz9Y/hqdefault.jpg"
+        },
+        new PhysiotherapyExercise
+        {
+            Id = 4,
+            Title = "Rotator Cuff Rehab Exercise",
+            BodyPart = "Shoulder",
+            Difficulty = "Medium",
+            DurationMinutes = 7,
+            YoutubeUrl = "https://www.youtube.com/watch?v=PPzD2w6pXyE",
+            ThumbnailUrl = "https://img.youtube.com/vi/PPzD2w6pXyE/hqdefault.jpg"
+        },
+
+        // 🔹 LEGS
+        new PhysiotherapyExercise
+        {
+            Id = 5,
+            Title = "Leg Balance Exercise",
+            BodyPart = "Legs",
+            Difficulty = "Hard",
+            DurationMinutes = 6,
+            YoutubeUrl = "https://www.youtube.com/watch?v=Z8nQXn1pXyE",
+            ThumbnailUrl = "https://img.youtube.com/vi/Z8nQXn1pXyE/hqdefault.jpg"
+        },
+        new PhysiotherapyExercise
+        {
+            Id = 6,
+            Title = "Knee Stability Exercise",
+            BodyPart = "Legs",
+            Difficulty = "Medium",
+            DurationMinutes = 5,
+            YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU",
+            ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg"
+        }
+    );
     }
 
 

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Diagnosis.Application.DTOs.Consultation;
+using Diagnosis.Application.DTOs.PatientDashboard;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
@@ -25,7 +26,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _context = context;
         }
 
-        // 🔥 NEW: Dashboard support
+        
         public IQueryable<Consultation> GetQueryable()
         {
             return _context.Consultations.AsQueryable();
@@ -193,6 +194,28 @@ namespace Diagnosis.Infrastracture.Repositories
                 Success = true
             };
         }
+      
+        public async Task<ConsultationResponseDTO> CancelConsultationAsync(int consultationId)
+        {
+            var consultation = await _context.Consultations.FindAsync(consultationId);
+            if (consultation == null)
+            {
+                return new ConsultationResponseDTO
+                {
+                    Success = false,
+                    ErrorMessage = "Consultation not found"
+                };
+            }
+
+            consultation.Status = ConsultationStatus.Canceled;
+            _context.Consultations.Update(consultation);
+            await _context.SaveChangesAsync();
+
+            return new ConsultationResponseDTO
+            {
+                Success = true
+            };
+        }
         public async Task<int> GetDoctorAsync(string userId)
         {
             var doctor = await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == userId);
@@ -200,5 +223,56 @@ namespace Diagnosis.Infrastracture.Repositories
                 throw new ArgumentNullException(nameof(doctor));
             return doctor.Id;
         }
+        
+        public async Task<Dictionary<string, int>> GetConsultationCountByDayAsync(int patientId)
+        {
+
+            var today = DateTime.UtcNow.Date;
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            var startOfWeek = today.AddDays(-diff);
+            var endOfWeek = startOfWeek.AddDays(7).AddTicks(-1);
+
+            var consultations = await _context.Consultations
+                .Where(c => c.Date >= startOfWeek && c.Date <= endOfWeek && c.PatientId == patientId)
+                .GroupBy(c => c.Date.Date)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            return consultations.ToDictionary(c => c.Date.DayOfWeek.ToString(), c => c.Count);
+        }
+        
+        public async Task<TopSymptomsDTO> GetTopSymptomsThisWeek(int patientId)
+        {
+            var today = DateTime.UtcNow.Date;
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            var startOfWeek = today.AddDays(-diff);
+            var endOfWeek = startOfWeek.AddDays(7).AddTicks(-1);
+
+            var symptoms = await _context.Consultations
+                .Where(c => c.Date >= startOfWeek && c.Date <= endOfWeek && c.PatientId == patientId)
+                .Select(c => c.Symptoms)
+                .ToListAsync();
+
+              
+              
+
+            var topSymptom = symptoms.GroupBy(s => s)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .Take(1)
+                .SingleOrDefault();
+
+                  //parse by comma and get only first symptom
+                  var firstSymptom = topSymptom?.Split(",").FirstOrDefault()?.Trim();
+            return new TopSymptomsDTO
+            {
+                Symptom = firstSymptom
+            };
+        }
+
     }
 }

@@ -15,5 +15,8 @@ namespace Diagnosis.Domain.Models.Entites
         public UserAIUsage? Usage { get; set; }
         public ICollection<Notification>? Notifications { get; set; }
         public ICollection<SupportTicket>? SupportTickets { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+        public bool ReceiveEmailNotifications { get; set; } = true;
+    
     }
 }

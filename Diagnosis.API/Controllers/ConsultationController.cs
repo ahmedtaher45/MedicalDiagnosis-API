@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Claims;
+using Diagnosis.Application.DTOs.Consultation;
+using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.PatientDashboard;
 
 namespace Diagnosis.API.Controllers
 {
@@ -93,8 +96,41 @@ namespace Diagnosis.API.Controllers
 
            return Ok(result);
        }
+       [Authorize(Roles = "Patient")]
+       [HttpPost("cancel/{consultationId}")]
+       public async Task<IActionResult> CancelConsultation(
+           [FromRoute] int consultationId,
+           [FromServices] CancelConsultationUseCase _cancelConsultationUseCase)
+       {
+           var result = await _cancelConsultationUseCase.CancelConsultation(consultationId);
+           if (!result.Success)
+               return BadRequest(result.ErrorMessage);
 
-    }
+           return Ok(result);
+       }
 
-    
+       [Authorize(Roles = "Patient")]
+       [HttpGet("symptom-count-this-week/{patientId}")]
+       public async Task<IActionResult> GetConsultationCountThisWeek(
+           [FromRoute] int patientId,
+           [FromServices] GetConsultationCountThisWeekUseCase _getConsultationCountThisWeekUseCase)
+       {
+           var result = await _getConsultationCountThisWeekUseCase.ExecuteAsync(patientId);
+           
+           return Ok(result);
+       }
+       [Authorize(Roles = "Patient")]
+       [HttpGet("top-symptoms-this-week/{patientId}")]
+       public async Task<IActionResult> GetTopSymptomsThisWeek(
+           [FromRoute] int patientId,
+           [FromServices] GetTopSymptomsThisWeekUseCase _getTopSymptomsThisWeekUseCase)
+       {
+           var result = await _getTopSymptomsThisWeekUseCase.ExecuteAsync(patientId);
+           
+
+           return Ok(result);
+       }
+
+   }
+
 }

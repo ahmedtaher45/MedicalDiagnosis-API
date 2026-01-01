@@ -7,6 +7,7 @@ using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastructure.Providers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IDiagnosisModuleProvider _diagnosisModuleProvider;
+
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
@@ -56,6 +58,9 @@ namespace Diagnosis.Infrastracture.Repositories
             MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
             SupportTicket = new SupportTicketRepository(_context , _userManager);
+            Profile = new ProfileRepository(_context);
+            PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
+            Settings = new SettingsRepository(_context);
 
         }
 
@@ -73,6 +78,11 @@ namespace Diagnosis.Infrastracture.Repositories
         public IDoctorManagement Doctor { get; private set; }
         public ISystemSettingsRepository systemSettings { get; private set; }
         public ITreatmentRepository Treatment { get; private set; }
+
+        public IProfileRepository Profile { get; private set; }
+
+        public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
+        public ISettingsRepository Settings { get; private set; }
 
         public async Task<int> CompleteAsync()
         {
