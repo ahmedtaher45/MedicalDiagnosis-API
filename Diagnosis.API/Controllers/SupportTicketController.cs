@@ -9,10 +9,11 @@ namespace Diagnosis.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+   
     public class SupportTicketController : ControllerBase
     {
-        [HttpPost]
+        [Authorize]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateSupportTicketAsync([FromBody]SupportTicketDTO supportTicketDTO, [FromServices]AddSupportTicketUseCase supportTicketUseCase)
         {
 
@@ -24,12 +25,32 @@ namespace Diagnosis.API.Controllers
             return Ok(new { Message = "Support ticket created successfully." });
 
         }
-        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("SupportTicket")]
         public async Task<ActionResult<List<GetSupportTicketDTO>>> GetSupportTicketsAsync([FromServices]GetSupportTicketsUseCase getSupportTicketsUseCase)
         {
             
             var tickets = await getSupportTicketsUseCase.GetSupportTicketsAsync();
             return Ok(tickets);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Reply")]
+        public async Task<IActionResult> AddSupportTicketReplyAsync([FromBody]SupportTicketReplyDTO supportTicketReplyDTO , [FromServices]AddSuportTicketReplyUseCase addSuportTicketReplyUseCase)
+        {
+            await addSuportTicketReplyUseCase.AddSupportTicketReplyAsync(supportTicketReplyDTO);
+            return Ok("Reply added Successfully");
+        }
+        [Authorize]
+        [HttpGet("Reply")]
+        public async Task<IActionResult> GetLatestReplyByUserAsync([FromServices]GetSuportTicketReplyUseCase getSuportTicketReplyUseCase)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var reply = await getSuportTicketReplyUseCase.GetLatestReplyByUserAsync(userId);
+
+            if (reply == null)
+                return NotFound("No reply found for this user.");
+
+            return Ok(reply);
         }
     }
 }

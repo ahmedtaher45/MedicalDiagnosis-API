@@ -9,10 +9,11 @@ namespace Diagnosis.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    
     public class SystemSettingsController : ControllerBase
     {
         [HttpPost("add-admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddAdmin(
             [FromBody] AddAdminDTO addAdminDTO,
             [FromServices] AddAdminUseCase addAdminUseCase
@@ -23,6 +24,32 @@ namespace Diagnosis.API.Controllers
             {
                 return BadRequest(result);
             }
+            return Ok(result);
+        }
+        [HttpPost("send-message")]
+        public async Task<IActionResult> SendContactMessage([FromBody]ContactMessageDTO contactMessageDTO , [FromServices] AddContactMessageUseCase addContactMessageUseCase)
+        {
+            await addContactMessageUseCase.SendContactMessage(contactMessageDTO);
+            return Ok("Message Sent Successfully");
+        }
+        [HttpGet("Outside-requests")]
+        public async Task<ActionResult<List<ContactMessageResponseDTO>>> GetContactMessageRequests([FromServices] GetContactMessageUseCase getContactMessageUseCase)
+        {
+            var requests = await getContactMessageUseCase.GetContactMessageRequests();
+            return Ok(requests);
+        }
+        [HttpPost("send-reply")]
+        public async Task<IActionResult> ReplyToRequestAsync([FromBody]SupportRequestDTO requestDTO , [FromServices] AddReplyToRequestUseCase addReplyToRequestUseCase)
+        {
+            await addReplyToRequestUseCase.ReplyToRequestAsync(requestDTO);
+            return Ok("Reply Sent Successfully");
+        }
+        [HttpGet("{requestID}/reply")]
+        public async Task<ActionResult<SupportRequestResponseDTO>> GetRequestaReplyAsync([FromRoute]int requestID , [FromServices]GetReplyToRequestUseCase getReplyToRequestUseCase)
+        {
+            var result = await getReplyToRequestUseCase.GetRequestaReplyAsync(requestID);
+            if (result == null)
+                return NotFound("Reply Not Found");
             return Ok(result);
         }
 

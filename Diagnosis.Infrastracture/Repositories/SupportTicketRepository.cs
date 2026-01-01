@@ -20,6 +20,8 @@ namespace Diagnosis.Infrastracture.Repositories
             _context = context;
             _userManager = userManager;
         }
+
+       
         public async Task CreateSupportTicketAsync(SupportTicketDTO supportTicketDTO , string userId)
         {
             if (string.IsNullOrWhiteSpace(supportTicketDTO.Subject))
@@ -49,7 +51,7 @@ namespace Diagnosis.Infrastracture.Repositories
                     .ThenInclude(u => u.Doctor)
                 .Include(t => t.User)
                     .ThenInclude(u => u.Patient)
-                //.Where(t => t.userId == userId)
+               
                 .Select(t => new GetSupportTicketDTO
                 {
                     userName = t.User.UserName!,
@@ -62,6 +64,41 @@ namespace Diagnosis.Infrastracture.Repositories
                 .ToListAsync();
 
             return tickets;
+        }
+        public async Task AddSupportTicketReplyAsync(SupportTicketReplyDTO supportTicketReplyDTO)
+        {
+            var ticket = await _context.SupportTickets.FirstOrDefaultAsync(t => t.Id == supportTicketReplyDTO.TicketId);
+
+            if (ticket == null)
+                throw new Exception("Ticket not found");
+
+            ticket.Reply = supportTicketReplyDTO.Reply;
+            ticket.Status = "Answered";
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<SupportTicketReplyDTO?> GetLatestReplyByUserAsync(string userId)
+        {
+            var ticket = await _context.SupportTickets
+                .Include(t => t.User)
+                    .ThenInclude(u => u.Doctor)
+                .Include(t => t.User)
+                    .ThenInclude(u => u.Patient)
+                .Where(t => t.userId == userId && !string.IsNullOrEmpty(t.Reply))
+                .OrderByDescending(t => t.Id) 
+                .FirstOrDefaultAsync();
+
+            if (ticket == null) return null;
+
+            return new SupportTicketReplyDTO
+            {
+                userId = userId,
+                TicketId = ticket.Id,
+                Subject = ticket.Subject,
+                Details = ticket.Details,
+                Reply = ticket.Reply
+            };
         }
     }
     }

@@ -28,6 +28,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<UsageConfig> UsageConfig { get; set; }
     public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
 
+    public DbSet<Request> request { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
