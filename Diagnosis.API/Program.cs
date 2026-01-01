@@ -10,6 +10,7 @@ using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Faq;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Application.UseCases.MedicalFiles;
 using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Application.UseCases.SystemSittings;
 using Diagnosis.Domain.Models.Entites;
@@ -84,17 +85,6 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
-            builder.Services.AddScoped<GetProfileUseCase>();
-            builder.Services.AddScoped<UpdateProfileUseCase>();
-            builder.Services.AddScoped<GetUserSettingsUseCase>();
-            builder.Services.AddScoped<UpdateUserSettingsUseCase>();
-            builder.Services.AddScoped<GetPhysiotherapyExerciseUseCase>();
-            builder.Services.AddScoped<GetRecentInquiriesUseCase>();
-            builder.Services.AddScoped<GetPendingInquiriesCountUseCase>();
-            builder.Services.AddScoped<GetConsultationCountThisWeekUseCase>();
-            builder.Services.AddScoped<GetTopSymptomsThisWeekUseCase>();
-
-
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
@@ -105,10 +95,6 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetFaqsUseCase>();
             builder.Services.AddScoped<IFaq , FaqRepository>();
             builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
-            builder.Services.AddScoped<GetUserNotificationsUseCase>();
-            builder.Services.AddScoped<MarkNotificationsAsDoneUseCase>();
-
-
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);

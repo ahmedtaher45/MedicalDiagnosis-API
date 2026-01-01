@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diagnosis.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251227143111_updateConsultationWithPriceAndRating")]
+    partial class updateConsultationWithPriceAndRating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,14 +32,8 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("BirhDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -47,9 +44,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -63,9 +57,6 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("NationalId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfileImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -85,14 +76,13 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
 
                     b.HasData(
                         new
                         {
                             Id = -1,
                             Bio = "Skin specialist",
-                            BirhDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ExperienceYears = 8,
                             FName = "Ahmed",
                             IsDeleted = false,
@@ -154,7 +144,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("LabResults", (string)null);
+                    b.ToTable("LabResults");
 
                     b.HasData(
                         new
@@ -185,9 +175,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -201,17 +188,25 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NotificationType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("RelatedId")
                         .HasColumnType("int");
+
+                    b.Property<string>("RelatedType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -221,20 +216,21 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.HasIndex("UserId", "IsRead")
                         .HasDatabaseName("idx_user_unread");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
 
                     b.HasData(
                         new
                         {
                             Id = -1,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsRead = false,
                             Message = "Your appointment is confirmed.",
-                            NotificationType = "Consultation",
+                            NotificationType = "Appointment",
                             RelatedId = -1,
+                            RelatedType = "Appointment",
                             Title = "Appointment Confirmed",
-                            UserId = "user-2"
+                            UserId = "user-2",
+                            UserType = "Patient"
                         });
                 });
 
@@ -296,7 +292,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
 
                     b.HasData(
                         new
@@ -364,7 +360,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.HasIndex("PaymentDate")
                         .HasDatabaseName("idx_payment_date");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
 
                     b.HasData(
                         new
@@ -378,104 +374,6 @@ namespace Diagnosis.Infrastracture.Migrations
                             PaymentDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentMethod = "Cash",
                             PaymentStatus = "Paid"
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.PhysiotherapyExercise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BodyPart")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Difficulty")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YoutubeUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PhysiotherapyExercises");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BodyPart = "Back",
-                            Difficulty = "Easy",
-                            DurationMinutes = 4,
-                            ThumbnailUrl = "https://img.youtube.com/vi/4BOTvaRaDjI/hqdefault.jpg",
-                            Title = "Back Stretch Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=4BOTvaRaDjI"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BodyPart = "Back",
-                            Difficulty = "Easy",
-                            DurationMinutes = 6,
-                            ThumbnailUrl = "https://img.youtube.com/vi/DWmGArQBtFI/hqdefault.jpg",
-                            Title = "Lower Back Mobility Routine",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=DWmGArQBtFI"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BodyPart = "Shoulder",
-                            Difficulty = "Medium",
-                            DurationMinutes = 5,
-                            ThumbnailUrl = "https://img.youtube.com/vi/1g6L2HkZz9Y/hqdefault.jpg",
-                            Title = "Shoulder Strengthening Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=1g6L2HkZz9Y"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BodyPart = "Shoulder",
-                            Difficulty = "Medium",
-                            DurationMinutes = 7,
-                            ThumbnailUrl = "https://img.youtube.com/vi/PPzD2w6pXyE/hqdefault.jpg",
-                            Title = "Rotator Cuff Rehab Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=PPzD2w6pXyE"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BodyPart = "Legs",
-                            Difficulty = "Hard",
-                            DurationMinutes = 6,
-                            ThumbnailUrl = "https://img.youtube.com/vi/Z8nQXn1pXyE/hqdefault.jpg",
-                            Title = "Leg Balance Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=Z8nQXn1pXyE"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BodyPart = "Legs",
-                            Difficulty = "Medium",
-                            DurationMinutes = 5,
-                            ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg",
-                            Title = "Knee Stability Exercise",
-                            YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU"
                         });
                 });
 
@@ -525,7 +423,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Prescriptions", (string)null);
+                    b.ToTable("Prescriptions");
 
                     b.HasData(
                         new
@@ -571,7 +469,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PrescriptionId");
 
-                    b.ToTable("PrescriptionItems", (string)null);
+                    b.ToTable("PrescriptionItems");
 
                     b.HasData(
                         new
@@ -625,9 +523,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("ReceiveEmailNotifications")
-                        .HasColumnType("bit");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -655,7 +550,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bcbfb5d9-551c-40fb-a980-bba41a6d97b9",
+                            ConcurrencyStamp = "8ce1823d-9c48-42c4-adcd-ba23fcc12414",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -663,8 +558,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            ReceiveEmailNotifications = true,
-                            SecurityStamp = "ce49daad-fd21-4a60-b379-d98a73b53d73",
+                            SecurityStamp = "9d9a705c-b5a4-4865-b375-e0a6c4f3d222",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -672,7 +566,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d4e8d78b-5e71-4835-ae3d-e05bcaf3e4ad",
+                            ConcurrencyStamp = "3d9f2526-0bb4-467a-aa5e-f6a1064f75c9",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -680,7 +574,6 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "DOCTOR@TEST.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            ReceiveEmailNotifications = true,
                             SecurityStamp = "stamp1",
                             TwoFactorEnabled = false,
                             UserName = "doctor@test.com"
@@ -689,7 +582,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2e558924-6f53-4543-aa6b-9d5fde6c9365",
+                            ConcurrencyStamp = "9c906ebc-8864-4b7c-9af7-6b2bb2d291c2",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -697,7 +590,6 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "PATIENT@TEST.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            ReceiveEmailNotifications = true,
                             SecurityStamp = "stamp2",
                             TwoFactorEnabled = false,
                             UserName = "patient@test.com"
@@ -737,7 +629,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("DiagnosisId");
 
-                    b.ToTable("ClinicalFindings", (string)null);
+                    b.ToTable("ClinicalFindings");
 
                     b.HasData(
                         new
@@ -868,7 +760,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Consultations", (string)null);
+                    b.ToTable("Consultations");
 
                     b.HasData(
                         new
@@ -918,7 +810,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Diagnosises", (string)null);
+                    b.ToTable("Diagnosises");
 
                     b.HasData(
                         new
@@ -1059,44 +951,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Request", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reply")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Request");
-                });
-
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SuggestedMedication", b =>
                 {
                     b.Property<int>("Id")
@@ -1130,7 +984,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("DiagnosisId");
 
-                    b.ToTable("SuggestedMedications", (string)null);
+                    b.ToTable("SuggestedMedications");
 
                     b.HasData(
                         new
@@ -1233,62 +1087,13 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("userId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
-
-                    b.HasIndex("userId");
 
                     b.ToTable("SupportTickets");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SupportTicket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reply")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subject")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("SupportTickets", (string)null);
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
@@ -1318,7 +1123,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("DiagnosisId");
 
-                    b.ToTable("Symptoms", (string)null);
+                    b.ToTable("Symptoms");
 
                     b.HasData(
                         new
@@ -1707,20 +1512,19 @@ namespace Diagnosis.Infrastracture.Migrations
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SupportTicket", b =>
                 {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", null)
+                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
                         .WithMany("SupportTickets")
-                        .HasForeignKey("DoctorId");
-
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", null)
-                        .WithMany("SupportTickets")
-                        .HasForeignKey("PatientId");
-
-                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
-                        .WithMany("SupportTickets")
-                        .HasForeignKey("userId")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("User");
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
+                        .WithMany("SupportTickets")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Symptom", b =>
@@ -1821,8 +1625,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Patient");
-
-                    b.Navigation("SupportTickets");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>

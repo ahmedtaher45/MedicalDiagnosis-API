@@ -59,7 +59,7 @@ namespace Diagnosis.Infrastracture.Repositories
             PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
 
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
-
+            MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
             SupportTicket = new SupportTicketRepository(_context , _userManager);
             Settings  = new SettingsRepository(_context);
@@ -67,14 +67,14 @@ namespace Diagnosis.Infrastracture.Repositories
             Patient = new PatientRepository(_context);
             Doctor = new DoctorRepository(_context);
 
+            SystemSetting = new SystemSettingsRepository(_context , _emailSender);
+
+
         }
 
         public IAuth Auth { get; private set; }
-
         public IFaq Faq { get; private set; }
-
         public ISupportTicket SupportTicket { get; private set; }
-
         public IDiagnosisModuleRepository DiagnosisModule { get; private set; }
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
@@ -90,11 +90,14 @@ namespace Diagnosis.Infrastracture.Repositories
         /// <summary>
         /// //
         /// </summary>
+
+        public IMedicalFilesRepository MedicalFiles { get; private set; }
+
         public IPatientManagement Patient { get; private set; } 
-
         public IDoctorManagement Doctor { get; private set; }
+        public ITreatmentRepository Treatment { get; private set; }
 
-
+        public ISystemSetting SystemSetting {  get; private set; }
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

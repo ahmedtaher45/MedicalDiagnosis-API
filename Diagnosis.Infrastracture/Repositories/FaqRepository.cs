@@ -32,6 +32,8 @@ namespace Diagnosis.Infrastracture.Repositories
                 .Select(f => new FaqResponseDTO
                 {
                     Question = f.Question,
+                    Answer = f.Answer,
+                   
                 })
                 .ToListAsync();
             return faqs;

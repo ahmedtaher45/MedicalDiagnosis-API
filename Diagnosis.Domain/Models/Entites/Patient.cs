@@ -22,8 +22,7 @@ namespace Diagnosis.Domain.Entites
         public string? ProfileImageUrl { get; set; }
         public bool? IsNewPatient { get; set; }
         public bool? IsUrgent { get; set; }
-        public ICollection<Prescription>? Prescriptions { get; set; }
-        public ICollection<LabResult>? LabResults { get; set; }
+        public ICollection<MedicalFiles>? Files { get; set; }
         public ICollection<Consultation>? Consultations { get; set; }
         public ICollection<SupportTicket>? SupportTickets { get; set; }
 

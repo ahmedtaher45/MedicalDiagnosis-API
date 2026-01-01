@@ -14,6 +14,7 @@ namespace Diagnosis.Application.DTOs.Faq
     public class FaqResponseDTO
     {
         public string Question { get; set; } = null!;
+        public string Answer { get; set; }
     }
 }
   

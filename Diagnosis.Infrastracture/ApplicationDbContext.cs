@@ -1,5 +1,4 @@
-﻿// Data/ApplicationDbContext.cs
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
@@ -7,8 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-
-
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
@@ -16,9 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    public DbSet<Prescription> Prescriptions { get; set; }
-    public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
-    public DbSet<LabResult> LabResults { get; set; }
+    public DbSet<MedicalFiles> LabResults { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Faq> Faqs { get; set; }
     public DbSet<SupportTicket> SupportTickets { get; set; }
@@ -28,6 +23,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Symptom> Symptoms { get; set; }
     public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
     public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
+    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
+    public DbSet<Request> request { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -37,8 +34,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new PatientConfiguration());
         modelBuilder.ApplyConfiguration(new DoctorConfiguration());
         modelBuilder.ApplyConfiguration(new PaymentConfiguration());
-        modelBuilder.ApplyConfiguration(new PrescriptionConfiguration());
-        modelBuilder.ApplyConfiguration(new PrescriptionItemConfiguration());
         modelBuilder.ApplyConfiguration(new LabResultConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
@@ -73,7 +68,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
-        modelBuilder.Entity<LabResult>()
+        modelBuilder.Entity<MedicalFiles>()
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
@@ -89,13 +84,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
-        modelBuilder.Entity<Prescription>()
-            .Property(p => p.CreatedOn)
-            .HasDefaultValueSql("GETUTCDATE()");
-
-        modelBuilder.Entity<PrescriptionItem>()
-            .Property(p => p.CreatedOn)
-            .HasDefaultValueSql("GETUTCDATE()");
 
         modelBuilder.Entity<Consultation>()
             .Property(c => c.Status)
@@ -108,6 +96,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Notification>()
             .Property(p => p.NotificationType)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<MedicalFiles>()
+            .Property(p => p.Type)
             .HasConversion<string>();
 
         modelBuilder.Entity<Request>()
@@ -392,10 +384,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 FName = "Ahmed",
                 LName = "Mahmoud",
                 Specialization = "Dermatology",
-                Bio = "Skin specialist",
                 ExperienceYears = 8,
                 Rating = 4.7m,
-                LicenseNumber = "LIC-001",
                 ProfileImageUrl = "",
                 ModifiedOn = null,
                 IsDeleted = false
@@ -427,39 +417,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
 
         // ----------------------
-        // Prescription
-        // ----------------------
-        modelBuilder.Entity<Prescription>().HasData(
-            new Prescription
-            {
-                Id = -1,
-                AppointmentId = -1,
-                DoctorId = -1,
-                PatientId = -1,
-                Specialization = "Dermatology",
-                Notes = "Use cream twice daily",
-                DiagnosisName = "Skin Irritation",
-                Severity = "Mild",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
-
-        // ----------------------
-        // PrescriptionItem
-        // ----------------------
-        modelBuilder.Entity<PrescriptionItem>().HasData(
-            new PrescriptionItem
-            {
-                Id = -1,
-                PrescriptionId = -1,
-                MedicineName = "Skin Cream",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
-
-        // ----------------------
         // Payment
         // ----------------------
         modelBuilder.Entity<Payment>().HasData(
@@ -477,24 +434,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             }
         );
 
-        // ----------------------
-        // LabResult
-        // ----------------------
-        modelBuilder.Entity<LabResult>().HasData(
-            new LabResult
-            {
-                Id = -1,
-                PatientId = -1,
-                DoctorId = -1,
-                TestName = "Blood Test",
-                ResultValue = "Normal",
-                ResultStatus = "Completed",
-                LabNotes = "Good condition",
-                FileUrl = "",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
 
         // ----------------------
         // Notification
@@ -609,35 +548,34 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // --------------------
 
         modelBuilder.Entity<Faq>().HasData(
-    // Patient FAQs
-    new Faq
-    {
-        Id = 1,
-        Type = FaqType.Patient,
-        Question = "How can I book an appointment?",
-        Answer = "You can book an appointment through the mobile application."
-    },
-    new Faq
-    {
-        Id = 2,
-        Type = FaqType.Patient,
-        Question = "Can I cancel or reschedule my appointment?",
-        Answer = "Yes, you can cancel or reschedule your appointment from your profile."
-    },
-    new Faq
-    {
-        Id = 3,
-        Type = FaqType.Patient,
-        Question = "How do I view my medical history?",
-        Answer = "Your medical history is available in the medical records section."
-    },
-    new Faq
-    {
-        Id = 4,
-        Type = FaqType.Patient,
-        Question = "Is my personal data secure?",
-        Answer = "Yes, all your data is securely stored and protected."
-    },
+        new Faq
+        {
+            Id = 1,
+            Type = FaqType.Patient,
+            Question = "How can I book an appointment?",
+            Answer = "You can book an appointment through the mobile application."
+        },
+        new Faq
+        {
+            Id = 2,
+            Type = FaqType.Patient,
+            Question = "Can I cancel or reschedule my appointment?",
+            Answer = "Yes, you can cancel or reschedule your appointment from your profile."
+        },
+        new Faq
+        {
+            Id = 3,
+            Type = FaqType.Patient,
+            Question = "How do I view my medical history?",
+            Answer = "Your medical history is available in the medical records section."
+        },
+        new Faq
+        {
+            Id = 4,
+            Type = FaqType.Patient,
+            Question = "Is my personal data secure?",
+            Answer = "Yes, all your data is securely stored and protected."
+        },
 
     // Doctor FAQs
     new Faq
@@ -670,6 +608,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     }
 );
+
+        
     }
 
 
