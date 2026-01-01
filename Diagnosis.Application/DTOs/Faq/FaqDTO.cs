@@ -9,7 +9,7 @@ namespace Diagnosis.Application.DTOs.Faq
 {
     public class FaqDTO
     {
-        public FaqType Type { get; set; }
+        public string? Type { get; set; }
     }
     public class FaqResponseDTO
     {

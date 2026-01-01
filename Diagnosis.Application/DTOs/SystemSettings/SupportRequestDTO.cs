@@ -10,7 +10,6 @@ namespace Diagnosis.Application.DTOs.SystemSettings
     public class SupportRequestDTO
     {
         public int RequestId { get; set; }
-        public string? Email { get; set; }
         public string? Reply { get; set; }
     }
     public class SupportRequestResponseDTO

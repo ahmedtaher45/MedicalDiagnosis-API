@@ -32,18 +32,21 @@ namespace Diagnosis.API.Controllers
             await addContactMessageUseCase.SendContactMessage(contactMessageDTO);
             return Ok("Message Sent Successfully");
         }
-        [HttpGet("Outside-requests")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("outside-requests")]
         public async Task<ActionResult<List<ContactMessageResponseDTO>>> GetContactMessageRequests([FromServices] GetContactMessageUseCase getContactMessageUseCase)
         {
             var requests = await getContactMessageUseCase.GetContactMessageRequests();
             return Ok(requests);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("send-reply")]
         public async Task<IActionResult> ReplyToRequestAsync([FromBody]SupportRequestDTO requestDTO , [FromServices] AddReplyToRequestUseCase addReplyToRequestUseCase)
         {
             await addReplyToRequestUseCase.ReplyToRequestAsync(requestDTO);
             return Ok("Reply Sent Successfully");
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet("{requestID}/reply")]
         public async Task<ActionResult<SupportRequestResponseDTO>> GetRequestaReplyAsync([FromRoute]int requestID , [FromServices]GetReplyToRequestUseCase getReplyToRequestUseCase)
         {
@@ -53,6 +56,7 @@ namespace Diagnosis.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("ai/rate-limit")]
         public async Task<IActionResult> DefineMaxAiRequest(
             [FromBody] MaxRequestDTO maxRequestDTO,
@@ -66,6 +70,7 @@ namespace Diagnosis.API.Controllers
             }
             return Ok(result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("doctor/rate-limit")]
         public async Task<IActionResult> DefineMaxDoctorDiagnosis(
             [FromBody] MaxRequestDTO maxRequestDTO,
@@ -79,7 +84,22 @@ namespace Diagnosis.API.Controllers
             }
             return Ok(result);
         }
+        [Authorize(Roles = "Admin")]
+        [HttpPut("doctor/work-hours")]
+        public async Task<IActionResult> UpdateDoctorWorkingHours(
+            [FromBody] WorkHoursDTO maxRequestDTO,
+            [FromServices] UpdateDoctorWorkHoursUseCase doctorWorkHoursUseCase
+            )
+        {
+            var result = await doctorWorkHoursUseCase.ExecuteAsync(maxRequestDTO);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("ai/toggle")]
         public async Task<IActionResult> ToggleAi(
             [FromBody] EnableAiDTO enableAiDTO,

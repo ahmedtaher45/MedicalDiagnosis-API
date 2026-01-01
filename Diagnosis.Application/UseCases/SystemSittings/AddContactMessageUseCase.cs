@@ -18,7 +18,7 @@ namespace Diagnosis.Application.UseCases.SystemSittings
         }
         public async Task SendContactMessage(ContactMessageDTO contactMessageDTO)
         {
-            await _unitOfWork.SystemSetting.SendContactMessage(contactMessageDTO);
+            await _unitOfWork.systemSettings.SendContactMessage(contactMessageDTO);
         }
     }
 }

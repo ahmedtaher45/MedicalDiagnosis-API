@@ -19,9 +19,11 @@ namespace Diagnosis.Application.UseCases.PatientDashboard
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<TopSymptomsDTO> ExecuteAsync(int patientId)
+        public async Task<TopSymptomsDTO> ExecuteAsync(string userId)
         {
-            return await  _unitOfWork.Consultation.GetTopSymptomsThisWeek(patientId);
+            var patient = _unitOfWork.Inquiry.GetPatientAsync(userId);
+
+            return await  _unitOfWork.Consultation.GetTopSymptomsThisWeek(patient.Id);
         }
 
     }}

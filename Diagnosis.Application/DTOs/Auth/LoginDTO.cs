@@ -10,6 +10,7 @@ namespace Diagnosis.Application.DTOs.Auth
     {
         public string Email { get; set; }
         public string Password { get; set; }
+        public string? ClientUri { get; set; }
     }
 
     public class LoginResponseDTO

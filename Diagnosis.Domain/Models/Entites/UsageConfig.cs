@@ -12,6 +12,7 @@ namespace Diagnosis.Domain.Models.Entites
         public int MaxRequestsPerDay { get; set; } = 100;
         public bool AiEnabled { get; set; } = true;
         public int MaxDiagnosisPerDay { get; set; } = 30;
+        public int WorkHoursPweDoctor { get; set; } = 2;
 
     }
 }

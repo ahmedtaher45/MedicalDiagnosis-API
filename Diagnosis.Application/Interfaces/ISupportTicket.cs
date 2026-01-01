@@ -12,7 +12,7 @@ namespace Diagnosis.Application.Interfaces
     {
         Task CreateSupportTicketAsync(SupportTicketDTO supportTicketDTO , string userId);
         Task<List<GetSupportTicketDTO>> GetSupportTicketsAsync();
-        Task AddSupportTicketReplyAsync(SupportTicketReplyDTO supportTicketReplyDTO);
+        Task AddSupportTicketReplyAsync(AddSupportTicketReplyDTO supportTicketReplyDTO);
         Task<SupportTicketReplyDTO?> GetLatestReplyByUserAsync(string userId);
     }
 }

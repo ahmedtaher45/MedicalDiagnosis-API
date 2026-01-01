@@ -24,7 +24,7 @@ namespace Diagnosis.Application.UseCases.Auth
 
         public async Task<LoginResponseDTO> Login(LoginDTO loginDTO)
         {
-            return await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password);
+            return await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password, loginDTO.ClientUri);
 
            
             

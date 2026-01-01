@@ -16,7 +16,7 @@ namespace Diagnosis.Application.UseCases.SupportTicket
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task AddSupportTicketReplyAsync(SupportTicketReplyDTO supportTicketReplyDTO)
+        public async Task AddSupportTicketReplyAsync(AddSupportTicketReplyDTO supportTicketReplyDTO)
         {
             await _unitOfWork.SupportTicket.AddSupportTicketReplyAsync(supportTicketReplyDTO);
         }

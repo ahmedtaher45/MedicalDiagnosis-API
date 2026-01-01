@@ -37,7 +37,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 userId = userId,
                 Subject = supportTicketDTO.Subject,
                 Details = supportTicketDTO.Details,
-                Status = supportTicketDTO.Status
+                Status = "New"
             };
 
             await _context.AddAsync(ticket);
@@ -65,7 +65,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
             return tickets;
         }
-        public async Task AddSupportTicketReplyAsync(SupportTicketReplyDTO supportTicketReplyDTO)
+        public async Task AddSupportTicketReplyAsync(AddSupportTicketReplyDTO supportTicketReplyDTO)
         {
             var ticket = await _context.SupportTickets.FirstOrDefaultAsync(t => t.Id == supportTicketReplyDTO.TicketId);
 
@@ -73,7 +73,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 throw new Exception("Ticket not found");
 
             ticket.Reply = supportTicketReplyDTO.Reply;
-            ticket.Status = "Answered";
+            ticket.Status = "Replied";
 
             await _context.SaveChangesAsync();
         }

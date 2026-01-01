@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Diagnosis.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class HelpController : ControllerBase
     {
-        [HttpGet]
-        public async Task<IActionResult> GetFaqs([FromQuery]FaqDTO faqDTO, [FromQuery] string? search , [FromServices] GetFaqsUseCase faqsUseCase)
+        [HttpGet("faqs")]
+        public async Task<IActionResult> GetFaqs([FromQuery]FaqDTO faqDTO, [FromServices] GetFaqsUseCase faqsUseCase)
         {
-            var faqs = await faqsUseCase.GetAllFaqAsync(faqDTO, search);
+            var faqs = await faqsUseCase.GetAllFaqAsync(faqDTO);
             return Ok(faqs);
         }
     }

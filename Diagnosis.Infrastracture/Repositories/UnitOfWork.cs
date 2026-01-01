@@ -48,7 +48,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _diagnosisModuleProvider = diagnosisModuleProvider;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
-            systemSettings = new SystemSettingsRepository(_context);
+            systemSettings = new SystemSettingsRepository(_context, _emailSender);
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
             Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
@@ -61,7 +61,6 @@ namespace Diagnosis.Infrastracture.Repositories
             Profile = new ProfileRepository(_context);
             PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
             Settings = new SettingsRepository(_context);
-            SystemSetting = new SystemSettingsRepository(_context , _emailSender);
 
         }
 
@@ -85,7 +84,6 @@ namespace Diagnosis.Infrastracture.Repositories
         public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
         public ISettingsRepository Settings { get; private set; }
 
-        public ISystemSetting SystemSetting {  get; private set; }
 
         public async Task<int> CompleteAsync()
         {

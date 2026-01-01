@@ -16,5 +16,10 @@ namespace Diagnosis.Application.Interfaces
         Task<bool> CanMakeDiagnosisAsync(string userId);
         Task<UsageResponse> DefineMaxDoctorDiagnosisPerDay(MaxRequestDTO maxRequestDTO);
         Task<bool> IsAiEnabledAsync();
+        Task SendContactMessage(ContactMessageDTO contactMessageDTO);
+        Task<List<ContactMessageResponseDTO>> GetContactMessageRequests();
+        Task ReplyToRequestAsync(SupportRequestDTO requestDTO);
+        Task<SupportRequestResponseDTO> GetRequestaReplyAsync(int requestID);
+        Task<UsageResponse> UpdateDoctorWorkHoursAsync(WorkHoursDTO maxRequestDTO);
     }
 }

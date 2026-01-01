@@ -98,10 +98,7 @@ namespace Diagnosis.API
 
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
-            //builder.Services.AddScoped<GetAdminDashboardUseCase>();
-            //builder.Services.AddScoped<GetDoctorDashboardUseCase>();
-            //builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
-            //builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
+
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
@@ -122,6 +119,12 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetContactMessageUseCase>();
             builder.Services.AddScoped<AddReplyToRequestUseCase>();
             builder.Services.AddScoped<GetReplyToRequestUseCase>();
+            builder.Services.AddScoped<DefineMaxAiRequestUseCase>();
+            builder.Services.AddScoped<DefineMaxDoctorDiagnosisUseCase>();
+            builder.Services.AddScoped<ToggleAiUseCase>();
+            builder.Services.AddScoped<UpdateDoctorWorkHoursUseCase>();
+            builder.Services.AddScoped<GetSupportTicketContentUseCase>();
+
 
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>

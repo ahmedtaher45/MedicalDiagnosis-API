@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.UseCases.SystemSittings
 {
-    public class GetReplyToRequestUseCase
+    public class UpdateDoctorWorkHoursUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public GetReplyToRequestUseCase(IUnitOfWork unitOfWork)
+        public UpdateDoctorWorkHoursUseCase(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<SupportRequestResponseDTO> GetRequestaReplyAsync(int requestID)
+
+        public async Task<UsageResponse> ExecuteAsync(WorkHoursDTO maxRequestDTO)
         {
-            return await _unitOfWork.systemSettings.GetRequestaReplyAsync(requestID);
+            return await _unitOfWork.systemSettings.UpdateDoctorWorkHoursAsync(maxRequestDTO);
         }
     }
 }

@@ -110,22 +110,24 @@ namespace Diagnosis.API.Controllers
        }
 
        [Authorize(Roles = "Patient")]
-       [HttpGet("symptom-count-this-week/{patientId}")]
+       [HttpGet("symptom-count-this-week")]
        public async Task<IActionResult> GetConsultationCountThisWeek(
-           [FromRoute] int patientId,
            [FromServices] GetConsultationCountThisWeekUseCase _getConsultationCountThisWeekUseCase)
        {
-           var result = await _getConsultationCountThisWeekUseCase.ExecuteAsync(patientId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+
+            var result = await _getConsultationCountThisWeekUseCase.ExecuteAsync(userId);
            
            return Ok(result);
        }
        [Authorize(Roles = "Patient")]
-       [HttpGet("top-symptoms-this-week/{patientId}")]
+       [HttpGet("top-symptoms-this-week")]
        public async Task<IActionResult> GetTopSymptomsThisWeek(
-           [FromRoute] int patientId,
            [FromServices] GetTopSymptomsThisWeekUseCase _getTopSymptomsThisWeekUseCase)
        {
-           var result = await _getTopSymptomsThisWeekUseCase.ExecuteAsync(patientId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+
+            var result = await _getTopSymptomsThisWeekUseCase.ExecuteAsync(userId);
            
 
            return Ok(result);

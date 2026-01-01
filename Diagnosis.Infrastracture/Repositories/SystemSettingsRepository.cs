@@ -1,14 +1,11 @@
-﻿using Diagnosis.Application.DTOs.SystemSettings;
-using Diagnosis.Application.Interfaces;
-using Diagnosis.Domain.Models.Entites;
-using Microsoft.EntityFrameworkCore;
-using Azure.Core;
+﻿using Azure.Core;
 using Diagnosis.Application.DTOs.SystemSettings;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
 using NETCore.MailKit.Core;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +16,15 @@ using Request = Diagnosis.Domain.Models.Entites.Request;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class SystemSettingsRepository : ISystemSetting
+    public class SystemSettingsRepository : Repository<UserAIUsage>, ISystemSettingsRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailsender;
 
-        public SystemSettingsRepository(ApplicationDbContext context , IEmailSender emailsender)
+        public SystemSettingsRepository(
+            ApplicationDbContext context, 
+            IEmailSender emailsender
+            ):base(context)
         {
             _context = context;
             _emailsender = emailsender;
@@ -33,15 +33,35 @@ namespace Diagnosis.Infrastracture.Repositories
         public async Task<List<ContactMessageResponseDTO>> GetContactMessageRequests()
         {
             var requests = await _context.request
-                .Select(request => new ContactMessageResponseDTO
-                {
-                    FullName = request.Name,
-                    Email = request.Email,
-                    Message = request.Message,
-                    Status = request.Status.ToString()
-                })
                 .ToListAsync();
-            return requests;
+
+            var contactResponses = new List<ContactMessageResponseDTO>();
+            foreach (var request in requests)
+            {
+                if (request.Status == RequestStatus.Replied)
+                {
+                    contactResponses.Add(
+                         new ContactMessageResponseDTO()
+                         {
+                             FullName = request.Name,
+                             Email = request.Email,
+                             Message = request.Message,
+                             Status = "Replied"
+                         });
+                }
+                else
+                {
+                    contactResponses.Add(
+                         new ContactMessageResponseDTO()
+                         {
+                             FullName = request.Name,
+                             Email = request.Email,
+                             Message = request.Message,
+                             Status = "Pending"
+                         });
+                }
+            }
+            return contactResponses;
         }
 
 
@@ -82,7 +102,7 @@ namespace Diagnosis.Infrastracture.Repositories
             var html = (htmlTemplate.Replace("{{Name}}", request.Name)).Replace("{{AdminReply}}", request.Reply);
 
             var message = new Message(
-                new[] { requestDTO.Email! },
+                new[] { request.Email! },
                 "Reply to your request",
                 html
                 );
@@ -237,6 +257,26 @@ namespace Diagnosis.Infrastracture.Repositories
             {
                 Success = true,
                 Message = "AI services status changed successfully"
+            };
+        }
+
+        public async Task<UsageResponse> UpdateDoctorWorkHoursAsync(WorkHoursDTO maxRequestDTO)
+        {
+            if (maxRequestDTO.Hours == 0)
+            {
+                return new UsageResponse
+                {
+                    Success = false,
+                    Message  = "Hours must be above 0"
+                };
+            }
+            var workHours = await _context.UsageConfig.FirstOrDefaultAsync();
+            workHours!.WorkHoursPweDoctor = maxRequestDTO.Hours;
+
+            return new UsageResponse
+            {
+                Success = true,
+                Message = "Work hours per doctor has been updated successfully"
             };
         }
     }

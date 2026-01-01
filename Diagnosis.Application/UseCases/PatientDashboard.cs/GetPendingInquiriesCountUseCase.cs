@@ -21,9 +21,10 @@ namespace Diagnosis.Application.UseCases.PatientDashboard
 
         }
 
-        public async Task<GetPendingCountDTO> ExecuteAsync(int patientId)
+        public async Task<GetPendingCountDTO> ExecuteAsync(string userId)
         {
-            return await _unitOfWork.Inquiry.GetPendingInquiriesCount(patientId);
+            var patient = _unitOfWork.Inquiry.GetPatientAsync(userId);
+            return await _unitOfWork.Inquiry.GetPendingInquiriesCount(patient.Id);
         }
     }
 }
