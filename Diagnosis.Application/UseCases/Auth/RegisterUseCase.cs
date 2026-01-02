@@ -19,7 +19,19 @@ namespace Diagnosis.Application.UseCases.Auth
         }
 
         public async Task<RegisterResponse> ExcuteAsync(RegisterDTO registerDTO)
-        {             
+        {
+            var admins = await unitOfWork.Users.GetUsersByRoleAsync("Admin");
+           foreach (var admin in admins)
+            {
+                await unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
+                {
+                    UserId = admin.Id,
+                    Title = "New Patient Registered",
+                    Message = "A new patient has joined the platform",
+                    NotificationType = Diagnosis.Domain.Entites.NotificationType.DoctorPatientManagement,
+                    Date = DateTime.UtcNow,
+                });
+            }        
             return await unitOfWork.Auth.RegisterAsync(registerDTO); ;
         }
 

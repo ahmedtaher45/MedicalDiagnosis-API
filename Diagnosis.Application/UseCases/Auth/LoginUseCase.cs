@@ -24,10 +24,24 @@ namespace Diagnosis.Application.UseCases.Auth
 
         public async Task<LoginResponseDTO> Login(LoginDTO loginDTO)
         {
-            return await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password);
+            var result =await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password);
+            var admins = await _unitOfWork.Users.GetUsersByRoleAsync("Admin");
+            if(!result.Success)
+            {
+                foreach (var admin in admins)
+                {
+                    await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
+                    {
+                        UserId = admin.Id,
+                        Title = "Failed Login Attempts",
+                        Message = "Multiple failed admin login attempts detected",
+                        NotificationType = Diagnosis.Domain.Entites.NotificationType.SystemAlert,
+                        Date = DateTime.UtcNow,
+                    });
+                }
+            }
 
-           
-            
+            return result;
         }
     }
 }

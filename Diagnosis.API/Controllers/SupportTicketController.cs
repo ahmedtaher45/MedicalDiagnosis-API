@@ -20,7 +20,8 @@ namespace Diagnosis.API.Controllers
             if (supportTicketDTO == null)
                 return BadRequest("SupportTicketDTO cannot be null.");
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
-            await supportTicketUseCase.CreateSupportTicketAsync(userId , supportTicketDTO);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            await supportTicketUseCase.CreateSupportTicketAsync(role, userId, supportTicketDTO);
 
             return Ok(new { Message = "Support ticket created successfully." });
 

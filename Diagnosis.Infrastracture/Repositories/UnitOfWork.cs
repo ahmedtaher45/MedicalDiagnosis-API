@@ -68,6 +68,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Doctor = new DoctorRepository(_context);
 
             SystemSetting = new SystemSettingsRepository(_context , _emailSender);
+            Users = new UserRepository(_context , _userManager);
 
 
         }
@@ -98,6 +99,7 @@ namespace Diagnosis.Infrastracture.Repositories
         public ITreatmentRepository Treatment { get; private set; }
 
         public ISystemSetting SystemSetting {  get; private set; }
+        public IUserRepository Users { get; private set; }
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

@@ -10,10 +10,16 @@ namespace Diagnosis.Domain.Entites
 {
     public enum NotificationType
     {
-        Consultation = 1,
-        Management = 2,
-        System = 3,
-        Admin = 4
+        Consultation = 1,//dr
+        Management = 2,//dr
+        System = 3, //dr
+        Admin = 4,//dr/patient
+        SupportTicket = 5, //Admin
+        DoctorPatientManagement = 6,//Admin
+        SystemAlert = 7, //Admin
+        Physiotherapy = 8, //Patient
+        Medical = 9 //Patient
+
     }
     public class Notification : BaseEntity
     {
