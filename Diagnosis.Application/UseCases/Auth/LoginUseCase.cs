@@ -28,6 +28,7 @@ namespace Diagnosis.Application.UseCases.Auth
             var admins = await _unitOfWork.Users.GetUsersByRoleAsync("Admin");
             if(!result.Success)
             {
+                Console.WriteLine("Login failed for user: " + admins.Count);
                 foreach (var admin in admins)
                 {
                     await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
@@ -38,6 +39,7 @@ namespace Diagnosis.Application.UseCases.Auth
                         NotificationType = Diagnosis.Domain.Entites.NotificationType.SystemAlert,
                         Date = DateTime.UtcNow,
                     });
+                    await _unitOfWork.SaveChangesAsync();
                 }
 
             return await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password, loginDTO.ClientUri);

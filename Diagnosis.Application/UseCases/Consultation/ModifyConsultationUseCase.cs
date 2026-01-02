@@ -25,6 +25,7 @@ namespace Diagnosis.Application.UseCases.Consultation
                 Date = DateTime.UtcNow,
                
             });
+            await _unitOfWork.SaveChangesAsync();
             return await _unitOfWork.Consultation.ModifyConsultationAsync(modifyConsultationRequestDTO, consultationId);
         }
 

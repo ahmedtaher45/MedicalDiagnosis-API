@@ -28,6 +28,7 @@ namespace Diagnosis.Application.Interfaces
        
         ITreatmentRepository Treatment { get; }
         IUserRepository Users { get; }
+        ISystemSettingsRepository systemSettings { get; }
 
 
 

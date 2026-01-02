@@ -31,6 +31,7 @@ namespace Diagnosis.Application.UseCases.Notification
                 Title = n.Title,
                 Message = n.Message,
                 Date = n.Date,
+                RelatedId = n.RelatedId
                
             }).ToList();
         }

@@ -33,6 +33,7 @@ namespace Diagnosis.Application.UseCases.SupportTicket
                     Date = DateTime.UtcNow,
                   
                 });
+                await _unitOfWork.SaveChangesAsync();
             }
             
 

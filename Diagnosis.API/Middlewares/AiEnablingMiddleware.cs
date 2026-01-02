@@ -44,6 +44,7 @@ namespace Diagnosis.API.Middlewares
             }
 
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await unitOfWork.Users.GetByIdAsync([userId]);
             if (string.IsNullOrEmpty(userId))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -63,8 +64,19 @@ namespace Diagnosis.API.Middlewares
 
             if (diagnosisMeta != null)
             {
+                
                 if (!await unitOfWork.systemSettings.CanMakeDiagnosisAsync(userId))
                 {
+                    await unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
+                    {
+                        UserId = userId,
+                        Title = "Doctor Reached Daily Limit",
+                        Message = $"Dr. {user.UserName} has reached the maximum number of diagnoses today",
+                        Date = DateTime.UtcNow,
+                       NotificationType = Diagnosis.Domain.Entites.NotificationType.DoctorPatientManagement
+                        
+                    });
+                        await unitOfWork.SaveChangesAsync();
                     context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
                     await context.Response.WriteAsync("Diagnosis limit exceeded");
                     return;

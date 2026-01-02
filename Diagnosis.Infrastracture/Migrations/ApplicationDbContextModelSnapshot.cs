@@ -61,7 +61,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<DateOnly>("LastResetDate")
                         .HasColumnType("date");
 
-
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
@@ -142,7 +141,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("MedicalFiles");
-
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Notification", b =>
@@ -524,8 +522,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0008ce66-58bf-4d06-a864-2104e3d757c2",
-
+                            ConcurrencyStamp = "71fc3bc8-fc03-4796-bee6-3654cc58d367",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -534,8 +531,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
                             ReceiveEmailNotifications = true,
-                        SecurityStamp = "6296fc3c-30ba-4b71-98a8-b5403102b5b1",
-
+                            SecurityStamp = "362a741a-ae3d-40ac-a12e-26f7749102b5",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -543,8 +539,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f00860c9-fecd-4c2e-8f58-39f413eb0562",
-
+                            ConcurrencyStamp = "692f4f63-3f81-4d14-ae5c-d7d5d99782f2",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -561,8 +556,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9278384e-7943-4f7e-9b61-1356da6207b1",
-
+                            ConcurrencyStamp = "5ea32d76-48ba-4759-ab58-925a757eb75d",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -961,8 +955,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Requests");
-
+                    b.ToTable("Request");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SuggestedMedication", b =>
@@ -1289,7 +1282,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.ToTable("TreatmentPlans");
                 });
 
-
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UsageConfig", b =>
                 {
                     b.Property<int>("Id")
@@ -1359,41 +1351,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.ToTable("Usages");
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserSettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("ReceiveEmailNotifications")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserSettings");
-                });
-
-                modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -1683,7 +1641,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Patient");
                 });
 
-
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserAIUsage", b =>
                 {
                     b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
@@ -1694,18 +1651,7 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserSettings", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-                modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()

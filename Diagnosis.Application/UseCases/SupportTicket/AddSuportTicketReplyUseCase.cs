@@ -18,28 +18,32 @@ namespace Diagnosis.Application.UseCases.SupportTicket
         }
         public async Task AddSupportTicketReplyAsync(AddSupportTicketReplyDTO supportTicketReplyDTO)
         {
-            var user = await _unitOfWork.Users.GetByIdAsync([supportTicketReplyDTO.userId]);
-            var userRole = await _unitOfWork.Users.GetUserRoleAsync(user.Id);
-            if(userRole == "Doctor")
+            var ticket = await _unitOfWork.SupportTicket.GetByIdAsync([supportTicketReplyDTO.TicketId]);
+            var ticketUser = await _unitOfWork.Users.GetByIdAsync([ticket.userId]);
+            var userRole = await _unitOfWork.Users.GetUserRoleAsync(ticketUser.Id);
+
+            if(userRole == "Doctor"){
             await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
             {
-                UserId = supportTicketReplyDTO.userId,
+                UserId = ticketUser.Id,
                 Title = "Admin Response Received",
                 Message = "Inquiry reviewed and case updated. Please check for assessment.",
                 NotificationType = Diagnosis.Domain.Entites.NotificationType.Admin,
                 Date = DateTime.UtcNow,
                 RelatedId = supportTicketReplyDTO.TicketId
             });
-            else if(userRole == "User")
+            await _unitOfWork.SaveChangesAsync();
+        }
+            else if(userRole == "Patient"){
             await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
             {
-                UserId = supportTicketReplyDTO.userId,
-                Title = " Response Received",
-                Message = "Your response has been recorded. Please wait for further updates.",
+                UserId = ticketUser.Id,
+                Title = "Admin Response Received",
+                Message = "Your consultation has been reviewed, and an administrative response is now available.",
                 NotificationType = Diagnosis.Domain.Entites.NotificationType.Admin,
                 Date = DateTime.UtcNow,
                 RelatedId = supportTicketReplyDTO.TicketId
-            });
+            });}
             await _unitOfWork.SupportTicket.AddSupportTicketReplyAsync(supportTicketReplyDTO);
         }
     }

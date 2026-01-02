@@ -623,71 +623,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         });
 
      
-        // --------------------
-        // Faq
-        // --------------------
-
-        modelBuilder.Entity<Faq>().HasData(
-        new Faq
-        {
-            Id = 1,
-            Type = FaqType.Patient,
-            Question = "How can I book an appointment?",
-            Answer = "You can book an appointment through the mobile application."
-        },
-        new Faq
-        {
-            Id = 2,
-            Type = FaqType.Patient,
-            Question = "Can I cancel or reschedule my appointment?",
-            Answer = "Yes, you can cancel or reschedule your appointment from your profile."
-        },
-        new Faq
-        {
-            Id = 3,
-            Type = FaqType.Patient,
-            Question = "How do I view my medical history?",
-            Answer = "Your medical history is available in the medical records section."
-        },
-        new Faq
-        {
-            Id = 4,
-            Type = FaqType.Patient,
-            Question = "Is my personal data secure?",
-            Answer = "Yes, all your data is securely stored and protected."
-        },
-
-    // Doctor FAQs
-    new Faq
-    {
-        Id = 5,
-        Type = FaqType.Doctor,
-        Question = "How can I manage my appointments?",
-        Answer = "You can manage your appointments from the doctor dashboard."
-    },
-    new Faq
-    {
-        Id = 6,
-        Type = FaqType.Doctor,
-        Question = "How do I update my availability?",
-        Answer = "You can update your availability from your profile settings."
-    },
-    new Faq
-    {
-        Id = 7,
-        Type = FaqType.Doctor,
-        Question = "Can I access patient medical records?",
-        Answer = "Yes, you can access medical records for patients assigned to you."
-    },
-    new Faq
-    {
-        Id = 8,
-        Type = FaqType.Doctor,
-        Question = "How do I receive payments?",
-        Answer = "Payments are transferred to your registered bank account."
-
-    }
-);
+        
 
         
 

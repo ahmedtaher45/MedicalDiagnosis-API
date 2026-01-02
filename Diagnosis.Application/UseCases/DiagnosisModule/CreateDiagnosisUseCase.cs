@@ -20,17 +20,17 @@ namespace Diagnosis.Application.UseCases.DiagnosisModule
 
         public async Task<ProviderResponse> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
         {
-            // var doctor = await _unitOfWork.Doctor.GetByIdAsync(new object[] { userId });
-            // await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
-            // {
-            //     UserId = doctor.UserId,
-            //     Title = "New AI Consultation Submitted",
-            //     Message = "A patient has sent an AI-assisted consultation for your review.",
-            //     NotificationType = NotificationType.Consultation,
-            //     Date = DateTime.UtcNow
-            // });
+            var doctor = await _unitOfWork.Doctor.GetByIdAsync(new object[] { userId });
+            await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
+            {
+                UserId = doctor.UserId,
+                Title = "New AI Consultation Submitted",
+                Message = "A patient has sent an AI-assisted consultation for your review.",
+                NotificationType = NotificationType.Consultation,
+                Date = DateTime.UtcNow
+            });
 
-            var canUseAI = await _unitOfWork.SystemSettings.CanUseAiAsync(userId);
+            var canUseAI = await _unitOfWork.systemSettings.CanUseAiAsync(userId);
             if (!canUseAI)
             {
                 return new ProviderResponse

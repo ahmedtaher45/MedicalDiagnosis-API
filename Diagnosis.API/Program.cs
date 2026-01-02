@@ -126,6 +126,10 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ToggleAiUseCase>();
             builder.Services.AddScoped<UpdateDoctorWorkHoursUseCase>();
             builder.Services.AddScoped<GetSupportTicketContentUseCase>();
+            builder.Services.AddScoped<GetSupportTicketUseCase>();
+            builder.Services.AddScoped<GetUserNotificationsUseCase>();
+            builder.Services.AddScoped<MarkNotificationsAsDoneUseCase>();
+            builder.Services.AddScoped<EndPhysiotherapySessionUseCase>();
 
 
 

@@ -68,7 +68,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Patient = new PatientRepository(_context);
             Doctor = new DoctorRepository(_context);
 
-            SystemSettings = new SystemSettingsRepository(_context , _emailSender);
+            systemSettings = new SystemSettingsRepository(_context , _emailSender);
             Users = new UserRepository(_context , _userManager);
 
 
@@ -108,7 +108,7 @@ namespace Diagnosis.Infrastracture.Repositories
     //public ISystemSetting SystemSetting {  get; private set; }
         public IUserRepository Users { get; private set; }
 
-        public ISystemSettingsRepository SystemSettings { get; private set; }
+        public ISystemSettingsRepository systemSettings { get; private set; }
        
 
 

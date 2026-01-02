@@ -31,6 +31,7 @@ namespace Diagnosis.Application.UseCases.Auth
                     NotificationType = Diagnosis.Domain.Entites.NotificationType.DoctorPatientManagement,
                     Date = DateTime.UtcNow,
                 });
+                await unitOfWork.SaveChangesAsync();
             }        
             return await unitOfWork.Auth.RegisterAsync(registerDTO); ;
         }

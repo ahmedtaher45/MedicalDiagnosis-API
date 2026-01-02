@@ -22,37 +22,37 @@ namespace Diagnosis.Application.UseCases.Inquiry
         }
 
         public async Task<IquiryResponse> ExecuteAsync(AddInquiryDTO addInquiryDTO, string userId)
-{
-    if (addInquiryDTO == null)
-        throw new ArgumentNullException(nameof(addInquiryDTO));
-
-    var response = await _unitOfWork.Inquiry.AddInquiryAsync(addInquiryDTO, userId);
-
-    var doctor = await _unitOfWork.Doctor.GetByIdAsync(new object[] { addInquiryDTO.DoctorId });
-
-    if (doctor == null)
-    {
-        return new IquiryResponse
         {
-            Success = false,
-            Message = "No doctor with this Id"
-        };
-    }
+            if (addInquiryDTO == null)
+                throw new ArgumentNullException(nameof(addInquiryDTO));
 
-    var notification = new Diagnosis.Domain.Entites.Notification
-    {
-        UserId = doctor.UserId,
-        Title = "New Patient Inquiry Received",
-        Message = "A patient has submitted a new inquiry. Please review and respond.",
-        NotificationType = NotificationType.Consultation,
-        Date = DateTime.UtcNow
-    };
+            var response = await _unitOfWork.Inquiry.AddInquiryAsync(addInquiryDTO, userId);
 
-    await _unitOfWork.Notifications.AddAsync(notification);
-    await _unitOfWork.SaveChangesAsync();
+            var doctor = await _unitOfWork.Doctor.GetByIdAsync(new object[] { addInquiryDTO.DoctorId });
 
-    return response;
-}
+            if (doctor == null)
+            {
+                return new IquiryResponse
+                {
+                    Success = false,
+                    Message = "No doctor with this Id"
+                };
+            }
+
+            var notification = new Diagnosis.Domain.Entites.Notification
+            {
+                UserId = doctor.UserId,
+                Title = "New Patient Inquiry Received",
+                Message = "A patient has submitted a new inquiry. Please review and respond.",
+                NotificationType = NotificationType.Consultation,
+                Date = DateTime.UtcNow
+            };
+
+            await _unitOfWork.Notifications.AddAsync(notification);
+            await _unitOfWork.SaveChangesAsync();
+
+            return response;
+        }
 
     }
 }

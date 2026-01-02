@@ -62,5 +62,14 @@ namespace Diagnosis.API.Controllers
 
             return Ok(reply);
         }
+        [Authorize(Roles = "Doctor, Patient")]
+        [HttpGet("ticket/{ticketId}")]
+        public async Task<IActionResult> GetSupportTicketAsync([FromServices] GetSupportTicketUseCase getSupportTicketUseCase, [FromRoute] int ticketId)
+        {
+            var ticket = await getSupportTicketUseCase.GetSupportTicketByIdAsync(ticketId);
+            if (ticket == null) return NotFound("Support ticket not found.");
+
+            return Ok(ticket);
+        }
     }
 }
