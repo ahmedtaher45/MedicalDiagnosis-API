@@ -480,8 +480,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Status = ConsultationStatus.Pending,
                 Type = ConsultationType.Inquiry,
                 Date = new DateTime(2025, 1, 1),
-                ConfidenceLevel = 0,
-                Description = "General inquiry about symptoms"
+                ConfidenceLevel = "60%",
+                //Description = "General inquiry about symptoms"
             }
         );
 

@@ -20,6 +20,7 @@ namespace Diagnosis.Domain.Models.Entites
     {
         Inquiry = 0,
         AIDiagnosis = 1,
+        BoneFraction = 2
     }
     public class Consultation: BaseEntity
     {
@@ -30,10 +31,12 @@ namespace Diagnosis.Domain.Models.Entites
         public ConsultationStatus Status { get; set; }
         public ConsultationType Type { get; set; }
         public DateTime Date { get; set; }
-        public int ConfidenceLevel { get; set; }
+        public string? ConfidenceLevel { get; set; }
         public ICollection<string>? FileUrls { get; set; }
+        public string? IncomingUrl { get; set; }
+        public string? ResultUrl { get; set; }
         public string? DiagnosisName { get; set; }
-        public string? Description { get; set; }
+        public string? Prediction { get; set; }
         public string? RejectReason { get; set; }
         public string? RejectNotes { get; set; }
         public Patient? Patient { get; set; }

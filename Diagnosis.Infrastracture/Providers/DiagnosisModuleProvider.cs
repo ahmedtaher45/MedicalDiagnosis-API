@@ -1,10 +1,13 @@
 ﻿using Diagnosis.Application.DTOs.DiagnosisModule;
 using Diagnosis.Application.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -15,63 +18,43 @@ namespace Diagnosis.Infrastracture.Providers
     public class DiagnosisModuleProvider : IDiagnosisModuleProvider
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey;
-
-        public DiagnosisModuleProvider(HttpClient httpClient, IConfiguration config)
+        public DiagnosisModuleProvider(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _apiKey = config["AiModule:ApiKey"];
         }
 
-        public async Task<ProviderResponse> GetDiagnosisAsync(
-            List<(string fileName, byte[] content, string contentType)> files,
-            string symptoms,
-            string description
-            )
+        public async Task<ProviderResponse> GetDiagnosisAsync(IFormFile formFile)
         {
             try
             {
-                var filesBase64 = files.Select(f =>
-                new
-                {
-                fileName = f.fileName,
-                content = Convert.ToBase64String(f.content),
-                contentType = f.contentType
-                }).ToList();
+                using var content = new MultipartFormDataContent();
 
-                var requestBody = new
-                {
-                    symptoms = symptoms,
-                    description = description,
-                    files = filesBase64
-                };
-                var request = new HttpRequestMessage(
-                    HttpMethod.Post,
-                    "ai-URL");
+                using var stream = formFile.OpenReadStream();
+                var fileContent = new StreamContent(stream);
+                fileContent.Headers.ContentType =
+                    new MediaTypeHeaderValue(formFile.ContentType);
 
-                request.Headers.Add("X-API-KEY", _apiKey);
+                content.Add(
+                    fileContent,
+                    "file",               
+                    formFile.FileName
+                );
 
-                request.Content = new StringContent(
-                    JsonSerializer.Serialize(requestBody),
-                    Encoding.UTF8,
-                    "application/json");
-
-                var response = await _httpClient.SendAsync(request);
-
+                var response = await _httpClient.PostAsync("predict", content);
 
                 response.EnsureSuccessStatusCode();
 
-                var result = await response.Content.ReadFromJsonAsync<ProviderResponse>();
+                var result = await response.Content
+                    .ReadFromJsonAsync<ProviderResponse>();
 
-                if (result == null) throw new Exception("AI API returned null response");
-
-                if (!result.Success) throw new Exception($"AI Diagnosis Failed: {result.Message}");
+                if (result == null)
+                    throw new Exception("AI API returned null response");
 
                 return result;
             }
             catch (JsonException ex)
             {
-                throw new Exception("Failed to parse AI response. Invalid JSON format.", ex);
+                throw new Exception("Failed to parse AI response.", ex);
             }
             catch (HttpRequestException ex)
             {
@@ -82,5 +65,6 @@ namespace Diagnosis.Infrastracture.Providers
                 throw new Exception("AI service request timeout.", ex);
             }
         }
+
     }
 }

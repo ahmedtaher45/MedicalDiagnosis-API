@@ -5,6 +5,7 @@ using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Providers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,28 +29,38 @@ namespace Diagnosis.Infrastracture.Repositories
             _provider = provider;
         }
 
-        public async Task<ProviderResponse> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
+        public async Task<BoneFractionResponseDTO> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
         {
-            foreach (var file in createDiagnosisDTO.Files!)
+            if (createDiagnosisDTO.File == null)
             {
-                if (!_fileService.IsValidFile(file))
+                return new BoneFractionResponseDTO
                 {
-                    return new ProviderResponse
+                    Success = false,
+                    Message = "The image can't be null"
+                };
+            }
+            
+                if (!_fileService.IsValidFile(createDiagnosisDTO.File))
+                {
+                    return new BoneFractionResponseDTO
                     {
                         Success = false,
-                        Message = "Files not valid"
+                        Message = "File not valid"
                     };
                 }
-            }
-            var fileUrls = await _fileService.UploadMultipleFilesAsync(createDiagnosisDTO.Files);
+            var fileUrl = await _fileService.UploadFileAsync(createDiagnosisDTO.File);
             
-            var Diagnosis = await _provider.GetDiagnosisAsync(
-                await ConvertFilesToBytes(createDiagnosisDTO.Files),
-                createDiagnosisDTO.Symptoms!,
-                createDiagnosisDTO.Description!
-            );
+            var Diagnosis = await _provider.GetDiagnosisAsync(createDiagnosisDTO.File);
 
-            var patient = _context.Patients.FirstOrDefault(p => p.UserId == userId);
+            var url = await _fileService.SaveBase64ImageAsync(Diagnosis.Image_base64!);
+            var response = new BoneFractionResponseDTO
+            {
+                Prediction = Diagnosis.Prediction,
+                Confidence = Diagnosis.Confidence,
+                ImgUrl = url
+            };
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
             if (patient == null)
                 throw new Exception("Error with Id");
 
@@ -57,24 +68,23 @@ namespace Diagnosis.Infrastracture.Repositories
             {
                 PatientId = patient.Id,
                 DoctorId = createDiagnosisDTO.DoctorId,
-                Symptoms = createDiagnosisDTO.Symptoms,
-                Notes = createDiagnosisDTO.Description,
                 Status = ConsultationStatus.Pending,
-                Type = ConsultationType.AIDiagnosis,
-                Date = DateTime.Now,
-                ConfidenceLevel = Diagnosis.ConfidenceLevel,
-                Description = Diagnosis.DiagnosisDescription,
-                DiagnosisName = Diagnosis.DiagnosisName,
-                FileUrls = fileUrls
+                Type = ConsultationType.BoneFraction,
+                Date = DateTime.UtcNow,
+                ConfidenceLevel = Diagnosis.Confidence,
+                Prediction = Diagnosis.Prediction,
+                IncomingUrl = fileUrl,
+                ResultUrl = url
             };
 
             await _context.Consultations.AddAsync(consultaion);
             await _context.SaveChangesAsync();
 
-            Diagnosis.DiagnosisId = consultaion.Id;
-            return Diagnosis;
+            response.DiagnosisId = consultaion.Id;
+            response.Success = true;
+            return response;
         }
-
+        // No more needed method, Thanks for your services 😔
         private async Task<List<(string FileName, byte[] Content, string ContentType)>>
             ConvertFilesToBytes(ICollection<IFormFile>files )
         {

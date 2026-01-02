@@ -42,7 +42,7 @@ namespace Diagnosis.Infrastracture.Providers
             var createTreatmentDTO = new
             {
                 DiagnosisName = consultation.DiagnosisName,
-                DiagnosisDescription = consultation.Description,
+                //DiagnosisDescription = consultation.Description,
                 ConfidenceLevel = consultation.ConfidenceLevel
             };
             var request = new HttpRequestMessage(

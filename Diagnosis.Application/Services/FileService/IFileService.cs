@@ -15,6 +15,8 @@ namespace Diagnosis.Application.Services.FileService
         Task<ICollection<byte[]>> GetMultipleFilesAsync(ICollection<string> path);
         Task<bool> DeleteFileAsync(string path);
         bool IsValidFile(IFormFile file);
+        Task<string> SaveBase64ImageAsync(string base64String, string? fileName = null);
+
 
     }
 }
