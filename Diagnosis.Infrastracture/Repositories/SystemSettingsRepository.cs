@@ -139,12 +139,14 @@ namespace Diagnosis.Infrastracture.Repositories
 
             if (userUsage == null)
             {
-                await _context.Usages.AddAsync(new UserAIUsage
+                userUsage = new UserAIUsage
                 {
                     UserId = userId,
                     UsedRequestsToday = 0,
                     LastResetDate = today
-                });
+                };
+
+                await _context.Usages.AddAsync(userUsage);
             }
 
             if (userUsage!.LastResetDate != today)

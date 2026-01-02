@@ -15,11 +15,12 @@ namespace Diagnosis.API.Controllers
         [Authorize(Roles = "Patient")]
         [AiEndpoint]
         [HttpPost("create-daignosis")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateDiagnosis(
             [FromServices] CreateDiagnosisUseCase createDiagnosisUseCase,
             [FromForm] CreateDiagnosisDTO createDiagnosisDTO)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.ToString();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
             var result = await createDiagnosisUseCase.ExecuteAsync(createDiagnosisDTO, userId);
 
             if (!result.Success)

@@ -35,6 +35,9 @@ using Diagnosis.Application.UseCases.PhysiotherapyExercise;
 using Diagnosis.Application.UseCases.PatientDashboard;
 using Diagnosis.Application.UseCases.Notification;
 
+using Diagnosis.Application.UseCases.DiagnosisModule;
+
+
 
 
 
@@ -100,6 +103,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
 
+            builder.Services.AddScoped<CreateDiagnosisUseCase>();
+
 
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
@@ -141,7 +146,7 @@ namespace Diagnosis.API
 
             builder.Services.AddHttpClient<IDiagnosisModuleProvider, DiagnosisModuleProvider>(client =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+                client.BaseAddress = new Uri(builder.Configuration["BoneFracture:BaseUrl"]!);
             });
 
             builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>

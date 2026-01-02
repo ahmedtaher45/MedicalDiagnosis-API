@@ -94,7 +94,7 @@ namespace Diagnosis.Application.Services.FileService
             {
                 await file.CopyToAsync(stream);
             }
-            return Path.Combine("uploads", "diagnosis", fileName);
+            return $"uploads/diagnosis/{fileName}";
         }
 
         public async Task<ICollection<string>> UploadMultipleFilesAsync(ICollection<IFormFile> files)
@@ -107,6 +107,73 @@ namespace Diagnosis.Application.Services.FileService
                 filePaths.Add(path);
             }
             return filePaths;
+        }
+
+        public async Task<string> SaveBase64ImageAsync(string base64String, string? fileName = null)
+        {
+            try
+            {
+                var cleanBase64 = CleanBase64String(base64String);
+
+                byte[] imageBytes = Convert.FromBase64String(cleanBase64);
+
+                var imageExtension = DetectImageExtension(imageBytes);
+
+                fileName ??= $"{Guid.NewGuid}{imageExtension}";
+
+                var filePath = Path.Combine(_templateFolderPath, fileName);
+
+                await File.WriteAllBytesAsync(filePath, imageBytes);
+
+                return $"uploads/diagnosis/{fileName}";
+            }
+            catch (FormatException ex)
+            {
+                throw new ArgumentException("Invalid Base64 image data", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private string CleanBase64String(string base64String)
+        {
+            // إزالة "data:image/jpeg;base64," prefix لو موجود
+            if (base64String.Contains(","))
+            {
+                base64String = base64String.Split(',')[1];
+            }
+
+            // إزالة whitespace
+            return base64String.Trim();
+        }
+        // ✅ اكتشاف نوع الصورة من Magic Bytes
+        private string DetectImageExtension(byte[] imageBytes)
+        {
+            if (imageBytes.Length < 4)
+                return ".jpg"; // default
+
+            // PNG: 89 50 4E 47
+            if (imageBytes[0] == 0x89 && imageBytes[1] == 0x50 &&
+                imageBytes[2] == 0x4E && imageBytes[3] == 0x47)
+                return ".png";
+
+            // JPEG: FF D8 FF
+            if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8 && imageBytes[2] == 0xFF)
+                return ".jpg";
+
+            // GIF: 47 49 46
+            if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46)
+                return ".gif";
+
+            // WebP: 52 49 46 46 ... 57 45 42 50
+            if (imageBytes[0] == 0x52 && imageBytes[1] == 0x49 &&
+                imageBytes[2] == 0x46 && imageBytes[3] == 0x46)
+                return ".webp";
+
+            // Default to JPEG
+            return ".jpg";
         }
     }
 }

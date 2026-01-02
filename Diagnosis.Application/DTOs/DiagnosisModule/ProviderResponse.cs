@@ -8,18 +8,17 @@ namespace Diagnosis.Application.DTOs.DiagnosisModule
 {
     public class ProviderResponse
     {
+        public string? Prediction { get; set; }
+        public string? Confidence { get; set; }
+        public string? Image_base64 { get; set; }
+    }
+    public class BoneFractionResponseDTO
+    {
         public bool Success { get; set; }
         public string? Message { get; set; }
         public int DiagnosisId { get; set; }
-        public ICollection<FollowUpQuestionDto>? FollowUpQuestions { get; set; }
-        public string? DiagnosisName { get; set; }
-        public string? DiagnosisDescription { get; set; }
-        public int ConfidenceLevel { get; set; }
+        public string? Prediction { get; set; }
+        public string? Confidence { get; set; }
+        public string? ImgUrl { get; set; }
     }
-    public class FollowUpQuestionDto
-    {
-        public string Question { get; set; } = default!;
-        public string? Answer { get; set; }
-    }
-
 }

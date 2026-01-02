@@ -77,7 +77,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 {
                     Id = c.Id,
                     DoctorName = c.Doctor.FName + " " + c.Doctor.LName,
-                    Subject = c.Description,
+                    //Subject = c.Description,
                     Date = c.Date,
                     Time = c.Date,
                     Status = c.Status.ToString(),

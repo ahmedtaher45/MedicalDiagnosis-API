@@ -18,7 +18,7 @@ namespace Diagnosis.Application.UseCases.DiagnosisModule
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ProviderResponse> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
+        public async Task<BoneFractionResponseDTO> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
         {
             var doctor = await _unitOfWork.Doctor.GetByIdAsync(new object[] { userId });
             await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
@@ -29,16 +29,6 @@ namespace Diagnosis.Application.UseCases.DiagnosisModule
                 NotificationType = NotificationType.Consultation,
                 Date = DateTime.UtcNow
             });
-
-            var canUseAI = await _unitOfWork.systemSettings.CanUseAiAsync(userId);
-            if (!canUseAI)
-            {
-                return new ProviderResponse
-                {
-                    Success = false,
-                    Message = "You have reached the limit of using AI requests per day"
-                };
-            }
 
             return await _unitOfWork.DiagnosisModule.CreateDiagnosisAsync(createDiagnosisDTO, userId);
         }
