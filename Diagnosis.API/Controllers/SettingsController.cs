@@ -17,28 +17,29 @@ namespace Diagnosis.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class SettingsController : ControllerBase
     {
         
         [HttpGet("profile")]
          
         public async Task<IActionResult> GetProfile(
-    [FromServices] GetProfileUseCase getProfileUseCase)
-{
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    Console.WriteLine("User ID: " + userId);
+            [FromServices] GetProfileUseCase getProfileUseCase)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Console.WriteLine("User ID: " + userId);
 
-    if (userId == null)
-        return Unauthorized();
-    var role = User.FindFirstValue(ClaimTypes.Role);
+            if (userId == null)
+                return Unauthorized();
+            var role = User.FindFirstValue(ClaimTypes.Role);
 
-    var profile = await getProfileUseCase.GetPatientProfile(userId, role);
+            var profile = await getProfileUseCase.GetPatientProfile(userId, role);
 
-    if (profile == null)
-        return NotFound(new { message = "Profile not found" });
+            if (profile == null)
+                return NotFound(new { message = "Profile not found" });
 
-    return Ok(profile);
-}
+            return Ok(profile);
+        }
    
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile(

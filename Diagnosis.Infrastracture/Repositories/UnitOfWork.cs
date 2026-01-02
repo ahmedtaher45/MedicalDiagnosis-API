@@ -49,7 +49,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _diagnosisModuleProvider = diagnosisModuleProvider;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
-
+            
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
             Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
@@ -57,6 +57,7 @@ namespace Diagnosis.Infrastracture.Repositories
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             Profile = new ProfileRepository(_context);
             PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
+
 
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
             MedicalFiles = new MedicalFilesRepository(_context);
@@ -67,8 +68,13 @@ namespace Diagnosis.Infrastracture.Repositories
             Patient = new PatientRepository(_context);
             Doctor = new DoctorRepository(_context);
 
-            SystemSetting = new SystemSettingsRepository(_context , _emailSender);
+            SystemSettings = new SystemSettingsRepository(_context , _emailSender);
             Users = new UserRepository(_context , _userManager);
+
+
+            Profile = new ProfileRepository(_context);
+            PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
+            Settings = new SettingsRepository(_context);
 
 
         }
@@ -85,6 +91,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
 
+
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
         public ISettingsRepository Settings { get; private set; }
         public INotificationRepository Notifications { get; private set; }
@@ -98,8 +105,14 @@ namespace Diagnosis.Infrastracture.Repositories
         public IDoctorManagement Doctor { get; private set; }
         public ITreatmentRepository Treatment { get; private set; }
 
-        public ISystemSetting SystemSetting {  get; private set; }
+    //public ISystemSetting SystemSetting {  get; private set; }
         public IUserRepository Users { get; private set; }
+
+        public ISystemSettingsRepository SystemSettings { get; private set; }
+       
+
+
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

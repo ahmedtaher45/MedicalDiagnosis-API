@@ -16,7 +16,7 @@ namespace Diagnosis.Application.UseCases.SupportTicket
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task AddSupportTicketReplyAsync(SupportTicketReplyDTO supportTicketReplyDTO)
+        public async Task AddSupportTicketReplyAsync(AddSupportTicketReplyDTO supportTicketReplyDTO)
         {
             var user = await _unitOfWork.Users.GetByIdAsync([supportTicketReplyDTO.userId]);
             var userRole = await _unitOfWork.Users.GetUserRoleAsync(user.Id);

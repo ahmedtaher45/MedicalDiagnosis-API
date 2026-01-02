@@ -40,6 +40,9 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<int>("DiagnosisPerDay")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ExperienceYears")
                         .HasColumnType("int");
 
@@ -54,6 +57,10 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.Property<string>("LName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("LastResetDate")
+                        .HasColumnType("date");
+
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -86,10 +93,12 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = -1,
                             BirhDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DiagnosisPerDay = 0,
                             ExperienceYears = 8,
                             FName = "Ahmed",
                             IsDeleted = false,
                             LName = "Mahmoud",
+                            LastResetDate = new DateOnly(1, 1, 1),
                             ProfileImageUrl = "",
                             Rating = 4.7m,
                             Specialization = "Dermatology",
@@ -132,7 +141,8 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("LabResults");
+                    b.ToTable("MedicalFiles");
+
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Notification", b =>
@@ -514,7 +524,8 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4e30204c-670c-45d4-ac90-ef898caf9d42",
+                            ConcurrencyStamp = "0008ce66-58bf-4d06-a864-2104e3d757c2",
+
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -523,7 +534,8 @@ namespace Diagnosis.Infrastracture.Migrations
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
                             ReceiveEmailNotifications = true,
-                            SecurityStamp = "9db21e0f-450f-43de-a749-065d47d7c1b5",
+                        SecurityStamp = "6296fc3c-30ba-4b71-98a8-b5403102b5b1",
+
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -531,7 +543,8 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "792b5a44-9830-4cb3-b7e3-8c9afef6ce44",
+                            ConcurrencyStamp = "f00860c9-fecd-4c2e-8f58-39f413eb0562",
+
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -548,7 +561,8 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f9e04584-ffb9-4c3d-8468-bb33761bbdf8",
+                            ConcurrencyStamp = "9278384e-7943-4f7e-9b61-1356da6207b1",
+
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -947,7 +961,8 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("request");
+                    b.ToTable("Requests");
+
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SuggestedMedication", b =>
@@ -1274,7 +1289,111 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.ToTable("TreatmentPlans");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UsageConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AiEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxDiagnosisPerDay")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxRequestsPerDay")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("WorkHoursPweDoctor")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UsageConfig");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserAIUsage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("LastResetDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsedRequestsToday")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Usages");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("ReceiveEmailNotifications")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserSettings");
+                });
+
+                modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -1564,7 +1683,29 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserAIUsage", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
+                        .WithOne("Usage")
+                        .HasForeignKey("Diagnosis.Domain.Models.Entites.UserAIUsage", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserSettings", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+                modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
@@ -1642,6 +1783,8 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Patient");
 
                     b.Navigation("SupportTickets");
+
+                    b.Navigation("Usage");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>

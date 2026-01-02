@@ -48,23 +48,21 @@ namespace Diagnosis.API.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Patient")]
-        [HttpGet("recent/{patientId}")]
+        [HttpGet("recent")]
         public async Task<IActionResult> GetRecentInquiries(
-            [FromRoute] int patientId,
             [FromServices] GetRecentInquiriesUseCase getRecentInquiriesUseCase)
         {
-            var result = await getRecentInquiriesUseCase.GetRecentInquiries(patientId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await getRecentInquiriesUseCase.GetRecentInquiries(userId);
             return Ok(result);
         }
 
-        [Authorize(Roles = "Patient")]
-        [HttpGet("pending/{patientId}")]
+        [HttpGet("pending")]
         public async Task<IActionResult> GetPendingInquiriesCount(
-            [FromRoute] int patientId,
             [FromServices] GetPendingInquiriesCountUseCase getPendingInquiriesCountUseCase)
         {
-            var result = await getPendingInquiriesCountUseCase.ExecuteAsync(patientId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await getPendingInquiriesCountUseCase.ExecuteAsync(userId);
             return Ok(result);
         }
     }

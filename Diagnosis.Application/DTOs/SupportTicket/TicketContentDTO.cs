@@ -1,22 +1,16 @@
-﻿using Diagnosis.Domain.Models.Entites;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Diagnosis.Application.DTOs.SupportTicket
 {
-    public class SupportTicketDTO
+    public class TicketContentDTO
     {
-       
-     
-        [MaxLength(150)]
+        public bool Success { get; set; }
+        public string? Message { get; set; }
         public string? Subject { get; set; }
-       
-        [MaxLength(2000)]
         public string? Details { get; set; }
     }
-  
 }

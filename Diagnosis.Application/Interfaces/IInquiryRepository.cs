@@ -14,9 +14,9 @@ namespace Diagnosis.Application.Interfaces
        
         Task<List<InquiriesDto>> GetRecentInquiriesAsync(int patientId);
         Task<GetPendingCountDTO> GetPendingInquiriesCount(int patientId);
-
         Task<IquiryResponse> AddInquiryAsync(AddInquiryDTO addInquiryDTO, string userId);
         Task<int> GetPatientAsync(string userId);
+
 
     }
 }

@@ -13,7 +13,7 @@ namespace Diagnosis.API.Controllers
     public class SupportTicketController : ControllerBase
     {
         [Authorize]
-        [HttpPost("Create")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateSupportTicketAsync([FromBody]SupportTicketDTO supportTicketDTO, [FromServices]AddSupportTicketUseCase supportTicketUseCase)
         {
 
@@ -27,7 +27,7 @@ namespace Diagnosis.API.Controllers
 
         }
         [Authorize(Roles = "Admin")]
-        [HttpGet("SupportTicket")]
+        [HttpGet("all")]
         public async Task<ActionResult<List<GetSupportTicketDTO>>> GetSupportTicketsAsync([FromServices]GetSupportTicketsUseCase getSupportTicketsUseCase)
         {
             
@@ -35,14 +35,23 @@ namespace Diagnosis.API.Controllers
             return Ok(tickets);
         }
         [Authorize(Roles = "Admin")]
-        [HttpPost("Reply")]
-        public async Task<IActionResult> AddSupportTicketReplyAsync([FromBody]SupportTicketReplyDTO supportTicketReplyDTO , [FromServices]AddSuportTicketReplyUseCase addSuportTicketReplyUseCase)
+        [HttpGet("content/{ticketId}")]
+        public async Task<ActionResult<List<GetSupportTicketDTO>>> GetSupportTicketContentAsync(
+            [FromServices] GetSupportTicketContentUseCase getSupportTicketUseCase,
+            [FromRoute] int ticketId)
+        {
+            var tickets = await getSupportTicketUseCase.ExecuteAsync(ticketId);
+            return Ok(tickets);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost("reply")]
+        public async Task<IActionResult> AddSupportTicketReplyAsync([FromBody] AddSupportTicketReplyDTO supportTicketReplyDTO , [FromServices]AddSuportTicketReplyUseCase addSuportTicketReplyUseCase)
         {
             await addSuportTicketReplyUseCase.AddSupportTicketReplyAsync(supportTicketReplyDTO);
             return Ok("Reply added Successfully");
         }
         [Authorize]
-        [HttpGet("Reply")]
+        [HttpGet("reply")]
         public async Task<IActionResult> GetLatestReplyByUserAsync([FromServices]GetSuportTicketReplyUseCase getSuportTicketReplyUseCase)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();

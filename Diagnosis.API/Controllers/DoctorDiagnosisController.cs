@@ -1,8 +1,10 @@
-﻿using Diagnosis.Application.DTOs.DoctorDiagnosis;
+﻿using Diagnosis.API.Attributes;
+using Diagnosis.Application.DTOs.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Diagnosis.API.Controllers
 {
@@ -37,13 +39,15 @@ namespace Diagnosis.API.Controllers
         }
 
         [Authorize(Roles = "Doctor")]
+        [AiEndpoint]
         [HttpPost("analyze")]
         public async Task<IActionResult> AnalyzeDiagnosis(
             [FromBody] GetDoctorDiagnosisDTO getDoctorDiagnosisDTO,
             [FromServices] GetDoctorDiagnosisUseCase getDoctorDiagnosisUseCase
             )
         {
-            var result = await getDoctorDiagnosisUseCase.ExecuteAsync(getDoctorDiagnosisDTO);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await getDoctorDiagnosisUseCase.ExecuteAsync(getDoctorDiagnosisDTO, userId);
 
             if (!result.Success)
             {

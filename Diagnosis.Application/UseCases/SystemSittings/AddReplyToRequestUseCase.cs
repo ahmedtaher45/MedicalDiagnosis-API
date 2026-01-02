@@ -18,7 +18,7 @@ namespace Diagnosis.Application.UseCases.SystemSittings
         }
         public async Task ReplyToRequestAsync(SupportRequestDTO requestDTO)
         {
-            await _unitOfWork.SystemSetting.ReplyToRequestAsync(requestDTO);
+            await _unitOfWork.systemSettings.ReplyToRequestAsync(requestDTO);
         }
     }
 }

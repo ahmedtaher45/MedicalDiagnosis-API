@@ -1,5 +1,6 @@
 ﻿
 using Diagnosis.API.Middleware;
+using Diagnosis.API.Middlewares;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
@@ -13,6 +14,7 @@ using Diagnosis.Application.UseCases.Inquiry;
 using Diagnosis.Application.UseCases.MedicalFiles;
 using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Application.UseCases.SystemSittings;
+using Diagnosis.Application.UseCases.Treatment;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -85,6 +87,20 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetInquiriesUseCase>();
             builder.Services.AddScoped<GetInquiryUseCase>();
             builder.Services.AddScoped<CreateAITreatmentUseCase>();
+            builder.Services.AddScoped<GetProfileUseCase>();
+            builder.Services.AddScoped<UpdateProfileUseCase>();
+            builder.Services.AddScoped<GetUserSettingsUseCase>();
+            builder.Services.AddScoped<UpdateUserSettingsUseCase>();
+            builder.Services.AddScoped<GetPhysiotherapyExerciseUseCase>();
+            builder.Services.AddScoped<GetRecentInquiriesUseCase>();
+            builder.Services.AddScoped<GetPendingInquiriesCountUseCase>();
+            builder.Services.AddScoped<GetConsultationCountThisWeekUseCase>();
+            builder.Services.AddScoped<GetTopSymptomsThisWeekUseCase>();
+
+            builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
+            builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
+
+
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
@@ -95,6 +111,25 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetFaqsUseCase>();
             builder.Services.AddScoped<IFaq , FaqRepository>();
             builder.Services.AddScoped<ISupportTicket, SupportTicketRepository>();
+            builder.Services.AddScoped<AddFileUseCase>();
+            builder.Services.AddScoped<GetFileUseCase>();
+            builder.Services.AddScoped<GetFilesForPatientUseCase>();
+            builder.Services.AddScoped<DeleteFileUseCase>();
+            builder.Services.AddScoped<AddSuportTicketReplyUseCase>();
+            builder.Services.AddScoped<GetSuportTicketReplyUseCase>();
+            builder.Services.AddScoped<AddContactMessageUseCase>();
+            builder.Services.AddScoped<GetContactMessageUseCase>();
+            builder.Services.AddScoped<AddReplyToRequestUseCase>();
+            builder.Services.AddScoped<GetReplyToRequestUseCase>();
+            builder.Services.AddScoped<DefineMaxAiRequestUseCase>();
+            builder.Services.AddScoped<DefineMaxDoctorDiagnosisUseCase>();
+            builder.Services.AddScoped<ToggleAiUseCase>();
+            builder.Services.AddScoped<UpdateDoctorWorkHoursUseCase>();
+            builder.Services.AddScoped<GetSupportTicketContentUseCase>();
+
+
+
+
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
@@ -195,7 +230,7 @@ namespace Diagnosis.API
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+            app.UseMiddleware<AiEnablingMiddleware>();
             app.MapControllers();
 
             using (var scope = app.Services.CreateScope())

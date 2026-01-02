@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.UseCases.SystemSittings
 {
-    public class GetReplyToRequestUseCase
+    public class ToggleAiUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public GetReplyToRequestUseCase(IUnitOfWork unitOfWork)
+        public ToggleAiUseCase(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<SupportRequestResponseDTO> GetRequestaReplyAsync(int requestID)
+
+        public async Task<UsageResponse> ExecuteAsync(EnableAiDTO enableAiDTO)
         {
-            return await _unitOfWork.systemSettings.GetRequestaReplyAsync(requestID);
+            return await _unitOfWork.systemSettings.ToggleAiAsync(enableAiDTO);
         }
     }
 }

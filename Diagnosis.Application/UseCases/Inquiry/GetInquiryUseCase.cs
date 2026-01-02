@@ -45,6 +45,7 @@ namespace Diagnosis.Application.UseCases.Inquiry
                 dto.DoctorId = patientId;
                 dto.Notes = inquiry.Notes;
                 dto.Date = inquiry.Date;
+                dto.Symptoms = inquiry.Symptoms;
                 dto.Files = files;
 
                 if (inquiry.Status == Domain.Models.Entites.ConsultationStatus.Pending)

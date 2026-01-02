@@ -17,9 +17,9 @@ namespace Diagnosis.Application.UseCases.Faq
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO, string? search = null)
+        public async Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO)
         {
-            return await _unitOfWork.Faq.GetAllFaqAsync( faqDTO , search);
+            return await _unitOfWork.Faq.GetAllFaqAsync( faqDTO);
         }
     }
 }

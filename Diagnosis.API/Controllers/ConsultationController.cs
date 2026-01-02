@@ -1,11 +1,14 @@
+using Diagnosis.API.Attributes;
+using Diagnosis.Application.DTOs.Consultation;
 using Diagnosis.Application.Services.EmailService;
+using Diagnosis.Application.UseCases.Consultation;
 using Diagnosis.Domain.Models.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Security.Claims;
 using Diagnosis.Application.DTOs.Consultation;
 using Diagnosis.Application.UseCases.Consultation;
 using Diagnosis.Application.UseCases.PatientDashboard;
@@ -43,7 +46,8 @@ namespace Diagnosis.API.Controllers
        }
        [Authorize(Roles = "Doctor")]
        [HttpPost("modify/{consultationId}")]
-       public async Task<IActionResult> ModifyConsultation(
+       [Diagnosis]
+        public async Task<IActionResult> ModifyConsultation(
            [FromBody] ModifyConsultationRequestDTO modifyConsultationDTO,
            [FromRoute] int consultationId,
            [FromServices] ModifyConsultationsUseCase _modifyConsultationUseCase)
@@ -106,22 +110,24 @@ namespace Diagnosis.API.Controllers
        }
 
        [Authorize(Roles = "Patient")]
-       [HttpGet("symptom-count-this-week/{patientId}")]
+       [HttpGet("symptom-count-this-week")]
        public async Task<IActionResult> GetConsultationCountThisWeek(
-           [FromRoute] int patientId,
            [FromServices] GetConsultationCountThisWeekUseCase _getConsultationCountThisWeekUseCase)
        {
-           var result = await _getConsultationCountThisWeekUseCase.ExecuteAsync(patientId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+
+            var result = await _getConsultationCountThisWeekUseCase.ExecuteAsync(userId);
            
            return Ok(result);
        }
        [Authorize(Roles = "Patient")]
-       [HttpGet("top-symptoms-this-week/{patientId}")]
+       [HttpGet("top-symptoms-this-week")]
        public async Task<IActionResult> GetTopSymptomsThisWeek(
-           [FromRoute] int patientId,
            [FromServices] GetTopSymptomsThisWeekUseCase _getTopSymptomsThisWeekUseCase)
        {
-           var result = await _getTopSymptomsThisWeekUseCase.ExecuteAsync(patientId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+
+            var result = await _getTopSymptomsThisWeekUseCase.ExecuteAsync(userId);
            
 
            return Ok(result);

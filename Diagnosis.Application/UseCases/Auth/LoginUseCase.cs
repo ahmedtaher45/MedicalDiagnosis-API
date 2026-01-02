@@ -24,7 +24,7 @@ namespace Diagnosis.Application.UseCases.Auth
 
         public async Task<LoginResponseDTO> Login(LoginDTO loginDTO)
         {
-            var result =await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password);
+            var result =await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password, loginDTO.ClientUri);
             var admins = await _unitOfWork.Users.GetUsersByRoleAsync("Admin");
             if(!result.Success)
             {
@@ -39,7 +39,9 @@ namespace Diagnosis.Application.UseCases.Auth
                         Date = DateTime.UtcNow,
                     });
                 }
-            }
+
+            return await _unitOfWork.Auth.LoginAsync(loginDTO.Email, loginDTO.Password, loginDTO.ClientUri);
+        }
 
             return result;
         }

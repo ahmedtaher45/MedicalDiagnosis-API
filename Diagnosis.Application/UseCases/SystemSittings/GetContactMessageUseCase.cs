@@ -18,7 +18,7 @@ namespace Diagnosis.Application.UseCases.SystemSittings
         }
         public async Task<List<ContactMessageResponseDTO>> GetContactMessageRequests()
         {
-           return await _unitOfWork.SystemSetting.GetContactMessageRequests();
+           return await _unitOfWork.systemSettings.GetContactMessageRequests();
         }
     }
 }

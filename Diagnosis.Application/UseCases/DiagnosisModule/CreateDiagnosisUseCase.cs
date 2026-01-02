@@ -29,6 +29,17 @@ namespace Diagnosis.Application.UseCases.DiagnosisModule
             //     NotificationType = NotificationType.Consultation,
             //     Date = DateTime.UtcNow
             // });
+
+            var canUseAI = await _unitOfWork.SystemSettings.CanUseAiAsync(userId);
+            if (!canUseAI)
+            {
+                return new ProviderResponse
+                {
+                    Success = false,
+                    Message = "You have reached the limit of using AI requests per day"
+                };
+            }
+
             return await _unitOfWork.DiagnosisModule.CreateDiagnosisAsync(createDiagnosisDTO, userId);
         }
     }

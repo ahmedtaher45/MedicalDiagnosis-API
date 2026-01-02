@@ -18,6 +18,8 @@ namespace Diagnosis.Domain.Entites
         public string? NationalId { get; set; }
         public DateTime BirhDate { get; set; }
         public string? Gender { get; set; }
+        public DateOnly LastResetDate { get; set; }
+        public int DiagnosisPerDay { get; set; }
         public string? Address { get; set; }
         public int? ExperienceYears { get; set; }
         public decimal? Rating { get; set; }

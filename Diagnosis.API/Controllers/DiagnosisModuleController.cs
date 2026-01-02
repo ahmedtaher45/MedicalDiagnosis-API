@@ -1,4 +1,5 @@
-﻿using Diagnosis.Application.DTOs.DiagnosisModule;
+﻿using Diagnosis.API.Attributes;
+using Diagnosis.Application.DTOs.DiagnosisModule;
 using Diagnosis.Application.UseCases.DiagnosisModule;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ namespace Diagnosis.API.Controllers
     public class DiagnosisModuleController : ControllerBase
     {
         [Authorize(Roles = "Patient")]
+        [AiEndpoint]
         [HttpPost("create-daignosis")]
         public async Task<IActionResult> CreateDiagnosis(
             [FromServices] CreateDiagnosisUseCase createDiagnosisUseCase,
