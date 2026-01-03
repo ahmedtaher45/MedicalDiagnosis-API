@@ -17,7 +17,7 @@ using Diagnosis.Application.DTOs.PatientDashboard;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class ConsultationRepository : Repository<Consultation>, IConsultationRepository
+    public class ConsultationRepository : Repository<Inquiry>, IConsultationRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -27,12 +27,12 @@ namespace Diagnosis.Infrastracture.Repositories
         }
 
         
-        public IQueryable<Consultation> GetQueryable()
+        public IQueryable<Inquiry> GetQueryable()
         {
             return _context.Consultations.AsQueryable();
         }
 
-        public async Task<List<Consultation>> GetByDoctorIdAsync(int doctorId)
+        public async Task<List<Inquiry>> GetByDoctorIdAsync(int doctorId)
         {
             return await _context.Consultations
                 .Where(c => c.DoctorId == doctorId)
@@ -41,7 +41,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Consultation>> GetByPatientIdAsync(int patientId)
+        public async Task<List<Inquiry>> GetByPatientIdAsync(int patientId)
         {
             return await _context.Consultations
                 .Where(c => c.PatientId == patientId)
@@ -50,7 +50,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Consultation>> GetByStatusAsync(ConsultationStatus status)
+        public async Task<List<Inquiry>> GetByStatusAsync(ConsultationStatus status)
         {
             return await _context.Consultations
                 .Where(c => c.Status == status)
@@ -58,7 +58,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Consultation?> GetDetailsAsync(int consultationId)
+        public async Task<Inquiry?> GetDetailsAsync(int consultationId)
         {
             return await _context.Consultations
                 .Include(c => c.Patient)

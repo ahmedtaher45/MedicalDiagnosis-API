@@ -16,27 +16,18 @@ namespace Diagnosis.Domain.Models.Entites
         Canceled = 3
     }
 
-    public enum ConsultationType
-    {
-        Inquiry = 0,
-        AIDiagnosis = 1,
-        BoneFraction = 2
-    }
-    public class Consultation: BaseEntity
+    public class Inquiry: BaseEntity
     {
         public int PatientId { get; set; }
         public int DoctorId { get; set; }
         public string? Symptoms { get; set; }
-        public string? Notes { get; set; }
+        public string? Description { get; set; }
         public ConsultationStatus Status { get; set; }
-        public ConsultationType Type { get; set; }
-        public DateTime Date { get; set; }
-        public string? ConfidenceLevel { get; set; }
-        public ICollection<string>? FileUrls { get; set; }
-        public string? IncomingUrl { get; set; }
-        public string? ResultUrl { get; set; }
-        public string? DiagnosisName { get; set; }
-        public string? Prediction { get; set; }
+        public ICollection<string>? InquiryFiles { get; set; }
+        public string? TreatmentUrl { get; set; }
+        public string? PrescriptionUrl { get; set; }
+        public int Rate { get; set; }
+        public string? Reply { get; set; }
         public string? RejectReason { get; set; }
         public string? RejectNotes { get; set; }
         public Patient? Patient { get; set; }

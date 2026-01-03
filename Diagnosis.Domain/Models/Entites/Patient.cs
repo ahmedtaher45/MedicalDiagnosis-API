@@ -23,7 +23,8 @@ namespace Diagnosis.Domain.Entites
         public bool? IsNewPatient { get; set; }
         public bool? IsUrgent { get; set; }
         public ICollection<MedicalFiles>? Files { get; set; }
-        public ICollection<Consultation>? Consultations { get; set; }
+        public ICollection<BoneFraction>? BoneFractions { get; set; }
+        public ICollection<Inquiry>? Inquiries { get; set; }
         public ICollection<SupportTicket>? SupportTickets { get; set; }
 
     }

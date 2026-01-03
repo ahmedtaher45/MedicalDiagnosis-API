@@ -25,7 +25,8 @@ namespace Diagnosis.Domain.Entites
         public decimal? Rating { get; set; }
         public string? ProfileImageUrl { get; set; }
         public ICollection<Payment>? Payments { get; set; }
-        public ICollection<Consultation>? Consultations { get; set; }
+        public ICollection<BoneFraction>? BoneFractions { get; set; }
+        public ICollection<Inquiry>? Inquiries { get; set; }
         public ICollection<SupportTicket>? SupportTickets { get; set; }
 
 

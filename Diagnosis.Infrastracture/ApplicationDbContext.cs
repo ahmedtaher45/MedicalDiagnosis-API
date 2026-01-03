@@ -16,16 +16,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Faq> Faqs { get; set; }
     public DbSet<SupportTicket> SupportTickets { get; set; }
-    public DbSet<Consultation> Consultations { get; set; }
     public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
+    //user settings
+   
+
+    public DbSet<Inquiry> Inquiries { get; set; }
+    public DbSet<BoneFraction> BoneFractions { get; set; }
 
     public DbSet<DoctorDiagnosis> Diagnosises { get; set; }
     public DbSet<Symptom> Symptoms { get; set; }
     public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
     public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
-    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
-    public DbSet<Request> request { get; set; }
-
     public DbSet<Request> Requests { get; set; }
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
@@ -74,7 +75,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<Consultation>()
+        modelBuilder.Entity<Inquiry>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+
+        modelBuilder.Entity<BoneFraction>()
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
@@ -99,14 +105,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasDefaultValueSql("GETUTCDATE()");
 
 
-        modelBuilder.Entity<Consultation>()
+        modelBuilder.Entity<Inquiry>()
             .Property(c => c.Status)
             .HasConversion<string>();
 
-
-        modelBuilder.Entity<Consultation>()
-            .Property(c => c.Type)
-            .HasConversion<string>();
 
         modelBuilder.Entity<Notification>()
             .Property(p => p.NotificationType)
@@ -471,18 +473,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // ----------------------
         // Consultation
         // ----------------------
-        modelBuilder.Entity<Consultation>().HasData(
-            new Consultation
+        modelBuilder.Entity<Inquiry>().HasData(
+            new Inquiry
             {
                 Id = 1,
                 PatientId = -1,
                 DoctorId = -1,
                 Symptoms = "Headache, fever, and fatigue.",
-                Notes = "Patient reports symptoms for 3 days.",
+                Description = "Patient reports symptoms for 3 days.",
                 Status = ConsultationStatus.Pending,
-                Type = ConsultationType.Inquiry,
                 Date = new DateTime(2025, 1, 1),
-                ConfidenceLevel = "60%",
                 //Description = "General inquiry about symptoms"
             }
 

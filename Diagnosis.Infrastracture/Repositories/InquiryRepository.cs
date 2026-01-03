@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class InquiryRepository: Repository<Consultation>, IInquiryRepository
+    public class InquiryRepository: Repository<Inquiry>, IInquiryRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileService _fileService;
@@ -40,7 +40,7 @@ namespace Diagnosis.Infrastracture.Repositories
             try
             {
                 await _context.Consultations.AddAsync(
-                new Consultation
+                new Inquiry
                 {
                     PatientId = patient.Id,
                     DoctorId = addInquiryDTO.DoctorId,
