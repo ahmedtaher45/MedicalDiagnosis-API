@@ -10,14 +10,18 @@
 
         
 
-            builder.HasMany(p => p.Consultations)
+            builder.HasMany(p => p.Inquiries)
                    .WithOne(a => a.Patient)
                    .HasForeignKey(a => a.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
 
+            builder.HasMany(p => p.BoneFractures)
+                   .WithOne(a => a.Patient)
+                   .HasForeignKey(a => a.PatientId)
+                   .OnDelete(DeleteBehavior.NoAction);
 
-            // One-to-Many: Patient -> LabResults
-            builder.HasMany(p => p.Files)
+        // One-to-Many: Patient -> LabResults
+        builder.HasMany(p => p.Files)
                    .WithOne(l => l.Patient)
                    .HasForeignKey(l => l.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
@@ -32,13 +36,18 @@
         {
             builder.HasKey(d => d.Id);
 
-            builder.HasMany(d => d.Consultations)
+            builder.HasMany(d => d.Inquiries)
                    .WithOne(a => a.Doctor)
                    .HasForeignKey(a => a.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            // One-to-Many: Doctor -> Payments
-            builder.HasMany(d => d.Payments)
+            builder.HasMany(d => d.BoneFractures)
+                   .WithOne(a => a.Doctor)
+                   .HasForeignKey(a => a.DoctorId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+        // One-to-Many: Doctor -> Payments
+        builder.HasMany(d => d.Payments)
                    .WithOne(p => p.Doctor)
                    .HasForeignKey(p => p.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);

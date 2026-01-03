@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class DiagnosisModuleRepository : Repository<Consultation> , IDiagnosisModuleRepository
+    public class DiagnosisModuleRepository : Repository<Inquiry> , IDiagnosisModuleRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileService _fileService;
@@ -64,7 +64,7 @@ namespace Diagnosis.Infrastracture.Repositories
             if (patient == null)
                 throw new Exception("Error with Id");
 
-            var consultaion = new Consultation
+            var consultaion = new Inquiry
             {
                 PatientId = patient.Id,
                 DoctorId = createDiagnosisDTO.DoctorId,

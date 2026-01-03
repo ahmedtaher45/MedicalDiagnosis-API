@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface IConsultationRepository : IRepository<Consultation>
+    public interface IConsultationRepository : IRepository<Inquiry>
     {
         // 🔹 Dashboard support (NEW)
-        IQueryable<Consultation> GetQueryable();
+        IQueryable<Inquiry> GetQueryable();
 
         // 🔹 Existing methods (unchanged)
-        Task<List<Consultation>> GetByDoctorIdAsync(int doctorId);
-        Task<List<Consultation>> GetByPatientIdAsync(int patientId);
-        Task<List<Consultation>> GetByStatusAsync(ConsultationStatus status);
-        Task<Consultation?> GetDetailsAsync(int consultationId);
+        Task<List<Inquiry>> GetByDoctorIdAsync(int doctorId);
+        Task<List<Inquiry>> GetByPatientIdAsync(int patientId);
+        Task<List<Inquiry>> GetByStatusAsync(ConsultationStatus status);
+        Task<Inquiry?> GetDetailsAsync(int consultationId);
         Task<ConsultationDetailsDTO> GetConsultationDetailsAsync(int consultationId);
         Task<ConsultationResponseDTO> RejectConsultationAsync(RejectConsultationDTO rejectConsultationDTO, int consultationId);
         Task<ModifyConsultationDTO> GetModifyDataAsync(int consultationId);

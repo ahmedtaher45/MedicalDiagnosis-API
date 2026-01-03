@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface IInquiryRepository: IRepository<Consultation>
+    public interface IInquiryRepository: IRepository<Inquiry>
     {
         Task<IquiryResponse> AddInquiryAsync(AddInquiryDTO addInquiryDTO, string userId);
         Task<int> GetPatientAsync(string userId);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface IDiagnosisModuleRepository : IRepository<Consultation>
+    public interface IDiagnosisModuleRepository : IRepository<Inquiry>
     {
         Task<BoneFractionResponseDTO> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId);
     }
