@@ -76,7 +76,6 @@ namespace Diagnosis.API.Middlewares
                        NotificationType = Diagnosis.Domain.Entites.NotificationType.DoctorPatientManagement
                         
                     });
-                        await unitOfWork.SaveChangesAsync();
                     context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
                     await context.Response.WriteAsync("Diagnosis limit exceeded");
                     return;

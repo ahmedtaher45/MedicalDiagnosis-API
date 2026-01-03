@@ -14,6 +14,8 @@ namespace Diagnosis.Application.DTOs.Notification
         public string Message { get; set; }
         public DateTime Date { get; set; }
         public int? RelatedId { get; set; }
+        public string NotificationType { get; set; }
+        public bool IsRead { get; set; }
 
         public bool Success { get; set; }
         public string? ErrorMessage { get; set; }

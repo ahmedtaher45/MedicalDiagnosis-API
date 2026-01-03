@@ -18,7 +18,7 @@ namespace Diagnosis.API.Controllers
     public class NotificationsController : ControllerBase
     {
 
-       
+       [Authorize]
         [HttpGet("user-notifications")]
         public async Task<IActionResult> GetUserNotifications(
             [FromServices] GetUserNotificationsUseCase getUserNotificationsUseCase)
@@ -29,6 +29,7 @@ namespace Diagnosis.API.Controllers
         }
        
         
+        [Authorize]
         [HttpPost("mark-all-as-read")]
         public async Task<IActionResult> MarkAllNotificationsAsRead(
             [FromServices] MarkNotificationsAsDoneUseCase markNotificationsAsDoneUseCase)
