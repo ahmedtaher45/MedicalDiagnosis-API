@@ -11,9 +11,9 @@ namespace Diagnosis.Application.DTOs.Inquiry
     {
         public int DoctorId { get; set; }
         public string? Symptoms { get; set; }
-        public string? Notes { get; set; }
+        public string? Reply { get; set; }
         public string? Status { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public ICollection<string>? Files { get; set; }
         public string? Description { get; set; }
         public string? RejectReason { get; set; }

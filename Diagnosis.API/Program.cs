@@ -149,10 +149,10 @@ namespace Diagnosis.API
                 client.BaseAddress = new Uri(builder.Configuration["BoneFracture:BaseUrl"]!);
             });
 
-            builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>
-            {
-                client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
-            });
+            // builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>
+            // {
+            //     client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
+            // });
 
             builder.Services.AddHttpClient<IDoctorDiagnosisProvider, DoctorDiagnosisProvider>(client =>
             {

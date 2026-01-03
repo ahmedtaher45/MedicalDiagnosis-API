@@ -17,7 +17,7 @@ namespace Diagnosis.Application.DTOs.Consultation
         public string Symptoms { get; set; }
         public string? Response { get; set; }
         public string Status { get; set; }
-        public DateTime RquestDate  { get; set; }
+        public DateTime? RquestDate  { get; set; }
         public bool Success { get; set; } = true;
         public string ErrorMessage { get; set; }
     }
@@ -44,7 +44,7 @@ namespace Diagnosis.Application.DTOs.Consultation
         public string? Response { get; set; }
         
         public DateTime? RequestDate { get; set; }
-        public string Notes { get; set; }
+        public string Description { get; set; }
         public ICollection<string> Attachments { get; set; }
         public bool Success { get; set; } = true;
         public string ErrorMessage { get; set; }
@@ -55,7 +55,7 @@ namespace Diagnosis.Application.DTOs.Consultation
         public int ConsultationId { get; set; }
         public string Name{ get; set; }
         public string Description { get; set; }
-        public string Notes { get; set; }
+        public string Reply { get; set; }
         public bool Success { get; set; } = true;
         public string ErrorMessage { get; set; }
        
@@ -70,6 +70,6 @@ namespace Diagnosis.Application.DTOs.Consultation
        
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Notes { get; set; }
+        public string Reply { get; set; }
     }
 }

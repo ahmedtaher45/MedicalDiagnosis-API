@@ -10,7 +10,7 @@ namespace Diagnosis.Application.DTOs.Inquiry
     {
         public string? Symptoms { get; set; }
         public int InquiryId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public string? Status { get; set; }
     }
 }

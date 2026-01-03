@@ -30,9 +30,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Request> Requests { get; set; }
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
-   
-   
-
+    
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -482,7 +481,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Symptoms = "Headache, fever, and fatigue.",
                 Description = "Patient reports symptoms for 3 days.",
                 Status = ConsultationStatus.Pending,
-                Date = new DateTime(2025, 1, 1),
+                CreatedOn = new DateTime(2025, 1, 1),
                 //Description = "General inquiry about symptoms"
             }
 

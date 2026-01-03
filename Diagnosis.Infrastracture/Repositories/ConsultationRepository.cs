@@ -29,12 +29,12 @@ namespace Diagnosis.Infrastracture.Repositories
         
         public IQueryable<Inquiry> GetQueryable()
         {
-            return _context.Consultations.AsQueryable();
+            return _context.Inquiries.AsQueryable();
         }
 
         public async Task<List<Inquiry>> GetByDoctorIdAsync(int doctorId)
         {
-            return await _context.Consultations
+            return await _context.Inquiries
                 .Where(c => c.DoctorId == doctorId)
                 .Include(c => c.Patient)
                 .AsNoTracking()
@@ -43,7 +43,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<List<Inquiry>> GetByPatientIdAsync(int patientId)
         {
-            return await _context.Consultations
+            return await _context.Inquiries
                 .Where(c => c.PatientId == patientId)
                 .Include(c => c.Doctor)
                 .AsNoTracking()
@@ -52,28 +52,28 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<List<Inquiry>> GetByStatusAsync(ConsultationStatus status)
         {
-            return await _context.Consultations
+            return await _context.Inquiries
                 .Where(c => c.Status == status)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<Inquiry?> GetDetailsAsync(int consultationId)
+        public async Task<Inquiry?> GetDetailsAsync(int inquiryId)
         {
-            return await _context.Consultations
+            return await _context.Inquiries
                 .Include(c => c.Patient)
                 .Include(c => c.Doctor)
-                .FirstOrDefaultAsync(c => c.Id == consultationId);
+                .FirstOrDefaultAsync(c => c.Id == inquiryId);
         }
 
-        public async Task<ConsultationDetailsDTO> GetConsultationDetailsAsync(int consultationId)
+        public async Task<ConsultationDetailsDTO> GetConsultationDetailsAsync(int inquiryId)
         {
-            var consultation = await _context.Consultations
+            var inquiry = await _context.Inquiries
                 .Include(c => c.Patient)
                 .Include(c => c.Doctor)
-                .FirstOrDefaultAsync(c => c.Id == consultationId);
+                .FirstOrDefaultAsync(c => c.Id == inquiryId);
 
-            if (consultation == null)
+            if (inquiry == null)
             {
                 return new ConsultationDetailsDTO
                 {
@@ -84,23 +84,23 @@ namespace Diagnosis.Infrastracture.Repositories
 
             return new ConsultationDetailsDTO
             {
-                Id = consultation.Id,
-                PatientName = consultation.Patient.FName + " " + consultation.Patient.LName,
-                PatientBirthDate = consultation.Patient.DateOfBirth,
-                PatientGender = consultation.Patient.Gender,
-                Notes = consultation.Notes,
-                Attachments = consultation.FileUrls.ToList(),
-                Symptoms = consultation.Symptoms,
-                Response = consultation.Notes,
-                RequestDate = consultation.Date,
+                Id = inquiry.Id,
+                PatientName = inquiry.Patient.FName + " " + inquiry.Patient.LName,
+                PatientBirthDate = inquiry.Patient.DateOfBirth,
+                PatientGender = inquiry.Patient.Gender,
+                Description = inquiry.Reply,
+                Attachments = inquiry.InquiryFiles.ToList(),
+                Symptoms = inquiry.Symptoms,
+                Response = inquiry.Reply,
+                RequestDate = inquiry.CreatedOn,
                 Success = true
             };
         }
 
-        public async Task<ConsultationResponseDTO> RejectConsultationAsync(RejectConsultationDTO dto, int consultationId)
+        public async Task<ConsultationResponseDTO> RejectConsultationAsync(RejectConsultationDTO dto, int inquiryId)
         {
-            var consultation = await _context.Consultations.FindAsync(consultationId);
-            if (consultation == null)
+            var inquiry = await _context.Inquiries.FindAsync(inquiryId);
+            if (inquiry == null)
             {
                 return new ConsultationResponseDTO
                 {
@@ -109,11 +109,11 @@ namespace Diagnosis.Infrastracture.Repositories
                 };
             }
 
-            consultation.Status = ConsultationStatus.Rejected;
-            consultation.RejectReason = dto.Reason;
-            consultation.RejectNotes = dto.Notes;
+            inquiry.Status = ConsultationStatus.Rejected;
+            inquiry.RejectReason = dto.Reason;
+            inquiry.RejectNotes = dto.Notes;
 
-            _context.Consultations.Update(consultation);
+            _context.Inquiries.Update(inquiry);
             await _context.SaveChangesAsync();
 
             return new ConsultationResponseDTO
@@ -124,7 +124,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<ModifyConsultationDTO> GetModifyDataAsync(int consultationId)
         {
-            var consultation = await _context.Consultations
+            var consultation = await _context.Inquiries
                 .Include(c => c.Patient)
                 .FirstOrDefaultAsync(c => c.Id == consultationId);
 
@@ -142,7 +142,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 ConsultationId = consultation.Id,
                 Name = consultation.Patient.FName + " " + consultation.Patient.LName,
                 Description = consultation.Symptoms,
-                Notes = consultation.Notes,
+                Reply = consultation.Reply,
                 Success = true
             };
         }
@@ -151,7 +151,7 @@ namespace Diagnosis.Infrastracture.Repositories
             ModifyConsultationRequestDTO dto,
             int consultationId)
         {
-            var consultation = await _context.Consultations.FindAsync(consultationId);
+            var consultation = await _context.Inquiries.FindAsync(consultationId);
             if (consultation == null)
             {
                 return new ModifyConsultationResponseDTO
@@ -162,9 +162,9 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             consultation.Symptoms = dto.Description;
-            consultation.Notes = dto.Notes;
+            consultation.Reply = dto.Reply;
 
-            _context.Consultations.Update(consultation);
+            _context.Inquiries.Update(consultation);
             await _context.SaveChangesAsync();
 
             return new ModifyConsultationResponseDTO
@@ -175,7 +175,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public async Task<ConsultationResponseDTO> AcceptConsultationAsync(int consultationId)
         {
-            var consultation = await _context.Consultations.FindAsync(consultationId);
+            var consultation = await _context.Inquiries.FindAsync(consultationId);
             if (consultation == null)
             {
                 return new ConsultationResponseDTO
@@ -186,7 +186,7 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             consultation.Status = ConsultationStatus.Accepted;
-            _context.Consultations.Update(consultation);
+            _context.Inquiries.Update(consultation);
             await _context.SaveChangesAsync();
 
             return new ConsultationResponseDTO
@@ -197,7 +197,7 @@ namespace Diagnosis.Infrastracture.Repositories
       
         public async Task<ConsultationResponseDTO> CancelConsultationAsync(int consultationId)
         {
-            var consultation = await _context.Consultations.FindAsync(consultationId);
+            var consultation = await _context.Inquiries.FindAsync(consultationId);
             if (consultation == null)
             {
                 return new ConsultationResponseDTO
@@ -208,7 +208,7 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             consultation.Status = ConsultationStatus.Canceled;
-            _context.Consultations.Update(consultation);
+            _context.Inquiries.Update(consultation);
             await _context.SaveChangesAsync();
 
             return new ConsultationResponseDTO
@@ -232,9 +232,9 @@ namespace Diagnosis.Infrastracture.Repositories
             var startOfWeek = today.AddDays(-diff);
             var endOfWeek = startOfWeek.AddDays(7).AddTicks(-1);
 
-            var consultations = await _context.Consultations
-                .Where(c => c.Date >= startOfWeek && c.Date <= endOfWeek && c.PatientId == patientId)
-                .GroupBy(c => c.Date.Date)
+            var consultations = await _context.Inquiries
+                .Where(c => c.CreatedOn >= startOfWeek && c.CreatedOn <= endOfWeek && c.PatientId == patientId)
+                .GroupBy(c => c.CreatedOn.Value.Date)
                 .Select(g => new
                 {
                     Date = g.Key,
@@ -252,8 +252,8 @@ namespace Diagnosis.Infrastracture.Repositories
             var startOfWeek = today.AddDays(-diff);
             var endOfWeek = startOfWeek.AddDays(7).AddTicks(-1);
 
-            var symptoms = await _context.Consultations
-                .Where(c => c.Date >= startOfWeek && c.Date <= endOfWeek && c.PatientId == patientId)
+            var symptoms = await _context.Inquiries
+                .Where(c => c.CreatedOn >= startOfWeek && c.CreatedOn <= endOfWeek && c.PatientId == patientId)
                 .Select(c => c.Symptoms)
                 .ToListAsync();
 

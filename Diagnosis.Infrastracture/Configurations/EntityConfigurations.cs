@@ -15,7 +15,7 @@
                    .HasForeignKey(a => a.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(p => p.BoneFractures)
+            builder.HasMany(p => p.BoneFractions)
                    .WithOne(a => a.Patient)
                    .HasForeignKey(a => a.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
@@ -41,7 +41,7 @@
                    .HasForeignKey(a => a.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(d => d.BoneFractures)
+            builder.HasMany(d => d.BoneFractions)
                    .WithOne(a => a.Doctor)
                    .HasForeignKey(a => a.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);

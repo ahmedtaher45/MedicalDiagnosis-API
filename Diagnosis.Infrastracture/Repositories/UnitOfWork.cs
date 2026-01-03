@@ -54,7 +54,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
-            TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+           // TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             Profile = new ProfileRepository(_context);
             PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
 
