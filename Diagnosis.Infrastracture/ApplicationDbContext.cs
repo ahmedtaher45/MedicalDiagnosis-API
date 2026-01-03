@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Diagnosis.Domain.Entites;
+﻿using Diagnosis.Domain.Entites;
+using Diagnosis.Domain.Entities;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
@@ -33,6 +34,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     
     
 
+    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
+    public DbSet<Prescription> Prescriptions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

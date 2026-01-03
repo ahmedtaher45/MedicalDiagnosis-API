@@ -4,9 +4,12 @@ using Diagnosis.API.Middlewares;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
+using Diagnosis.Application.Services.PdfService;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Auth;
 using Diagnosis.Application.UseCases.Consultation;
+using Diagnosis.Application.UseCases.Dashboard.AdminDashboard;
+using Diagnosis.Application.UseCases.Dashboard.DoctorDashboard;
 using Diagnosis.Application.UseCases.DoctorDiagnosis;
 using Diagnosis.Application.UseCases.DrugChecker;
 using Diagnosis.Application.UseCases.Faq;
@@ -15,6 +18,7 @@ using Diagnosis.Application.UseCases.MedicalFiles;
 using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Application.UseCases.SystemSittings;
 using Diagnosis.Application.UseCases.Treatment;
+using Diagnosis.Application.UseCases.TreatmentManagement;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -23,6 +27,7 @@ using Diagnosis.Application.UseCases.Settings;
 
 using Diagnosis.Infrastracture.Repositories;
 using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +60,7 @@ namespace Diagnosis.API
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+  
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.Configure<FormOptions>(O =>
             {
@@ -100,12 +106,18 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetConsultationCountThisWeekUseCase>();
             builder.Services.AddScoped<GetTopSymptomsThisWeekUseCase>();
 
+            builder.Services.AddScoped<GetAdminDashboardUseCase>();
+            builder.Services.AddScoped<GetDoctorDashboardUseCase>();
+            builder.Services.AddScoped<GetAdminDashboardUseCase>();
+            builder.Services.AddScoped<GetDoctorDashboardUseCase>();           
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
 
             builder.Services.AddScoped<CreateDiagnosisUseCase>();
 
 
+            builder.Services.AddScoped<CreatePrescriptionUseCase>();
+            builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
@@ -138,6 +150,11 @@ namespace Diagnosis.API
 
 
 
+            builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
+            builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
+            builder.Services.AddScoped<CreatePrescriptionUseCase>();
+            builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
+            builder.Services.AddScoped<GenerateTreatmentPlanPdfUseCase>();
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -158,7 +175,7 @@ namespace Diagnosis.API
             {
                 client.BaseAddress = new Uri(builder.Configuration["AiModule:BaseUrl"]!);
             });
-
+            builder.Services.AddScoped<IPdfService, PdfService>();
 
             /////
             ///// ====== Profiles (Today Work) ======

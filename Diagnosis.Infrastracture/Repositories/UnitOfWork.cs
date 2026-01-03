@@ -2,10 +2,11 @@
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Entites;
+using Diagnosis.Application.Services.PdfService;
 using Diagnosis.Domain.Models.Entites;
-using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -27,7 +28,7 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IDiagnosisModuleProvider _diagnosisModuleProvider;
-
+        private readonly IPdfService _pdfService;
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
@@ -36,7 +37,8 @@ namespace Diagnosis.Infrastracture.Repositories
             HttpClient httpClient,
             IConfiguration configuration,
             IFileService fileService,
-            IDiagnosisModuleProvider diagnosisModuleProvider
+            IDiagnosisModuleProvider diagnosisModuleProvider,
+            IPdfService pdfService
             )
         {
             _userManager = userManager;
@@ -47,6 +49,7 @@ namespace Diagnosis.Infrastracture.Repositories
             _httpClient = httpClient;
             _fileService = fileService;
             _diagnosisModuleProvider = diagnosisModuleProvider;
+            _pdfService = pdfService;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
             
@@ -59,6 +62,9 @@ namespace Diagnosis.Infrastracture.Repositories
             PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
 
 
+            TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            AdminDashboard = new AdminDashboardRepository(_context);
+            DoctorDashboard = new DoctorDashboardRepository(_context);
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
             MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
@@ -77,6 +83,8 @@ namespace Diagnosis.Infrastracture.Repositories
             Settings = new SettingsRepository(_context);
 
 
+            Treatment = new TreatmentRepository(_context, _pdfService);
+           
         }
 
         public IAuth Auth { get; private set; }
@@ -91,6 +99,10 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
 
+
+        public IAdminDashboardRepository AdminDashboard { get; private set; }
+
+        public IDoctorDashboardRepository DoctorDashboard { get; private set; }
 
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
         public ISettingsRepository Settings { get; private set; }

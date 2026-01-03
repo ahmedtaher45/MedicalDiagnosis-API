@@ -1,5 +1,7 @@
-﻿using Diagnosis.Domain.Models.Entites;
+﻿using Diagnosis.Domain.Entities;
+using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Domain.Shared;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +24,15 @@ namespace Diagnosis.Domain.Entites
         public string? ProfileImageUrl { get; set; }
         public bool? IsNewPatient { get; set; }
         public bool? IsUrgent { get; set; }
+
         public ICollection<MedicalFiles>? Files { get; set; }
         public ICollection<BoneFraction>? BoneFractions { get; set; }
         public ICollection<Inquiry>? Inquiries { get; set; }
         public ICollection<SupportTicket>? SupportTickets { get; set; }
+        public ICollection<Prescription>? Prescriptions { get; set; }
+        public ICollection<LabResult>? LabResults { get; set; }
+
 
     }
 }
+
