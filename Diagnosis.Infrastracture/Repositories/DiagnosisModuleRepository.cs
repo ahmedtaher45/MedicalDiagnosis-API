@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class DiagnosisModuleRepository : Repository<Inquiry> , IDiagnosisModuleRepository
+    public class DiagnosisModuleRepository : Repository<BoneFraction> , IDiagnosisModuleRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileService _fileService;
