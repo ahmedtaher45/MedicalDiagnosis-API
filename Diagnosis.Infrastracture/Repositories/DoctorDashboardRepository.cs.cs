@@ -1,7 +1,8 @@
 ﻿using Diagnosis.Application.DTOs.Dashboard.DoctorDashboar;
 using Diagnosis.Application.Interfaces;
-using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Domain.Entites;
+using Diagnosis.Domain.Entities;
+using Diagnosis.Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
 
 namespace Diagnosis.Infrastracture.Repositories
@@ -26,8 +27,9 @@ namespace Diagnosis.Infrastracture.Repositories
                 .CountAsync();
 
             var totalTreatmentPlans = await _context.Set<Prescription>()
-                .Where(p => p.DoctorId == doctorId)
+                .Where(p => p.Id == doctorId)
                 .CountAsync();
+         
 
             var patientStats = new List<PatientStatDto>();
             for (int i = 6; i >= 0; i--)
@@ -136,6 +138,11 @@ namespace Diagnosis.Infrastracture.Repositories
                 EarningsStats = earningsStats,
                 CommonDiagnoses = commonDiagnoses
             };
+        }
+
+        public Task<DoctorDashboardDto> GetDoctorDashboardDataAsync(string doctorId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
