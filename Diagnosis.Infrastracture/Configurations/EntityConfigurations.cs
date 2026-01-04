@@ -10,19 +10,18 @@
 
         
 
-            builder.HasMany(p => p.Consultations)
+            builder.HasMany(p => p.Inquiries)
                    .WithOne(a => a.Patient)
                    .HasForeignKey(a => a.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-        // One-to-Many: Patient -> Prescriptions (through Appointments)
-        builder.HasMany(p => p.Prescriptions)
-                   .WithOne(d => d.Patient)
-                   .HasForeignKey(p => p.PatientId)
+            builder.HasMany(p => p.BoneFractions)
+                   .WithOne(a => a.Patient)
+                   .HasForeignKey(a => a.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            // One-to-Many: Patient -> LabResults
-            builder.HasMany(p => p.LabResults)
+        // One-to-Many: Patient -> LabResults
+        builder.HasMany(p => p.Files)
                    .WithOne(l => l.Patient)
                    .HasForeignKey(l => l.PatientId)
                    .OnDelete(DeleteBehavior.NoAction);
@@ -37,31 +36,22 @@
         {
             builder.HasKey(d => d.Id);
 
-            builder.HasMany(d => d.Consultations)
+            builder.HasMany(d => d.Inquiries)
                    .WithOne(a => a.Doctor)
                    .HasForeignKey(a => a.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            // One-to-Many: Doctor -> Payments
-            builder.HasMany(d => d.Payments)
+            builder.HasMany(d => d.BoneFractions)
+                   .WithOne(a => a.Doctor)
+                   .HasForeignKey(a => a.DoctorId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+        // One-to-Many: Doctor -> Payments
+        builder.HasMany(d => d.Payments)
                    .WithOne(p => p.Doctor)
                    .HasForeignKey(p => p.DoctorId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            // One-to-Many: Doctor -> Prescriptions
-            builder.HasMany(d => d.Prescriptions)
-                   .WithOne(p => p.Doctor)
-                   .HasForeignKey(p => p.DoctorId)
-                   .OnDelete(DeleteBehavior.NoAction);
-
-            // One-to-Many: Doctor -> LabResults
-            builder.HasMany(d => d.LabResults)
-                   .WithOne(l => l.Doctor)
-                   .HasForeignKey(l => l.DoctorId)
-                   .OnDelete(DeleteBehavior.NoAction);
-
-            // One-to-Many: Doctor -> Prescriptions
-           
 
     }
     }
@@ -76,31 +66,10 @@
         }
     }
 
-    public class PrescriptionConfiguration : IEntityTypeConfiguration<Prescription>
-    {
-        public void Configure(EntityTypeBuilder<Prescription> builder)
-        {
-            builder.HasKey(p => p.Id);
 
-            // One-to-Many: Prescription -> PrescriptionItems
-            builder.HasMany(p => p.PrescriptionItems)
-                   .WithOne(pi => pi.Prescription)
-                   .HasForeignKey(pi => pi.PrescriptionId)
-                   .OnDelete(DeleteBehavior.NoAction);
-        }
-    }
-
-    public class PrescriptionItemConfiguration : IEntityTypeConfiguration<PrescriptionItem>
+    public class LabResultConfiguration : IEntityTypeConfiguration<MedicalFiles>
     {
-        public void Configure(EntityTypeBuilder<PrescriptionItem> builder)
-        {
-            builder.HasKey(pi => pi.Id);
-        }
-    }
-
-    public class LabResultConfiguration : IEntityTypeConfiguration<LabResult>
-    {
-        public void Configure(EntityTypeBuilder<LabResult> builder)
+        public void Configure(EntityTypeBuilder<MedicalFiles> builder)
         {
             builder.HasKey(l => l.Id);
         }

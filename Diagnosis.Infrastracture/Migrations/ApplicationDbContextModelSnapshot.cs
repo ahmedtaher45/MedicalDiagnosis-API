@@ -32,9 +32,6 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("BirhDate")
                         .HasColumnType("datetime2");
 
@@ -42,6 +39,9 @@ namespace Diagnosis.Infrastracture.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("DiagnosisPerDay")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ExperienceYears")
                         .HasColumnType("int");
@@ -58,8 +58,8 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<string>("LName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LicenseNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly>("LastResetDate")
+                        .HasColumnType("date");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -91,13 +91,13 @@ namespace Diagnosis.Infrastracture.Migrations
                         new
                         {
                             Id = -1,
-                            Bio = "Skin specialist",
                             BirhDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DiagnosisPerDay = 0,
                             ExperienceYears = 8,
                             FName = "Ahmed",
                             IsDeleted = false,
                             LName = "Mahmoud",
-                            LicenseNumber = "LIC-001",
+                            LastResetDate = new DateOnly(1, 1, 1),
                             ProfileImageUrl = "",
                             Rating = 4.7m,
                             Specialization = "Dermatology",
@@ -105,7 +105,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Entites.LabResult", b =>
+            modelBuilder.Entity("Diagnosis.Domain.Entites.MedicalFiles", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,58 +118,29 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("FileUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LabNotes")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ResultStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResultValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TestDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TestName")
+                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
-
                     b.HasIndex("PatientId");
 
-                    b.ToTable("LabResults");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            DoctorId = -1,
-                            FileUrl = "",
-                            IsDeleted = false,
-                            LabNotes = "Good condition",
-                            PatientId = -1,
-                            ResultStatus = "Completed",
-                            ResultValue = "Normal",
-                            TestDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TestName = "Blood Test"
-                        });
+                    b.ToTable("MedicalFiles");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Notification", b =>
@@ -185,6 +156,9 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -198,25 +172,17 @@ namespace Diagnosis.Infrastracture.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NotificationType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("RelatedId")
                         .HasColumnType("int");
-
-                    b.Property<string>("RelatedType")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserType")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -232,15 +198,14 @@ namespace Diagnosis.Infrastracture.Migrations
                         new
                         {
                             Id = -1,
+                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsRead = false,
                             Message = "Your appointment is confirmed.",
-                            NotificationType = "Appointment",
+                            NotificationType = "Consultation",
                             RelatedId = -1,
-                            RelatedType = "Appointment",
                             Title = "Appointment Confirmed",
-                            UserId = "user-2",
-                            UserType = "Patient"
+                            UserId = "user-2"
                         });
                 });
 
@@ -387,7 +352,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Prescription", b =>
+            modelBuilder.Entity("Diagnosis.Domain.Entites.PhysiotherapyExercise", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -395,99 +360,93 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("DiagnosisName")
+                    b.Property<string>("BodyPart")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
+                    b.Property<string>("Difficulty")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PatientId")
+                    b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
 
-                    b.Property<string>("Severity")
+                    b.Property<string>("ThumbnailUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Specialization")
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("YoutubeUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Prescriptions");
+                    b.ToTable("PhysiotherapyExercises");
 
                     b.HasData(
                         new
                         {
-                            Id = -1,
-                            AppointmentId = -1,
-                            DiagnosisName = "Skin Irritation",
-                            DoctorId = -1,
-                            IsDeleted = false,
-                            Notes = "Use cream twice daily",
-                            PatientId = -1,
-                            Severity = "Mild",
-                            Specialization = "Dermatology"
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.PrescriptionItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MedicineName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PrescriptionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PrescriptionId");
-
-                    b.ToTable("PrescriptionItems");
-
-                    b.HasData(
+                            Id = 1,
+                            BodyPart = "Back",
+                            Difficulty = "Easy",
+                            DurationMinutes = 4,
+                            ThumbnailUrl = "https://img.youtube.com/vi/4BOTvaRaDjI/hqdefault.jpg",
+                            Title = "Back Stretch Exercise",
+                            YoutubeUrl = "https://www.youtube.com/watch?v=4BOTvaRaDjI"
+                        },
                         new
                         {
-                            Id = -1,
-                            IsDeleted = false,
-                            MedicineName = "Skin Cream",
-                            PrescriptionId = -1
+                            Id = 2,
+                            BodyPart = "Back",
+                            Difficulty = "Easy",
+                            DurationMinutes = 6,
+                            ThumbnailUrl = "https://img.youtube.com/vi/DWmGArQBtFI/hqdefault.jpg",
+                            Title = "Lower Back Mobility Routine",
+                            YoutubeUrl = "https://www.youtube.com/watch?v=DWmGArQBtFI"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BodyPart = "Shoulder",
+                            Difficulty = "Medium",
+                            DurationMinutes = 5,
+                            ThumbnailUrl = "https://img.youtube.com/vi/1g6L2HkZz9Y/hqdefault.jpg",
+                            Title = "Shoulder Strengthening Exercise",
+                            YoutubeUrl = "https://www.youtube.com/watch?v=1g6L2HkZz9Y"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BodyPart = "Shoulder",
+                            Difficulty = "Medium",
+                            DurationMinutes = 7,
+                            ThumbnailUrl = "https://img.youtube.com/vi/PPzD2w6pXyE/hqdefault.jpg",
+                            Title = "Rotator Cuff Rehab Exercise",
+                            YoutubeUrl = "https://www.youtube.com/watch?v=PPzD2w6pXyE"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BodyPart = "Legs",
+                            Difficulty = "Hard",
+                            DurationMinutes = 6,
+                            ThumbnailUrl = "https://img.youtube.com/vi/Z8nQXn1pXyE/hqdefault.jpg",
+                            Title = "Leg Balance Exercise",
+                            YoutubeUrl = "https://www.youtube.com/watch?v=Z8nQXn1pXyE"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BodyPart = "Legs",
+                            Difficulty = "Medium",
+                            DurationMinutes = 5,
+                            ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg",
+                            Title = "Knee Stability Exercise",
+                            YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU"
                         });
                 });
 
@@ -533,6 +492,9 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("ReceiveEmailNotifications")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -560,7 +522,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "36defe16-8b64-48fd-956b-1a725dccb37a",
+                            ConcurrencyStamp = "71fc3bc8-fc03-4796-bee6-3654cc58d367",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -568,7 +530,8 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "ADMIN@DIAGNOSIS.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8a631c7a-0009-4521-a99d-9a45f083dcbd",
+                            ReceiveEmailNotifications = true,
+                            SecurityStamp = "362a741a-ae3d-40ac-a12e-26f7749102b5",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -576,7 +539,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f82c6e37-0c4f-4ed1-a441-7678fe5e62b2",
+                            ConcurrencyStamp = "692f4f63-3f81-4d14-ae5c-d7d5d99782f2",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -584,6 +547,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "DOCTOR@TEST.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
+                            ReceiveEmailNotifications = true,
                             SecurityStamp = "stamp1",
                             TwoFactorEnabled = false,
                             UserName = "doctor@test.com"
@@ -592,7 +556,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c7f60e99-5871-447f-99f3-ca6960b8851a",
+                            ConcurrencyStamp = "5ea32d76-48ba-4759-ab58-925a757eb75d",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -600,6 +564,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             NormalizedUserName = "PATIENT@TEST.COM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
+                            ReceiveEmailNotifications = true,
                             SecurityStamp = "stamp2",
                             TwoFactorEnabled = false,
                             UserName = "patient@test.com"
@@ -1273,6 +1238,119 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.TreatmentPlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PatientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PatientId1")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId1");
+
+                    b.ToTable("TreatmentPlans");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UsageConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AiEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxDiagnosisPerDay")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxRequestsPerDay")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("WorkHoursPweDoctor")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UsageConfig");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserAIUsage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("LastResetDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsedRequestsToday")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Usages");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -1436,21 +1514,13 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Entites.LabResult", b =>
+            modelBuilder.Entity("Diagnosis.Domain.Entites.MedicalFiles", b =>
                 {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
-                        .WithMany("LabResults")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("LabResults")
+                        .WithMany("Files")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Doctor");
 
                     b.Navigation("Patient");
                 });
@@ -1484,36 +1554,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         .IsRequired();
 
                     b.Navigation("Doctor");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Prescription", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
-                        .WithMany("Prescriptions")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("Prescriptions")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.PrescriptionItem", b =>
-                {
-                    b.HasOne("Diagnosis.Domain.Entites.Prescription", "Prescription")
-                        .WithMany("PrescriptionItems")
-                        .HasForeignKey("PrescriptionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Prescription");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.ClinicalFinding", b =>
@@ -1586,6 +1626,31 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Diagnosis");
                 });
 
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.TreatmentPlan", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId1");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.UserAIUsage", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "User")
+                        .WithOne("Usage")
+                        .HasForeignKey("Diagnosis.Domain.Models.Entites.UserAIUsage", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1641,11 +1706,7 @@ namespace Diagnosis.Infrastracture.Migrations
                 {
                     b.Navigation("Consultations");
 
-                    b.Navigation("LabResults");
-
                     b.Navigation("Payments");
-
-                    b.Navigation("Prescriptions");
 
                     b.Navigation("SupportTickets");
                 });
@@ -1654,16 +1715,9 @@ namespace Diagnosis.Infrastracture.Migrations
                 {
                     b.Navigation("Consultations");
 
-                    b.Navigation("LabResults");
-
-                    b.Navigation("Prescriptions");
+                    b.Navigation("Files");
 
                     b.Navigation("SupportTickets");
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Entites.Prescription", b =>
-                {
-                    b.Navigation("PrescriptionItems");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.ApplicationUser", b =>
@@ -1675,6 +1729,8 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Patient");
 
                     b.Navigation("SupportTickets");
+
+                    b.Navigation("Usage");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", b =>

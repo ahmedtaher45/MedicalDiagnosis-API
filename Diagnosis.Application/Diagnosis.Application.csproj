@@ -8,15 +8,18 @@
 
   <ItemGroup>
     <None Remove="Template\ConfirmEmail.html" />
+    <None Remove="Template\ContactEmail.html" />
     <None Remove="Template\ResetEmail.html" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Template\ConfirmEmail.html" />
+    <EmbeddedResource Include="Template\ContactEmail.html" />
     <EmbeddedResource Include="Template\ResetEmail.html" />
   </ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="itextsharp.4.1.6.0" Version="4.1.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">

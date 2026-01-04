@@ -3,6 +3,7 @@ using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.FileService;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,22 +30,24 @@ namespace Diagnosis.Application.UseCases.Inquiry
                 var patientId = await _unitOfWork.Inquiry.GetPatientAsync(userId);
                 var inquiry = await _unitOfWork.Inquiry.GetAsync(c => c.Id == inquiryId
                 && c.PatientId == patientId
-                && c.Type == Domain.Models.Entites.ConsultationType.Inquiry);
+                );
 
                 if (inquiry == null) throw new ArgumentNullException(nameof(inquiry));
 
-                var baseUrl = _config["AppSettings:BaseUrl"];
+                var baseUrl = _config.GetSection("BaseUrl");
 
-                var files = inquiry.FileUrls?
-                    .Select(path => $"{baseUrl}/{path.Replace("\\", "/")}")
+                var files = inquiry.InquiryFiles?
+                    .Select(path => $"{baseUrl}/{path}")
                     .ToList()
                     ?? new List<string>();
 
                 var dto = new GetInquiryDTO();
 
                 dto.DoctorId = patientId;
-                dto.Notes = inquiry.Notes;
-                dto.Date = inquiry.Date;
+                dto.Reply = inquiry.Reply;
+                dto.Description = inquiry.Description;
+                dto.Date = inquiry.CreatedOn;
+                dto.Symptoms = inquiry.Symptoms;
                 dto.Files = files;
 
                 if (inquiry.Status == Domain.Models.Entites.ConsultationStatus.Pending)
@@ -60,7 +63,7 @@ namespace Diagnosis.Application.UseCases.Inquiry
                 else
                 {
                     dto.Status = "Replied";
-                    dto.Description = inquiry.Description;
+                    //dto.Description = inquiry.Description;
                 }
                 return dto;
             }

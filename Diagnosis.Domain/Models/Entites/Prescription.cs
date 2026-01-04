@@ -1,23 +1,32 @@
-﻿using Diagnosis.Domain.Shared;
+﻿using Diagnosis.Domain.Entites;
+using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Domain.Shared;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Diagnosis.Domain.Entites
+namespace Diagnosis.Domain.Entities
 {
-    public class Prescription: BaseEntity
+    public class Prescription : BaseEntity
     {
-        public int AppointmentId { get; set; }
-        public int PatientId { get; set; }
-        public string? Specialization { get; set; }
-        public string? Notes { get; set; }
-        public string? DiagnosisName { get; set; }
-        public string? Severity { get; set; }
-        public int DoctorId { get; set; }
-        public Doctor? Doctor { get; set; }
+        public string? PrescriptionId { get; set; } = Guid.NewGuid().ToString();
+
+        // Relations
+        public string? PatientId { get; set; }
         public Patient? Patient { get; set; }
-        public ICollection<PrescriptionItem>? PrescriptionItems { get; set; }
+
+        public string? DoctorId { get; set; }
+        public ApplicationUser? Doctor { get; set; }
+
+        public string? TreatmentPlanId { get; set; }
+        public TreatmentPlan? TreatmentPlan { get; set; }
+
+        // Prescription Details
+        public string? MedicationName { get; set; }
+        public string? Dosage { get; set; }
+        public string? Frequency { get; set; }
+        public string? Duration { get; set; }
+        public string? Instructions { get; set; }
+        public string? Notes { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

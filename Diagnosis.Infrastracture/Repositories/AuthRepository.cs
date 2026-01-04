@@ -290,7 +290,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 };
             }
         }
-        public async Task<LoginResponseDTO> LoginAsync(string email, string password)
+        public async Task<LoginResponseDTO> LoginAsync(string email, string password, string clientUri)
         {
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
@@ -304,13 +304,16 @@ namespace Diagnosis.Infrastracture.Repositories
 
             var roles = await userManager.GetRolesAsync(user);
 
-            if (!user.EmailConfirmed)
+            if (!await userManager.IsEmailConfirmedAsync(user))
             {
-                return (new LoginResponseDTO
+                await SendConfirmationEmail(user, clientUri);
                 {
-                    Success = false,
-                    ErrorMessage = "You must confirm your Email, please return to your gmail"
-                });
+                    return new LoginResponseDTO
+                    {
+                        Success = false,
+                        ErrorMessage = "Email is not confirmed. Please check your inbox."
+                    };
+                }
             }
 
             var isPasswordValid = await userManager.CheckPasswordAsync(user, password);

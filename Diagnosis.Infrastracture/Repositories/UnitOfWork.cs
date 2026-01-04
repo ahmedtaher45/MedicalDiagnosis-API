@@ -1,12 +1,15 @@
 ﻿using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
+using Diagnosis.Domain.Entites;
+using Diagnosis.Application.Services.PdfService;
 using Diagnosis.Domain.Models.Entites;
-using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastructure.Providers;
+using Diagnosis.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +28,7 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IDiagnosisModuleProvider _diagnosisModuleProvider;
+        private readonly IPdfService _pdfService;
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
@@ -33,7 +37,8 @@ namespace Diagnosis.Infrastracture.Repositories
             HttpClient httpClient,
             IConfiguration configuration,
             IFileService fileService,
-            IDiagnosisModuleProvider diagnosisModuleProvider
+            IDiagnosisModuleProvider diagnosisModuleProvider,
+            IPdfService pdfService
             )
         {
             _userManager = userManager;
@@ -44,9 +49,10 @@ namespace Diagnosis.Infrastracture.Repositories
             _httpClient = httpClient;
             _fileService = fileService;
             _diagnosisModuleProvider = diagnosisModuleProvider;
+            _pdfService = pdfService;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
-
+            
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
             Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
@@ -55,30 +61,74 @@ namespace Diagnosis.Infrastracture.Repositories
             Patient = new PatientRepository(_context);
             Doctor = new DoctorRepository(_context);
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
+            // TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            Profile = new ProfileRepository(_context);
+            PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
 
+
+
+            TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            AdminDashboard = new AdminDashboardRepository(_context);
+            DoctorDashboard = new DoctorDashboardRepository(_context);
+            DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
+            MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
             SupportTicket = new SupportTicketRepository(_context , _userManager);
+            Settings  = new SettingsRepository(_context);
+            Notifications = new NotificationRepository(_context);
+            Patient = new PatientRepository(_context);
+            Doctor = new DoctorRepository(_context);
 
+            systemSettings = new SystemSettingsRepository(_context , _emailSender);
+            Users = new UserRepository(_context , _userManager);
+
+
+            Profile = new ProfileRepository(_context);
+            PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
+            Settings = new SettingsRepository(_context);
+
+
+            Treatment = new TreatmentRepository(_context, _pdfService);
+           
         }
 
         public IAuth Auth { get; private set; }
-
         public IFaq Faq { get; private set; }
-
         public ISupportTicket SupportTicket { get; private set; }
-
         public IDiagnosisModuleRepository DiagnosisModule { get; private set; }
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
         public ITreatmentProvider TreatmentProvider { get; private set; }
+        public IProfileRepository Profile { get; private set; }
+
+        public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
+
+
+        public IAdminDashboardRepository AdminDashboard { get; private set; }
+
+        public IDoctorDashboardRepository DoctorDashboard { get; private set; }
+
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
+        public ISettingsRepository Settings { get; private set; }
+        public INotificationRepository Notifications { get; private set; }
         /// <summary>
         /// //
         /// </summary>
-        public IPatientManagement Patient { get; private set; } 
 
+        public IMedicalFilesRepository MedicalFiles { get; private set; }
+
+        public IPatientManagement Patient { get; private set; } 
         public IDoctorManagement Doctor { get; private set; }
+        public ITreatmentRepository Treatment { get; private set; }
+
+    //public ISystemSetting SystemSetting {  get; private set; }
+        public IUserRepository Users { get; private set; }
+
+        public ISystemSettingsRepository systemSettings { get; private set; }
+       
+
+
 
         public async Task<int> CompleteAsync()
         {

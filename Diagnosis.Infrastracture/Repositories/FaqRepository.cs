@@ -13,25 +13,28 @@ namespace Diagnosis.Infrastracture.Repositories
     public class FaqRepository : Repository<Faq> ,IFaq
     {
         private readonly ApplicationDbContext _context;
+        private FaqType type;
         public FaqRepository(ApplicationDbContext context) :base(context)
         {
             _context = context;
         }
-        public async Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO, string? search = null)
-        { 
-            var query = _context.Faqs
-                .Where(f => f.Type == faqDTO.Type )
-                .AsQueryable();
+        public async Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO)
+        {
+            if (faqDTO.Type == "Patient")
+                type = FaqType.Patient;            
+            else
+                type = FaqType.Doctor;
 
-            if(!string.IsNullOrEmpty(search) )
-            {
-                query = query.Where(f => f.Question.Contains(search));
-            }
+                var query = _context.Faqs
+                    .Where(f => f.Type == type)
+                    .AsQueryable();
 
             var faqs = await query
                 .Select(f => new FaqResponseDTO
                 {
                     Question = f.Question,
+                    Answer = f.Answer,
+                   
                 })
                 .ToListAsync();
             return faqs;

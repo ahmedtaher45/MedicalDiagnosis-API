@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Application.DTOs.DiagnosisModule;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,6 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IDiagnosisModuleProvider
     {
-        Task<ProviderResponse> GetDiagnosisAsync(
-            List<(string fileName, byte[] content, string contentType)> files,
-            string symptoms,
-            string description
-            );
+        Task<ProviderResponse> GetDiagnosisAsync(IFormFile formFile);
     }
 }

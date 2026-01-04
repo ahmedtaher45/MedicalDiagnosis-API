@@ -11,7 +11,7 @@ namespace Diagnosis.Application.DTOs.Inquiry
     {
         public int DoctorId { get; set; }
         public string? Symptoms { get; set; }
-        public string? Notes { get; set; }
+        public string? Description { get; set; }
         public ICollection<IFormFile>? Files { get; set; }
 
     }

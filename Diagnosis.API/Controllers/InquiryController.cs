@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Application.DTOs.Inquiry;
 using Diagnosis.Application.UseCases.Inquiry;
+using Diagnosis.Application.UseCases.PatientDashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,24 @@ namespace Diagnosis.API.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
 
             var result = await getInquiryUseCase.ExecuteAsync(userId, inquiryId);
+            return Ok(result);
+        }
+
+        [HttpGet("recent")]
+        public async Task<IActionResult> GetRecentInquiries(
+            [FromServices] GetRecentInquiriesUseCase getRecentInquiriesUseCase)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await getRecentInquiriesUseCase.GetRecentInquiries(userId);
+            return Ok(result);
+        }
+
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingInquiriesCount(
+            [FromServices] GetPendingInquiriesCountUseCase getPendingInquiriesCountUseCase)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await getPendingInquiriesCountUseCase.ExecuteAsync(userId);
             return Ok(result);
         }
     }

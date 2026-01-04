@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Application.DTOs.Inquiry;
+using Diagnosis.Application.DTOs.PatientDashboard;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Models.Entites;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class InquiryRepository: Repository<Consultation>, IInquiryRepository
+    public class InquiryRepository: Repository<Inquiry>, IInquiryRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileService _fileService;
@@ -38,17 +39,16 @@ namespace Diagnosis.Infrastracture.Repositories
 
             try
             {
-                await _context.Consultations.AddAsync(
-                new Consultation
+                await _context.Inquiries.AddAsync(
+                new Inquiry
                 {
                     PatientId = patient.Id,
                     DoctorId = addInquiryDTO.DoctorId,
                     Symptoms = addInquiryDTO.Symptoms,
-                    Notes = addInquiryDTO.Notes,
+                    Description = addInquiryDTO.Description,
                     Status = ConsultationStatus.Pending,
-                    Type = ConsultationType.Inquiry,
-                    Date = DateTime.Now,
-                    FileUrls = fileUrls
+                    CreatedOn = DateTime.Now,
+                    InquiryFiles = fileUrls
                 });
             }
             catch (Exception ex)
@@ -66,12 +66,43 @@ namespace Diagnosis.Infrastracture.Repositories
                 Message = "Inquiry sent successfully"
             };
         }
+
+       
+        public async Task<List<InquiriesDto>> GetRecentInquiriesAsync(int patientId)
+        {
+            return await _context.Inquiries
+                .Where(c => c.PatientId == patientId )
+                .Select(c => new InquiriesDto
+                {
+                    Id = c.Id,
+                    DoctorName = c.Doctor.FName + " " + c.Doctor.LName,
+                    Subject = c.Description,
+                    Date = c.CreatedOn,
+                    Time = c.CreatedOn,
+                    Status = c.Status.ToString(),
+                })
+                .OrderByDescending(c => c.Date)
+                .Take(3)
+                .ToListAsync();
+        }
+        //get pending inquiries count by patient id
+        public async Task<GetPendingCountDTO> GetPendingInquiriesCount(int patientId)
+        {
+            var count = await _context.Inquiries
+                .CountAsync(c => c.PatientId == patientId  && c.Status == ConsultationStatus.Pending);
+
+            return new GetPendingCountDTO
+            {
+                PendingInquiriesCount = count
+            };
+        }
         public async Task<int> GetPatientAsync(string userId)
         {
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
             if (patient == null)
                 throw new ArgumentNullException(nameof(patient));
             return patient.Id;
+
         }
     }
 }

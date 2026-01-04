@@ -17,8 +17,6 @@ namespace Diagnosis.Application.DTOs.SupportTicket
        
         [MaxLength(2000)]
         public string? Details { get; set; }
-        public string? Status { get; set; }
-        public string? Reply { get; set; }
     }
   
 }

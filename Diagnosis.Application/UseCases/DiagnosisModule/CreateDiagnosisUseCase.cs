@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Application.DTOs.DiagnosisModule;
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Domain.Entites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,18 @@ namespace Diagnosis.Application.UseCases.DiagnosisModule
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ProviderResponse> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
+        public async Task<BoneFractionResponseDTO> ExecuteAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
         {
+            var doctor = await _unitOfWork.Doctor.GetByIdAsync(new object[] { userId });
+            await _unitOfWork.Notifications.AddAsync(new Diagnosis.Domain.Entites.Notification
+            {
+                UserId = doctor.UserId,
+                Title = "New AI Consultation Submitted",
+                Message = "A patient has sent an AI-assisted consultation for your review.",
+                NotificationType = NotificationType.Consultation,
+                Date = DateTime.UtcNow
+            });
+
             return await _unitOfWork.DiagnosisModule.CreateDiagnosisAsync(createDiagnosisDTO, userId);
         }
     }

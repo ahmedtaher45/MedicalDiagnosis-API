@@ -10,6 +10,6 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IFaq: IRepository<Faq>
     {
-        Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO , string? search = null);
+        Task<List<FaqResponseDTO>> GetAllFaqAsync(FaqDTO faqDTO);
     }
 }

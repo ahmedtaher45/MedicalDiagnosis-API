@@ -16,11 +16,32 @@ namespace Diagnosis.Application.Interfaces
         ITreatmentProvider TreatmentProvider { get; }
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
+        IProfileRepository Profile { get; }
+        IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; }
+        ISettingsRepository Settings { get; }
+        IAdminDashboardRepository AdminDashboard { get; }
+        IDoctorDashboardRepository DoctorDashboard { get; }
+
         // ✨ New Repositories
+        IMedicalFilesRepository MedicalFiles { get; }
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
-        IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
+        IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }INotificationRepository Notifications { get; }
+
+
+        IMedicalFilesRepository MedicalFiles { get; }
+       
+        ITreatmentRepository Treatment { get; }
+        IUserRepository Users { get; }
+        ISystemSettingsRepository systemSettings { get; }
+
+
+
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
+
+       // IAppointmentRepository Appointment { get; }
+     
+       
     }
 }

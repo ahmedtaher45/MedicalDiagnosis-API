@@ -1,14 +1,12 @@
-﻿// Data/ApplicationDbContext.cs
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Diagnosis.Domain.Entites;
+﻿using Diagnosis.Domain.Entites;
+using Diagnosis.Domain.Entities;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-
-
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
@@ -16,17 +14,28 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    public DbSet<Prescription> Prescriptions { get; set; }
-    public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
-    public DbSet<LabResult> LabResults { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Faq> Faqs { get; set; }
     public DbSet<SupportTicket> SupportTickets { get; set; }
-    public DbSet<Consultation> Consultations { get; set; }
+    public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
+    //user settings
+   
+
+    public DbSet<Inquiry> Inquiries { get; set; }
+    public DbSet<BoneFraction> BoneFractions { get; set; }
+
     public DbSet<DoctorDiagnosis> Diagnosises { get; set; }
     public DbSet<Symptom> Symptoms { get; set; }
     public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
     public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
+    public DbSet<Request> Requests { get; set; }
+    public DbSet<UserAIUsage> Usages { get; set; }
+    public DbSet<UsageConfig> UsageConfig { get; set; }
+    
+    
+
+    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
+    public DbSet<Prescription> Prescriptions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -35,8 +44,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new PatientConfiguration());
         modelBuilder.ApplyConfiguration(new DoctorConfiguration());
         modelBuilder.ApplyConfiguration(new PaymentConfiguration());
-        modelBuilder.ApplyConfiguration(new PrescriptionConfiguration());
-        modelBuilder.ApplyConfiguration(new PrescriptionItemConfiguration());
         modelBuilder.ApplyConfiguration(new LabResultConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
@@ -51,6 +58,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne(p => p.User)
             .HasForeignKey<Patient>(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne(u => u.Usage)
+            .WithOne(p => p.User)
+            .HasForeignKey<UserAIUsage>(p => p.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
         modelBuilder.Entity<ApplicationUser>()
           .HasMany(u => u.SupportTickets)
           .WithOne(p => p.User)
@@ -63,7 +77,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<Consultation>()
+        modelBuilder.Entity<Inquiry>()
+            .Property(p => p.CreatedOn)
+            .HasDefaultValueSql("GETUTCDATE()");
+
+
+        modelBuilder.Entity<BoneFraction>()
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
@@ -71,7 +90,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
-        modelBuilder.Entity<LabResult>()
+        modelBuilder.Entity<MedicalFiles>()
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
@@ -87,25 +106,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(p => p.CreatedOn)
             .HasDefaultValueSql("GETUTCDATE()");
 
-        modelBuilder.Entity<Prescription>()
-            .Property(p => p.CreatedOn)
-            .HasDefaultValueSql("GETUTCDATE()");
 
-        modelBuilder.Entity<PrescriptionItem>()
-            .Property(p => p.CreatedOn)
-            .HasDefaultValueSql("GETUTCDATE()");
-
-        modelBuilder.Entity<Consultation>()
+        modelBuilder.Entity<Inquiry>()
             .Property(c => c.Status)
             .HasConversion<string>();
 
 
-        modelBuilder.Entity<Consultation>()
-            .Property(c => c.Type)
-            .HasConversion<string>();
-
         modelBuilder.Entity<Notification>()
             .Property(p => p.NotificationType)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<MedicalFiles>()
+            .Property(p => p.Type)
             .HasConversion<string>();
 
         modelBuilder.Entity<Request>()
@@ -390,10 +402,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 FName = "Ahmed",
                 LName = "Mahmoud",
                 Specialization = "Dermatology",
-                Bio = "Skin specialist",
                 ExperienceYears = 8,
                 Rating = 4.7m,
-                LicenseNumber = "LIC-001",
                 ProfileImageUrl = "",
                 ModifiedOn = null,
                 IsDeleted = false
@@ -425,39 +435,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
 
         // ----------------------
-        // Prescription
-        // ----------------------
-        modelBuilder.Entity<Prescription>().HasData(
-            new Prescription
-            {
-                Id = -1,
-                AppointmentId = -1,
-                DoctorId = -1,
-                PatientId = -1,
-                Specialization = "Dermatology",
-                Notes = "Use cream twice daily",
-                DiagnosisName = "Skin Irritation",
-                Severity = "Mild",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
-
-        // ----------------------
-        // PrescriptionItem
-        // ----------------------
-        modelBuilder.Entity<PrescriptionItem>().HasData(
-            new PrescriptionItem
-            {
-                Id = -1,
-                PrescriptionId = -1,
-                MedicineName = "Skin Cream",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
-
-        // ----------------------
         // Payment
         // ----------------------
         modelBuilder.Entity<Payment>().HasData(
@@ -475,24 +452,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             }
         );
 
-        // ----------------------
-        // LabResult
-        // ----------------------
-        modelBuilder.Entity<LabResult>().HasData(
-            new LabResult
-            {
-                Id = -1,
-                PatientId = -1,
-                DoctorId = -1,
-                TestName = "Blood Test",
-                ResultValue = "Normal",
-                ResultStatus = "Completed",
-                LabNotes = "Good condition",
-                FileUrl = "",
-                ModifiedOn = null,
-                IsDeleted = false
-            }
-        );
 
         // ----------------------
         // Notification
@@ -502,14 +461,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             {
                 Id = -1,
                 UserId = "user-2",
-                UserType = "Patient",
                 Title = "Appointment Confirmed",
                 Message = "Your appointment is confirmed.",
-                NotificationType = "Appointment",
+                NotificationType = NotificationType.Consultation,
                 IsRead = false,
                 RelatedId = -1,
-                RelatedType = "Appointment",
-                ReadAt = null,
                 ModifiedOn = null,
                 IsDeleted = false
             }
@@ -519,20 +475,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // ----------------------
         // Consultation
         // ----------------------
-        modelBuilder.Entity<Consultation>().HasData(
-            new Consultation
+        modelBuilder.Entity<Inquiry>().HasData(
+            new Inquiry
             {
                 Id = 1,
                 PatientId = -1,
                 DoctorId = -1,
                 Symptoms = "Headache, fever, and fatigue.",
-                Notes = "Patient reports symptoms for 3 days.",
+                Description = "Patient reports symptoms for 3 days.",
                 Status = ConsultationStatus.Pending,
-                Type = ConsultationType.Inquiry,
-                Date = new DateTime(2025, 1, 1),
-                ConfidenceLevel = 0,
-                Description = "General inquiry about symptoms"
+                CreatedOn = new DateTime(2025, 1, 1),
+                //Description = "General inquiry about symptoms"
             }
+
         );
 
      
@@ -541,67 +496,142 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // --------------------
 
         modelBuilder.Entity<Faq>().HasData(
-    // Patient FAQs
-    new Faq
-    {
-        Id = 1,
-        Type = FaqType.Patient,
-        Question = "How can I book an appointment?",
-        Answer = "You can book an appointment through the mobile application."
-    },
-    new Faq
-    {
-        Id = 2,
-        Type = FaqType.Patient,
-        Question = "Can I cancel or reschedule my appointment?",
-        Answer = "Yes, you can cancel or reschedule your appointment from your profile."
-    },
-    new Faq
-    {
-        Id = 3,
-        Type = FaqType.Patient,
-        Question = "How do I view my medical history?",
-        Answer = "Your medical history is available in the medical records section."
-    },
-    new Faq
-    {
-        Id = 4,
-        Type = FaqType.Patient,
-        Question = "Is my personal data secure?",
-        Answer = "Yes, all your data is securely stored and protected."
-    },
+        new Faq
+        {
+            Id = 1,
+            Type = FaqType.Patient,
+            Question = "How can I book an appointment?",
+            Answer = "You can book an appointment through the mobile application."
+        },
+        new Faq
+        {
+            Id = 2,
+            Type = FaqType.Patient,
+            Question = "Can I cancel or reschedule my appointment?",
+            Answer = "Yes, you can cancel or reschedule your appointment from your profile."
+        },
+        new Faq
+        {
+            Id = 3,
+            Type = FaqType.Patient,
+            Question = "How do I view my medical history?",
+            Answer = "Your medical history is available in the medical records section."
+        },
+        new Faq
+        {
+            Id = 4,
+            Type = FaqType.Patient,
+            Question = "Is my personal data secure?",
+            Answer = "Yes, all your data is securely stored and protected."
+        },
 
     // Doctor FAQs
-    new Faq
-    {
-        Id = 5,
-        Type = FaqType.Doctor,
-        Question = "How can I manage my appointments?",
-        Answer = "You can manage your appointments from the doctor dashboard."
-    },
-    new Faq
-    {
-        Id = 6,
-        Type = FaqType.Doctor,
-        Question = "How do I update my availability?",
-        Answer = "You can update your availability from your profile settings."
-    },
-    new Faq
-    {
-        Id = 7,
-        Type = FaqType.Doctor,
-        Question = "Can I access patient medical records?",
-        Answer = "Yes, you can access medical records for patients assigned to you."
-    },
-    new Faq
-    {
-        Id = 8,
-        Type = FaqType.Doctor,
-        Question = "How do I receive payments?",
-        Answer = "Payments are transferred to your registered bank account."
-    }
-);
-    }
+        new Faq
+        {
+            Id = 5,
+            Type = FaqType.Doctor,
+            Question = "How can I manage my appointments?",
+            Answer = "You can manage your appointments from the doctor dashboard."
+        },
+        new Faq
+        {
+            Id = 6,
+            Type = FaqType.Doctor,
+            Question = "How do I update my availability?",
+            Answer = "You can update your availability from your profile settings."
+        },
+        new Faq
+        {
+            Id = 7,
+            Type = FaqType.Doctor,
+            Question = "Can I access patient medical records?",
+            Answer = "Yes, you can access medical records for patients assigned to you."
+        },
+        new Faq
+        {
+            Id = 8,
+            Type = FaqType.Doctor,
+            Question = "How do I receive payments?",
+            Answer = "Payments are transferred to your registered bank account."
+        }
+        );  
+
+
+        modelBuilder.Entity<PhysiotherapyExercise>().HasData(
+
+        // 🔹 BACK
+        new PhysiotherapyExercise
+        {
+            Id = 1,
+            Title = "Back Stretch Exercise",
+            BodyPart = "Back",
+            Difficulty = "Easy",
+            DurationMinutes = 4,
+            YoutubeUrl = "https://www.youtube.com/watch?v=4BOTvaRaDjI",
+            ThumbnailUrl = "https://img.youtube.com/vi/4BOTvaRaDjI/hqdefault.jpg"
+        },
+        new PhysiotherapyExercise
+        {
+            Id = 2,
+            Title = "Lower Back Mobility Routine",
+            BodyPart = "Back",
+            Difficulty = "Easy",
+            DurationMinutes = 6,
+            YoutubeUrl = "https://www.youtube.com/watch?v=DWmGArQBtFI",
+            ThumbnailUrl = "https://img.youtube.com/vi/DWmGArQBtFI/hqdefault.jpg"
+        },
+
+        // 🔹 SHOULDER
+        new PhysiotherapyExercise
+        {
+            Id = 3,
+            Title = "Shoulder Strengthening Exercise",
+            BodyPart = "Shoulder",
+            Difficulty = "Medium",
+            DurationMinutes = 5,
+            YoutubeUrl = "https://www.youtube.com/watch?v=1g6L2HkZz9Y",
+            ThumbnailUrl = "https://img.youtube.com/vi/1g6L2HkZz9Y/hqdefault.jpg"
+        },
+        new PhysiotherapyExercise
+        {
+            Id = 4,
+            Title = "Rotator Cuff Rehab Exercise",
+            BodyPart = "Shoulder",
+            Difficulty = "Medium",
+            DurationMinutes = 7,
+            YoutubeUrl = "https://www.youtube.com/watch?v=PPzD2w6pXyE",
+            ThumbnailUrl = "https://img.youtube.com/vi/PPzD2w6pXyE/hqdefault.jpg"
+        },
+
+        // 🔹 LEGS
+        new PhysiotherapyExercise
+        {
+            Id = 5,
+            Title = "Leg Balance Exercise",
+            BodyPart = "Legs",
+            Difficulty = "Hard",
+            DurationMinutes = 6,
+            YoutubeUrl = "https://www.youtube.com/watch?v=Z8nQXn1pXyE",
+            ThumbnailUrl = "https://img.youtube.com/vi/Z8nQXn1pXyE/hqdefault.jpg"
+        },
+        new PhysiotherapyExercise
+        {
+            Id = 6,
+            Title = "Knee Stability Exercise",
+            BodyPart = "Legs",
+            Difficulty = "Medium",
+            DurationMinutes = 5,
+            YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU",
+            ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg"
+        });
+
+     
+        
+
+        
+
+        }
+
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

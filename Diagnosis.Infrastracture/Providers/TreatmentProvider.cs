@@ -29,9 +29,9 @@ namespace Diagnosis.Infrastracture.Providers
 
         public async Task<AITreatmentResponseDTO> CreateTreamentPlanAsync(int DiagnosisId)
         {
-            var consultation = await _context.Consultations.FirstOrDefaultAsync(c => c.Id == DiagnosisId);
+            var inquiry = await _context.Inquiries.FirstOrDefaultAsync(c => c.Id == DiagnosisId);
 
-            if(consultation == null)
+            if(inquiry == null)
             {
                 return new AITreatmentResponseDTO
                 {
@@ -42,7 +42,7 @@ namespace Diagnosis.Infrastracture.Providers
             var createTreatmentDTO = new
             {
                 DiagnosisName = consultation.DiagnosisName,
-                DiagnosisDescription = consultation.Description,
+                //DiagnosisDescription = consultation.Description,
                 ConfidenceLevel = consultation.ConfidenceLevel
             };
             var request = new HttpRequestMessage(

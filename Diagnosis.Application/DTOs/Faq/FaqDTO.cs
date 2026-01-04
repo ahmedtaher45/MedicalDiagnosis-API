@@ -9,11 +9,12 @@ namespace Diagnosis.Application.DTOs.Faq
 {
     public class FaqDTO
     {
-        public FaqType Type { get; set; }
+        public string? Type { get; set; }
     }
     public class FaqResponseDTO
     {
         public string Question { get; set; } = null!;
+        public string Answer { get; set; }
     }
 }
   
