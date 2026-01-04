@@ -31,19 +31,19 @@ namespace Diagnosis.Infrastracture.Providers
         {
             var inquiry = await _context.Inquiries.FirstOrDefaultAsync(c => c.Id == DiagnosisId);
 
-            if(inquiry == null)
+            if (inquiry == null)
             {
                 return new AITreatmentResponseDTO
                 {
-                    Success = false, 
+                    Success = false,
                     Message = "Inquiry Id is incorrect"
                 };
             }
             var createTreatmentDTO = new
             {
-                DiagnosisName = consultation.DiagnosisName,
+                //DiagnosisName = consultation.DiagnosisName,
                 //DiagnosisDescription = consultation.Description,
-                ConfidenceLevel = consultation.ConfidenceLevel
+                //ConfidenceLevel = consultation.ConfidenceLevel
             };
             var request = new HttpRequestMessage(
                             HttpMethod.Post,

@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class TreatmentRepository : ITreatmentRepository
+    public class TreatmentRepository : Repository<TreatmentPlan> ,ITreatmentRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IPdfService _pdfService;
 
         // Constructor واحد بس
-        public TreatmentRepository(ApplicationDbContext context, IPdfService pdfService)
+        public TreatmentRepository(ApplicationDbContext context, IPdfService pdfService): base(context) 
         {
             _context = context;
             _pdfService = pdfService;

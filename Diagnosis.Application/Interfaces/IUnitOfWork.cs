@@ -21,16 +21,11 @@ namespace Diagnosis.Application.Interfaces
         ISettingsRepository Settings { get; }
         IAdminDashboardRepository AdminDashboard { get; }
         IDoctorDashboardRepository DoctorDashboard { get; }
-
-        // ✨ New Repositories
         IMedicalFilesRepository MedicalFiles { get; }
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
-        IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }INotificationRepository Notifications { get; }
-
-
-        IMedicalFilesRepository MedicalFiles { get; }
-       
+        IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
+        INotificationRepository Notifications { get; }      
         ITreatmentRepository Treatment { get; }
         IUserRepository Users { get; }
         ISystemSettingsRepository systemSettings { get; }
