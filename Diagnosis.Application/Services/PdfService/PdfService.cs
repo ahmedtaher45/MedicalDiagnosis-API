@@ -11,19 +11,19 @@ namespace Diagnosis.Infrastructure.Services
 {
     public class PdfService : IPdfService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IUnitOfWork _unitOfWork;
 
-        public PdfService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        //public PdfService(IUnitOfWork unitOfWork)
+        //{
+        //    _unitOfWork = unitOfWork;
+        //}
 
         public async Task<byte[]> GenerateTreatmentPlanPdfAsync(string treatmentPlanId)
         {
-            var treatmentPlan = await _unitOfWork.Treatment.GetTreatmentPlanDetailsAsync(treatmentPlanId);
+            //var treatmentPlan = await _unitOfWork.Treatment.GetTreatmentPlanDetailsAsync(treatmentPlanId);
 
-            if (treatmentPlan == null)
-                throw new KeyNotFoundException("Treatment plan not found");
+            //if (treatmentPlan == null)
+            //    throw new KeyNotFoundException("Treatment plan not found");
 
             using (var memoryStream = new MemoryStream())
             {
@@ -41,46 +41,46 @@ namespace Diagnosis.Infrastructure.Services
                 };
                 document.Add(title);
 
-                // Patient Info
-                var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
-                var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+                //    // Patient Info
+                //    var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+                //    var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
 
-                document.Add(new Paragraph($"Patient: {treatmentPlan.PatientName}", headerFont));
-                document.Add(new Paragraph($"Doctor: {treatmentPlan.DoctorName}", normalFont));
-                document.Add(new Paragraph($"Duration: {treatmentPlan.Duration}", normalFont));
-                document.Add(new Paragraph($"Date: {treatmentPlan.CreatedAt:dd/MM/yyyy}", normalFont));
-                document.Add(new Paragraph("\n"));
+                //    document.Add(new Paragraph($"Patient: {treatmentPlan.PatientName}", headerFont));
+                //    document.Add(new Paragraph($"Doctor: {treatmentPlan.DoctorName}", normalFont));
+                //    document.Add(new Paragraph($"Duration: {treatmentPlan.Duration}", normalFont));
+                //    document.Add(new Paragraph($"Date: {treatmentPlan.CreatedAt:dd/MM/yyyy}", normalFont));
+                //    document.Add(new Paragraph("\n"));
 
-                // Overview Section
-                document.Add(new Paragraph("Overview", headerFont));
-                document.Add(new Paragraph(treatmentPlan.Overview, normalFont));
-                document.Add(new Paragraph("\n"));
+                //    // Overview Section
+                //    document.Add(new Paragraph("Overview", headerFont));
+                //    document.Add(new Paragraph(treatmentPlan.Overview, normalFont));
+                //    document.Add(new Paragraph("\n"));
 
-                // Key Medications
-                document.Add(new Paragraph("Key Medications", headerFont));
-                foreach (var medication in treatmentPlan.KeyMedications)
-                {
-                    document.Add(new Paragraph($"• {medication.MedicationName} - {medication.Dosage}", normalFont));
-                }
-                document.Add(new Paragraph("\n"));
+                //    // Key Medications
+                //    document.Add(new Paragraph("Key Medications", headerFont));
+                //    foreach (var medication in treatmentPlan.KeyMedications)
+                //    {
+                //        document.Add(new Paragraph($"• {medication.MedicationName} - {medication.Dosage}", normalFont));
+                //    }
+                //    document.Add(new Paragraph("\n"));
 
-                // Hydration
-                if (treatmentPlan.Hydration != null)
-                {
-                    document.Add(new Paragraph("Hydration", headerFont));
-                    document.Add(new Paragraph(treatmentPlan.Hydration.Amount, normalFont));
-                    document.Add(new Paragraph("\n"));
-                }
+                //    // Hydration
+                //    if (treatmentPlan.Hydration != null)
+                //    {
+                //        document.Add(new Paragraph("Hydration", headerFont));
+                //        document.Add(new Paragraph(treatmentPlan.Hydration.Amount, normalFont));
+                //        document.Add(new Paragraph("\n"));
+                //    }
 
-                // Restrictions
-                if (treatmentPlan.Restrictions != null)
-                {
-                    document.Add(new Paragraph("Restrictions", headerFont));
-                    document.Add(new Paragraph(treatmentPlan.Restrictions.Description, normalFont));
-                }
+                //    // Restrictions
+                //    if (treatmentPlan.Restrictions != null)
+                //    {
+                //        document.Add(new Paragraph("Restrictions", headerFont));
+                //        document.Add(new Paragraph(treatmentPlan.Restrictions.Description, normalFont));
+                //    }
 
-                document.Close();
-                writer.Close();
+                //    document.Close();
+                //    writer.Close();
 
                 return memoryStream.ToArray();
             }

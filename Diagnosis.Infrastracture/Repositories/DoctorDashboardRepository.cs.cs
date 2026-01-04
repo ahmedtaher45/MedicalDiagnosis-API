@@ -22,7 +22,7 @@ namespace Diagnosis.Infrastracture.Repositories
             var last7Days = today.AddDays(-7);
 
    
-            var totalConsultations = await _context.Set<Consultation>()
+            var totalConsultations = await _context.Set<Inquiry>()
                 .Where(c => c.DoctorId == doctorId)
                 .CountAsync();
 
@@ -37,8 +37,8 @@ namespace Diagnosis.Infrastracture.Repositories
                 var date = today.AddDays(-i);
                 var dayName = date.DayOfWeek.ToString().Substring(0, 3);
 
-                var consultationsOnDay = await _context.Set<Consultation>()
-                    .Where(c => c.DoctorId == doctorId && c.Date.Date == date)
+                var consultationsOnDay = await _context.Set<Inquiry>()
+                    .Where(c => c.DoctorId == doctorId && c.CreatedOn == date)
                     .ToListAsync();
 
                 var allPatientIds = consultationsOnDay.Select(c => c.PatientId).Distinct();
@@ -46,12 +46,12 @@ namespace Diagnosis.Infrastracture.Repositories
 
                 foreach (var patientId in allPatientIds)
                 {
-                    var firstVisit = await _context.Set<Consultation>()
+                    var firstVisit = await _context.Set<Inquiry>()
                         .Where(c => c.DoctorId == doctorId && c.PatientId == patientId)
-                        .OrderBy(c => c.Date)
+                        .OrderBy(c => c.CreatedOn)
                         .FirstOrDefaultAsync();
 
-                    if (firstVisit?.Date.Date == date)
+                    if (firstVisit?.CreatedOn == date)
                         newPatientIds.Add(patientId);
                 }
 
@@ -72,9 +72,9 @@ namespace Diagnosis.Infrastracture.Repositories
                 var date = today.AddDays(-i);
                 var dayName = date.DayOfWeek.ToString().Substring(0, 3);
 
-                var avgRating = await _context.Set<Consultation>()
+                var avgRating = await _context.Set<Inquiry>()
                     .Where(c => c.DoctorId == doctorId &&
-                               c.Date.Date == date &&
+                               c.CreatedOn == date &&
                                c.Rating.HasValue)
                     .AverageAsync(c => (decimal?)c.Rating) ?? 0;
 
@@ -92,9 +92,9 @@ namespace Diagnosis.Infrastracture.Repositories
                 var dayName = date.DayOfWeek.ToString().Substring(0, 3);
 
               
-                var consultationEarnings = await _context.Set<Consultation>()
+                var consultationEarnings = await _context.Set<Inquiry>()
                     .Where(c => c.DoctorId == doctorId &&
-                               c.Date.Date == date &&
+                               c.CreatedOn == date &&
                                c.Price.HasValue)
                     .SumAsync(c => (decimal?)c.Price) ?? 0;
 
@@ -115,19 +115,19 @@ namespace Diagnosis.Infrastracture.Repositories
             }
 
             // Common Diagnoses 
-            var commonDiagnoses = await _context.Set<Consultation>()
-                .Where(c => c.DoctorId == doctorId &&
-                           c.Date >= today.AddMonths(-1) &&
-                           !string.IsNullOrEmpty(c.DiagnosisName))
-                .GroupBy(c => c.DiagnosisName)
-                .Select(g => new CommonDiagnosisDto
-                {
-                    DiagnosisName = g.Key,
-                    Count = g.Count()
-                })
-                .OrderByDescending(d => d.Count)
-                .Take(8)
-                .ToListAsync();
+            //var commonDiagnoses = await _context.Set<Inquiry>()
+            //    .Where(c => c.DoctorId == doctorId &&
+            //               c.CreatedOn >= today.AddMonths(-1) &&
+            //               !string.IsNullOrEmpty(c.))
+            //    .GroupBy(c => c.DiagnosisName)
+            //    .Select(g => new CommonDiagnosisDto
+            //    {
+            //        DiagnosisName = g.Key,
+            //        Count = g.Count()
+            //    })
+            //    .OrderByDescending(d => d.Count)
+            //    .Take(8)
+            //    .ToListAsync();
 
             return new DoctorDashboardDto
             {
@@ -136,7 +136,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 NewVsReturningPatients = patientStats,
                 RatingStats = ratingStats,
                 EarningsStats = earningsStats,
-                CommonDiagnoses = commonDiagnoses
+                //CommonDiagnoses = commonDiagnoses
             };
         }
 

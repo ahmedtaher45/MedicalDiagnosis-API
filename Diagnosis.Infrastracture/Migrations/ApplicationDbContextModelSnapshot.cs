@@ -450,6 +450,112 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Diagnosis.Domain.Entities.LabResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PatientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PatientId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Result")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TestName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId1");
+
+                    b.ToTable("LabResult");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Entities.Prescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Dosage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Duration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Frequency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MedicationName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PatientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PatientId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrescriptionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TreatmentPlanId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TreatmentPlanId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId1");
+
+                    b.HasIndex("TreatmentPlanId1");
+
+                    b.ToTable("Prescriptions");
+                });
+
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -522,7 +628,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "71fc3bc8-fc03-4796-bee6-3654cc58d367",
+                            ConcurrencyStamp = "4689aadb-d68d-4c52-8aad-99276b94b310",
                             Email = "admin@diagnosis.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -531,7 +637,7 @@ namespace Diagnosis.Infrastracture.Migrations
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
                             ReceiveEmailNotifications = true,
-                            SecurityStamp = "362a741a-ae3d-40ac-a12e-26f7749102b5",
+                            SecurityStamp = "069a3c12-ddd0-47df-b17d-d4800751e4cf",
                             TwoFactorEnabled = false,
                             UserName = "admin@diagnosis.com"
                         },
@@ -539,7 +645,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "692f4f63-3f81-4d14-ae5c-d7d5d99782f2",
+                            ConcurrencyStamp = "00fd5940-41a8-4df6-b426-eed4a66bc3fa",
                             Email = "doctor@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -556,7 +662,7 @@ namespace Diagnosis.Infrastracture.Migrations
                         {
                             Id = "user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5ea32d76-48ba-4759-ab58-925a757eb75d",
+                            ConcurrencyStamp = "0b29765d-bb0a-4b74-bac6-77bd7bb6a53a",
                             Email = "patient@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -569,6 +675,58 @@ namespace Diagnosis.Infrastracture.Migrations
                             TwoFactorEnabled = false,
                             UserName = "patient@test.com"
                         });
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.BoneFraction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConfidenceLevel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DoctorNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IncomingUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Prediction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResultUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("BoneFractions");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.ClinicalFinding", b =>
@@ -660,91 +818,6 @@ namespace Diagnosis.Infrastracture.Migrations
                             Name = "Fasting Blood Glucose",
                             Notes = "Elevated",
                             Value = "140 mg/dL"
-                        });
-                });
-
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Consultation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConfidenceLevel")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DiagnosisName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.PrimitiveCollection<string>("FileUrls")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RejectNotes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RejectReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Symptoms")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Consultations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ConfidenceLevel = 0,
-                            Date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "General inquiry about symptoms",
-                            DoctorId = -1,
-                            IsDeleted = false,
-                            Notes = "Patient reports symptoms for 3 days.",
-                            PatientId = -1,
-                            Status = "Pending",
-                            Symptoms = "Headache, fever, and fatigue.",
-                            Type = "Inquiry"
                         });
                 });
 
@@ -920,6 +993,91 @@ namespace Diagnosis.Infrastracture.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Inquiry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.PrimitiveCollection<string>("InquiryFiles")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrescriptionUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Rate")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Rating")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("RejectNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reply")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Symptoms")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TreatmentUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Inquiries");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedOn = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Patient reports symptoms for 3 days.",
+                            DoctorId = -1,
+                            IsDeleted = false,
+                            PatientId = -1,
+                            Rate = 0,
+                            Status = "Pending",
+                            Symptoms = "Headache, fever, and fatigue."
+                        });
+                });
+
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Request", b =>
                 {
                     b.Property<int>("Id")
@@ -955,7 +1113,7 @@ namespace Diagnosis.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Request");
+                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.SuggestedMedication", b =>
@@ -1556,6 +1714,55 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Doctor");
                 });
 
+            modelBuilder.Entity("Diagnosis.Domain.Entities.LabResult", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
+                        .WithMany("LabResults")
+                        .HasForeignKey("PatientId1");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Entities.Prescription", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Models.Entites.ApplicationUser", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
+                        .WithMany("Prescriptions")
+                        .HasForeignKey("PatientId1");
+
+                    b.HasOne("Diagnosis.Domain.Models.Entites.TreatmentPlan", "TreatmentPlan")
+                        .WithMany()
+                        .HasForeignKey("TreatmentPlanId1");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("TreatmentPlan");
+                });
+
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.BoneFraction", b =>
+                {
+                    b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
+                        .WithMany("BoneFractions")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
+                        .WithMany("BoneFractions")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Diagnosis.Domain.Models.Entites.ClinicalFinding", b =>
                 {
                     b.HasOne("Diagnosis.Domain.Models.Entites.DoctorDiagnosis", "Diagnosis")
@@ -1567,16 +1774,16 @@ namespace Diagnosis.Infrastracture.Migrations
                     b.Navigation("Diagnosis");
                 });
 
-            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Consultation", b =>
+            modelBuilder.Entity("Diagnosis.Domain.Models.Entites.Inquiry", b =>
                 {
                     b.HasOne("Diagnosis.Domain.Entites.Doctor", "Doctor")
-                        .WithMany("Consultations")
+                        .WithMany("Inquiries")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Diagnosis.Domain.Entites.Patient", "Patient")
-                        .WithMany("Consultations")
+                        .WithMany("Inquiries")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1704,7 +1911,9 @@ namespace Diagnosis.Infrastracture.Migrations
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Doctor", b =>
                 {
-                    b.Navigation("Consultations");
+                    b.Navigation("BoneFractions");
+
+                    b.Navigation("Inquiries");
 
                     b.Navigation("Payments");
 
@@ -1713,9 +1922,15 @@ namespace Diagnosis.Infrastracture.Migrations
 
             modelBuilder.Entity("Diagnosis.Domain.Entites.Patient", b =>
                 {
-                    b.Navigation("Consultations");
+                    b.Navigation("BoneFractions");
 
                     b.Navigation("Files");
+
+                    b.Navigation("Inquiries");
+
+                    b.Navigation("LabResults");
+
+                    b.Navigation("Prescriptions");
 
                     b.Navigation("SupportTickets");
                 });

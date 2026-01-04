@@ -1,8 +1,9 @@
 ﻿using Diagnosis.Application.DTOs.Treatment;
+using Diagnosis.Domain.Models.Entites;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface ITreatmentRepository
+    public interface ITreatmentRepository: IRepository<TreatmentPlan>
     {
     
        
