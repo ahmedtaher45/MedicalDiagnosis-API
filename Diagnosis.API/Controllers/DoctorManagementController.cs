@@ -81,13 +81,12 @@ namespace Diagnosis.API.Controllers
 
       
         // 4) تفعيل / إلغاء تفعيل دكتور
-        [HttpPatch("{id:int}/status")]
+        [HttpPatch("status/{id:int}")]
         public async Task<IActionResult> ChangeStatus(
             int id,
-            [FromQuery] bool isActive,
             [FromServices] ChangeDoctorStatusUseCase useCase)
         {
-            var success = await useCase.ExecuteAsync(id, isActive);
+            var success = await useCase.ExecuteAsync(id, isActive:false);
             if (!success)
                 return NotFound(new { message = "الطبيب غير موجود" });
 
@@ -95,7 +94,7 @@ namespace Diagnosis.API.Controllers
         }
 
         // 5) Reset Password
-        [HttpPost("{id:int}/reset-password")]
+        [HttpPost("reset-password/{id:int}")]
         public async Task<IActionResult> ResetPassword(
             int id,
             [FromBody] ResetDoctorPasswordDto model,

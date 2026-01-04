@@ -15,7 +15,8 @@ namespace Diagnosis.Application.DTOs.Profile
         public string LName { get; set; }
         public string Email { get; set; }
         public string Gender { get; set; }
+        public string ProfileImageUrl { get; set; }
 
-        public List<ConsultationDTO>? ConsultationHistory { get; set; }
+        public List<PatientProfileConsultationsDto>? ConsultationHistory { get; set; }
     }
 }

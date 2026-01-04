@@ -12,9 +12,11 @@ namespace Diagnosis.Application.DTOs.Profile
 
         public string FullName { get; set; } = null!;      // John Smith
 
-        public int Age { get; set; }                       // 45y
+        public DateTime? BirthDate { get; set; }                       // 45y
 
         public string Gender { get; set; } = null!;        // Male / Female
+
+        public string ProfileImageUrl { get; set; } = null!;
 
         public int DiagnosesCount { get; set; }            // +8, +5 ...
 

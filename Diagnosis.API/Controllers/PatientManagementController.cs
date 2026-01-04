@@ -14,12 +14,12 @@ namespace Diagnosis.API.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    public class PatientsController: ControllerBase
+    public class PatientManagementController: ControllerBase
     {
         //private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<PatientsController> _logger;
+        private readonly ILogger<PatientManagementController> _logger;
 
-        public PatientsController( ILogger<PatientsController> logger)
+        public PatientManagementController( ILogger<PatientManagementController> logger)
         {
           //  _unitOfWork = unitOfWork;
             _logger = logger;
@@ -45,8 +45,6 @@ namespace Diagnosis.API.Controllers
     
  
         {
-            if (id <= 0)
-                return BadRequest(new { message = "رقم مريض غير صالح" });
 
             try
             {
@@ -67,7 +65,7 @@ namespace Diagnosis.API.Controllers
             }
         }
         // 3) Delete Patient (تحويله لحالة Deleted)
-        [HttpDelete("{id:int}")]
+        [HttpPatch("status/{id:int}")]
         public async Task<IActionResult> DeletePatient(
             int id,
             [FromServices] ChangePatientStatusUseCase useCase)

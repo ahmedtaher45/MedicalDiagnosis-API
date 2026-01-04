@@ -1,7 +1,9 @@
 ﻿using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
-using Diagnosis.Infrastracture; 
+using Diagnosis.Domain.Models.Entites;
+using Diagnosis.Infrastracture;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,14 +17,21 @@ namespace Diagnosis.Infrastracture.Repositories
     public class DoctorRepository : Repository<Doctor>, IDoctorManagement
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DoctorRepository(ApplicationDbContext context) : base(context)
+        public DoctorRepository(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : base(context)
         {
             _context = context;
+            _userManager = userManager;
         }
         public async Task<DoctorProfileDto?> GetDoctorProfileAsync(int doctorId)
         {
-            var doctor = await _context.Set<Doctor>()
+            var doctor = await _context.Doctors
+                .Include(d => d.User)
+                .Include(d => d.Inquiries)
+                .ThenInclude(i => i.Patient)
+                .Include(d => d.BoneFractions)
+                .ThenInclude(b => b.Patient)
                 .FirstOrDefaultAsync(d => d.Id == doctorId);
 
             if (doctor == null) return null;
@@ -32,26 +41,47 @@ namespace Diagnosis.Infrastracture.Repositories
                 Id = doctor.Id,
                 FullName = doctor.FName + " " + doctor.LName,
                 Specialization = doctor.Specialization,
-                IsActive = doctor.User.LockoutEnd == null,
+                IsActive = doctor.IsDeleted == false,
                 Email = doctor.User.Email,
                 PhoneNumber = doctor.User.PhoneNumber,
                 Gender = doctor.Gender,
                 DateOfBirth = doctor.BirhDate,
                 Address = doctor.Address,
                 NationalId = doctor.NationalId,
-
-
-
-
-
+                ProfileImageUrl = doctor.ProfileImageUrl,
+                TotalConsultations = doctor.Inquiries.Count + doctor.BoneFractions.Count,
+                ActivePatients = doctor.Inquiries.Count(i => i.Patient.IsDeleted == false) + doctor.BoneFractions.Count(b => b.Patient.IsDeleted == false),
+                ConsultationHistory = doctor.Inquiries
+                    .Select(c => new DoctorProfileConsultationsDto
+                    {
+                        ConsultationId = c.Id,
+                        DoctorName = "Dr. " + doctor.FName + " " + doctor.LName,
+                        Specialization = doctor.Specialization,
+                        ConsultationType = "inquiry",
+                        ConsultationDate = c.CreatedOn
+                    })
+                    .Concat(
+                    doctor.BoneFractions
+                        .Select(b => new DoctorProfileConsultationsDto
+                        {
+                            ConsultationId = b.Id,
+                            DoctorName = "Dr. " + doctor.FName + " " + doctor.LName,
+                            Specialization = doctor.Specialization,
+                            ConsultationType = "Bone Fracture",
+                            ConsultationDate = b.CreatedOn
+                        })
+                )
+                .OrderByDescending(x => x.ConsultationDate)
+                .ToList()
             };
-
         }
+        
         public async Task<IEnumerable<DoctorListItemDto>> GetDoctorsAsync(string? search,bool? isActive)
         {
-            var query = _context.Set<Doctor>()
+            var query = _context.Doctors
        .Include(d => d.User)
-       .Include(d => d.Consultations)
+       .Include(d => d.Inquiries)
+       .Include(d => d.BoneFractions)
        .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -63,7 +93,7 @@ namespace Diagnosis.Infrastracture.Repositories
             if (isActive.HasValue)
             {
                 query = query.Where(d =>
-                    (d.User.LockoutEnd == null) == isActive.Value);
+                    d.IsDeleted == !isActive.Value);
             }
 
             return await query
@@ -71,100 +101,52 @@ namespace Diagnosis.Infrastracture.Repositories
                 {
                     Id = d.Id,
                     FullName = d.FName + " " + d.LName,
-                    //ExperienceYears = d.ExperienceYears,
+                    ExperienceYears = d.ExperienceYears,
                     Gender = d.Gender,
-                    ConsultationsCount = d.Consultations.Count,
-                    LastConsultationDate = d.Consultations
-                        .OrderByDescending(c => c.Date)
-                        .Select(c => c.Date)
+                    ProfileImageUrl = d.ProfileImageUrl,
+                    ConsultationsCount = d.Inquiries.Count + d.BoneFractions.Count,
+                    LastConsultationDate =
+                    d.Inquiries
+                        .Select(i => i.CreatedOn)
+                        .Concat(
+                            d.BoneFractions.Select(b =>b.CreatedOn)
+                        )
+                        .OrderByDescending(x => x)
                         .FirstOrDefault(),
-                    IsActive = d.User.LockoutEnd == null
+
+                    Status = d.IsDeleted ? "Inactive" : "Active"
                 })
                 .ToListAsync();
         }
         public async Task<bool> SetDoctorStatusAsync(int doctorId, bool isActive)
         {
-            var doctor = await _context.Set<Doctor>()
+            var doctor = await _context.Doctors
                 .Include(d => d.User)
                 .FirstOrDefaultAsync(d => d.Id == doctorId);
 
             if (doctor == null) return false;
 
-            // Active = null, Inactive = تاريخ بعيد
-            doctor.User.LockoutEnd = isActive ? null : DateTimeOffset.MaxValue;
-
+           doctor.IsDeleted = !isActive;
             await _context.SaveChangesAsync();
             return true;
 
         }
         public async Task<bool> ResetPasswordAsync(int doctorId, string newPassword)
         {
-            var doctor = await _context.Set<Doctor>()
+            var doctor = await _context.Doctors
                 .Include(d => d.User)
                 .FirstOrDefaultAsync(d => d.Id == doctorId);
 
-            if (doctor == null) return false;
+            if (doctor == null || doctor.User == null) return false;
+            var user = doctor.User;
 
-            
-            return true;
+           
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+            return result.Succeeded;
         }
-
-
-
-
-
-        //public IQueryable<Doctor> Query()
-        //      => _context.Set<Doctor>().AsQueryable();
-
-        //public async Task<List<Doctor>> GetAllAsync()
-        //    => await _context.Set<Doctor>().ToListAsync();
-
-        //public async Task<HashSet<Doctor>> GetAllPagedAsync(
-        //    int pageSize,
-        //    int pageNumber,
-        //    Expression<Func<Doctor, object>> orderBy)
-        //{
-        //    var data = await _context.Set<Doctor>()
-        //        .OrderBy(orderBy)
-        //        .Skip((pageNumber - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .ToListAsync();
-
-        //    return data.ToHashSet();
-        //}
-
-        //public async Task<List<Doctor>> GetManyAsync(
-        //    Expression<Func<Doctor, bool>> predicate)
-        //    => await _context.Set<Doctor>().Where(predicate).ToListAsync();
-
-        //public async Task<Doctor?> GetAsync(
-        //    Expression<Func<Doctor, bool>> predicate)
-        //    => await _context.Set<Doctor>().FirstOrDefaultAsync(predicate);
-
-        //public async Task<Doctor?> GetByIdAsync(object[] keyValues)
-        //    => await _context.Set<Doctor>().FindAsync(keyValues);
-
-        //public async Task AddAsync(Doctor entity)
-        //{
-        //    await _context.Set<Doctor>().AddAsync(entity);
-        //    await _context.SaveChangesAsync();
-        //}
-
-        //public void Update(Doctor entity)
-        //{
-        //    _context.Set<Doctor>().Update(entity);
-        //    _context.SaveChanges();
-        //}
-
-        //public async Task<bool> DeleteAsync(params object[] id)
-        //{
-        //    var entity = await _context.Set<Doctor>().FindAsync(id);
-        //    if (entity is null) return false;
-
-        //    _context.Set<Doctor>().Remove(entity);
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
 
     }
 }

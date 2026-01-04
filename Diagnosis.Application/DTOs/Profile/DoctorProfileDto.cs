@@ -15,6 +15,7 @@ namespace Diagnosis.Application.DTOs.Profile
         public string PhoneNumber { get; set; } 
         public string Gender { get; set; } 
         public string NationalId { get; set; } 
+        public string ProfileImageUrl { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; } 
         public string Specialization { get; set; } 
@@ -23,9 +24,8 @@ namespace Diagnosis.Application.DTOs.Profile
 
         // Statistics - من الصورة
         public int TotalPatients { get; set; }
-        public int FinishedConsultations { get; set; }
-        public int NewPatients { get; set; }
+        public int ActivePatients { get; set; }
         public int TotalConsultations { get; set; }
-        public List<ConsultationDTO>? ConsultationHistory { get; set; }
+        public List<DoctorProfileConsultationsDto>? ConsultationHistory { get; set; }
     }
 }

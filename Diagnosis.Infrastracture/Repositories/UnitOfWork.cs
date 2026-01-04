@@ -59,7 +59,7 @@ namespace Diagnosis.Infrastracture.Repositories
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             Patient = new PatientRepository(_context);
-            Doctor = new DoctorRepository(_context);
+            Doctor = new DoctorRepository(_context, _userManager);
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
             // TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             Profile = new ProfileRepository(_context);
@@ -77,7 +77,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Settings  = new SettingsRepository(_context);
             Notifications = new NotificationRepository(_context);
             Patient = new PatientRepository(_context);
-            Doctor = new DoctorRepository(_context);
+            Doctor = new DoctorRepository(_context, _userManager);
 
             systemSettings = new SystemSettingsRepository(_context , _emailSender);
             Users = new UserRepository(_context , _userManager);

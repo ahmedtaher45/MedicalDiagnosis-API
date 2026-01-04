@@ -13,25 +13,17 @@ namespace Diagnosis.Application.UseCases.Profile
     {
 
         private readonly IUnitOfWork _unitOfWork;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public ResetDoctorPasswordUseCase(
-            IUnitOfWork unitOfWork,
-            UserManager<ApplicationUser> userManager)
+            IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _userManager = userManager;
+           
         }
 
         public async Task<bool> ExecuteAsync(int doctorId, string newPassword)
         {
-            var doctor = await _unitOfWork.Doctor.GetByIdAsync(new object[] { doctorId });
-            if (doctor == null) return false;
-
-            var user = doctor.User;
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-
-            return result.Succeeded;
+            var result = await _unitOfWork.Doctor.ResetPasswordAsync(doctorId, newPassword);
+            return result;
         }
 }   }

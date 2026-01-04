@@ -12,15 +12,16 @@ namespace Diagnosis.Application.DTOs.Profile
 
         public string FullName { get; set; } = null!;      // Sara Ali
 
-        public int ExperienceYears { get; set; }           // 10
+        public int? ExperienceYears { get; set; }           // 10
 
         public string Gender { get; set; } = null!;        // "Male" / "Female"
+        public string ProfileImageUrl { get; set; } = null!;
 
         public int ConsultationsCount { get; set; }        // +10, +8 ...
 
         public DateTime? LastConsultationDate { get; set; }  // Dec 12, 2025
 
-        public bool IsActive { get; set; }                 // Active / Inactive
+        public string Status { get; set; } = null!;                 // Active / Inactive
     }
 }
 
