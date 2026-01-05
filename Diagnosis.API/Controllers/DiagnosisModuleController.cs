@@ -13,7 +13,7 @@ namespace Diagnosis.API.Controllers
     public class DiagnosisModuleController : ControllerBase
     {
         [Authorize(Roles = "Patient")]
-        [AiEndpoint]
+        //[AiEndpoint]
         [HttpPost("create-daignosis")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateDiagnosis(

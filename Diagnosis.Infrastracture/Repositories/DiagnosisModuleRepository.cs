@@ -6,27 +6,31 @@ using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Providers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class DiagnosisModuleRepository : Repository<BoneFraction> , IDiagnosisModuleRepository
+    public class DiagnosisModuleRepository : Repository<BoneFraction>, IDiagnosisModuleRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileService _fileService;
         private readonly IDiagnosisModuleProvider _provider;
-
+        private readonly IConfiguration _config;
         public DiagnosisModuleRepository(ApplicationDbContext context,
             IFileService fileService,
-            IDiagnosisModuleProvider provider) : base(context)
+            IDiagnosisModuleProvider provider,
+            IConfiguration config) : base(context)
         {
             _context = context;
             _fileService = fileService;
             _provider = provider;
+            _config = config;
         }
 
         public async Task<BoneFractionResponseDTO> CreateDiagnosisAsync(CreateDiagnosisDTO createDiagnosisDTO, string userId)
@@ -53,11 +57,14 @@ namespace Diagnosis.Infrastracture.Repositories
             var Diagnosis = await _provider.GetDiagnosisAsync(createDiagnosisDTO.File);
 
             var url = await _fileService.SaveBase64ImageAsync(Diagnosis.Image_base64!);
+
+            var baseUrl = _config["BaseUrl"];
+
             var response = new BoneFractionResponseDTO
             {
                 Prediction = Diagnosis.Prediction,
                 Confidence = Diagnosis.Confidence,
-                ImgUrl = url
+                ImgUrl = $"{baseUrl}/{url}"
             };
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);

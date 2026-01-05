@@ -18,7 +18,7 @@ namespace Diagnosis.Application.Services.FileService
         public static readonly long MaxSizeInBytes = 50 * 1024 * 1024;
         public FileService(IWebHostEnvironment environment)
         {
-            _templateFolderPath = Path.Combine(environment.ContentRootPath, "uploads", "diagnosis");
+            _templateFolderPath = Path.Combine(environment.WebRootPath, "uploads", "diagnosis");
 
             if (!Directory.Exists(_templateFolderPath))
             {
@@ -113,15 +113,15 @@ namespace Diagnosis.Application.Services.FileService
         {
             try
             {
-                var cleanBase64 = CleanBase64String(base64String);
+                var cleanBase64 = CleanBase64String(base64String!);
 
                 byte[] imageBytes = Convert.FromBase64String(cleanBase64);
 
                 var imageExtension = DetectImageExtension(imageBytes);
 
-                fileName ??= $"{Guid.NewGuid}{imageExtension}";
-
+                fileName ??= $"{Guid.NewGuid()}{imageExtension}";
                 var filePath = Path.Combine(_templateFolderPath, fileName);
+
 
                 await File.WriteAllBytesAsync(filePath, imageBytes);
 
@@ -139,40 +139,84 @@ namespace Diagnosis.Application.Services.FileService
 
         private string CleanBase64String(string base64String)
         {
-            // إزالة "data:image/jpeg;base64," prefix لو موجود
+            if (string.IsNullOrWhiteSpace(base64String))
+                throw new ArgumentException("Base64 string is null or empty");
+
+            // ✅ إزالة data URI prefix
             if (base64String.Contains(","))
             {
                 base64String = base64String.Split(',')[1];
             }
 
-            // إزالة whitespace
-            return base64String.Trim();
+            // ✅ إزالة كل whitespace (مش بس trim)
+            base64String = base64String
+                .Replace("\r", "")
+                .Replace("\n", "")
+                .Replace(" ", "")
+                .Replace("\t", "")
+                .Trim();
+
+            // ✅ Validate Base64 format
+            if (!IsValidBase64String(base64String))
+            {
+                throw new ArgumentException("Invalid Base64 format");
+            }
+
+            return base64String;
         }
-        // ✅ اكتشاف نوع الصورة من Magic Bytes
+
+        private bool IsValidBase64String(string base64)
+        {
+            // Base64 length must be multiple of 4
+            if (base64.Length % 4 != 0)
+                return false;
+
+            // Check for valid Base64 characters
+            return System.Text.RegularExpressions.Regex.IsMatch(
+                base64,
+                @"^[a-zA-Z0-9\+/]*={0,2}$"
+            );
+        }
         private string DetectImageExtension(byte[] imageBytes)
         {
             if (imageBytes.Length < 4)
-                return ".jpg"; // default
+            {
+                return ".jpg";
+            }
 
-            // PNG: 89 50 4E 47
+            // PNG: 89 50 4E 47 0D 0A 1A 0A
             if (imageBytes[0] == 0x89 && imageBytes[1] == 0x50 &&
                 imageBytes[2] == 0x4E && imageBytes[3] == 0x47)
                 return ".png";
 
-            // JPEG: FF D8 FF
-            if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8 && imageBytes[2] == 0xFF)
+            // ✅ JPEG: FF D8 (أي byte بعدها تبدأ بـ FF)
+            if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8)
+            {
+                // Most JPEGs have FF D8 FF
+                // But some have FF D8 FF E0, FF D8 FF E1, FF D8 FF E2, etc.
                 return ".jpg";
+            }
 
-            // GIF: 47 49 46
-            if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46)
+            // GIF: 47 49 46 38
+            if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 &&
+                imageBytes[2] == 0x46 && imageBytes[3] == 0x38)
                 return ".gif";
 
-            // WebP: 52 49 46 46 ... 57 45 42 50
+            // WebP: 52 49 46 46
             if (imageBytes[0] == 0x52 && imageBytes[1] == 0x49 &&
                 imageBytes[2] == 0x46 && imageBytes[3] == 0x46)
-                return ".webp";
+            {
+                // Verify WEBP at bytes 8-11
+                if (imageBytes.Length >= 12 &&
+                    imageBytes[8] == 0x57 && imageBytes[9] == 0x45 &&
+                    imageBytes[10] == 0x42 && imageBytes[11] == 0x50)
+                    return ".webp";
+            }
 
-            // Default to JPEG
+            // BMP: 42 4D
+            if (imageBytes[0] == 0x42 && imageBytes[1] == 0x4D)
+                return ".bmp";
+
             return ".jpg";
         }
     }

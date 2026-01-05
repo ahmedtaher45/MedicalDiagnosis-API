@@ -39,7 +39,8 @@ namespace Diagnosis.Infrastracture.Repositories
             IFileService fileService,
             IDiagnosisModuleProvider diagnosisModuleProvider,
             IPdfService pdfService
-            )
+,
+            IConfiguration config)
         {
             _userManager = userManager;
             _context = context;
@@ -52,12 +53,12 @@ namespace Diagnosis.Infrastracture.Repositories
             _pdfService = pdfService;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
-            
-            DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
+
+            DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider, _configuration);
             Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
             DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
-           // TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            // TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             Profile = new ProfileRepository(_context);
             PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
 
@@ -68,14 +69,14 @@ namespace Diagnosis.Infrastracture.Repositories
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
             MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
-            SupportTicket = new SupportTicketRepository(_context , _userManager);
-            Settings  = new SettingsRepository(_context);
+            SupportTicket = new SupportTicketRepository(_context, _userManager);
+            Settings = new SettingsRepository(_context);
             Notifications = new NotificationRepository(_context);
             Patient = new PatientRepository(_context);
             Doctor = new DoctorRepository(_context);
 
-            systemSettings = new SystemSettingsRepository(_context , _emailSender);
-            Users = new UserRepository(_context , _userManager);
+            systemSettings = new SystemSettingsRepository(_context, _emailSender);
+            Users = new UserRepository(_context, _userManager);
 
 
             Profile = new ProfileRepository(_context);
@@ -84,7 +85,6 @@ namespace Diagnosis.Infrastracture.Repositories
 
 
             Treatment = new TreatmentRepository(_context, _pdfService);
-           
         }
 
         public IAuth Auth { get; private set; }
