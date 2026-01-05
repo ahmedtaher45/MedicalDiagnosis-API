@@ -6,6 +6,7 @@ namespace Diagnosis.Application.Interfaces
     {
 
         Task<DoctorDashboardDto> GetDashboardAsync(int doctorId);
+        Task<PagedResultDTO<PatientListDTO>> GetPatientsAsync(PatientSearchDTO patientSearchDTO);
 
-    }
+    } 
 }

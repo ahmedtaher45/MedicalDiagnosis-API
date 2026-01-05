@@ -95,5 +95,6 @@ namespace Diagnosis.Infrastracture.Repositories
 
             };
         }
+
     }
 }

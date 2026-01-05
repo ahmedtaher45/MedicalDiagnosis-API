@@ -27,6 +27,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<UsageConfig> UsageConfig { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
     public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -479,7 +480,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Symptoms = "Headache, fever, and fatigue.",
                 Notes = "Patient reports symptoms for 3 days.",
                 Status = ConsultationStatus.Pending,
-                Type = ConsultationType.Inquiry,
+                Type = ConsultationStatus.Inquiry,
                 Date = new DateTime(2025, 1, 1),
                 ConfidenceLevel = "60%",
                 //Description = "General inquiry about symptoms"

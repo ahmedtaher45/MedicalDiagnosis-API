@@ -1,5 +1,7 @@
-﻿using Diagnosis.Application.DTOs.Profile;
+﻿using Diagnosis.Application.DTOs.Dashboard;
+using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.UseCases.DoctorDashboard;
 using Diagnosis.Domain.Entites;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -144,5 +146,12 @@ namespace Diagnosis.API.Controllers
 
             //    return NoContent();
             //}
-    }   }
+    }
+        public async Task<IActionResult>GetPatientsAsync([FromQuery]PatientSearchDTO patientSearchDTO , [FromServices] GetPatientsUseCase getPatientsUseCase)
+        {
+            var result = await getPatientsUseCase.GetPatientsAsync(patientSearchDTO);
+            return Ok(result);
+        }
+    }
+
 }

@@ -84,6 +84,7 @@ namespace Diagnosis.Infrastracture.Repositories
         public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
         public ISettingsRepository Settings { get; private set; }
 
+        public IDoctorDashboardService DoctorDashboard  { get; private set;}
 
         public async Task<int> CompleteAsync()
         {

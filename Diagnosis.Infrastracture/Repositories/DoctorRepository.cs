@@ -1,4 +1,5 @@
-﻿using Diagnosis.Application.DTOs.Profile;
+﻿using Diagnosis.Application.DTOs.Dashboard;
+using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Infrastracture; // <-- Ensure this matches the actual namespace where AppDbContext is defined
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class DoctorRepository : IRepository<Doctor>, IDoctorManagement
+    public class DoctorRepository : IRepository<Doctor>, IDoctorManagement, IDoctorDashboardService
     {
         private readonly ApplicationDbContext _context;
 
@@ -95,6 +96,48 @@ namespace Diagnosis.Infrastracture.Repositories
 
 
             };
+        }
+
+        public Task<DoctorDashboardDto> GetDashboardAsync(int doctorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<PagedResultDTO<PatientListDTO>> GetPatientsAsync(PatientSearchDTO patientSearchDTO)
+        {
+            var patientsQuery = _context.Patients.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(patientSearchDTO.PatientName))
+            {
+                patientsQuery = patientsQuery.Where( p => p.FName.Contains(patientSearchDTO.PatientName) );
+            }
+
+            var totalCount = await patientsQuery.CountAsync();
+
+            var patients = await patientsQuery
+                .OrderByDescending(p => p.CreatedOn)
+                .Skip((patientSearchDTO.PageNumber - 1) * patientSearchDTO.PageSize)
+                .Take(patientSearchDTO.PageSize)
+                .Select(p => new PatientListDTO
+                {
+                    PatientName = p.FName,
+                    Id = p.Id,
+                    Status = "Active",
+                    Contact = p.Address
+
+                })
+                .ToListAsync();
+            return new PagedResultDTO<PatientListDTO>
+            {
+                Items = patients,
+                TotalCount = totalCount,
+                PageNumber = patientSearchDTO.PageNumber,
+                PageSize = patientSearchDTO.PageSize
+
+            };
+
+
+
         }
     }
 }

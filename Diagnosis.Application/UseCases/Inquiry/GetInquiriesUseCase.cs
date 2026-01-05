@@ -22,8 +22,8 @@ namespace Diagnosis.Application.UseCases.Inquiry
             try
             {
                 var patientId = await _unitOfWork.Inquiry.GetPatientAsync(userId);
-                var inquiries = await _unitOfWork.Inquiry.GetManyAsync(c => c.PatientId == patientId
-                && c.Type == Domain.Models.Entites.ConsultationType.Inquiry);
+                var inquiries = await _unitOfWork.Inquiry.GetManyAsync(c => c.PatientId == patientId);
+               // && c.Type == Domain.Models.Entites.ConsultationType.Inquiry);
 
                 if (inquiries == null) throw new ArgumentNullException("Patient Id is incorrect");
                 

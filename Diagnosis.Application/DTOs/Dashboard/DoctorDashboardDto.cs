@@ -6,6 +6,7 @@
         public List<RevenueBySessionTypeDto>? RevenuePerSessionType { get; set; }
         public List<MonthlyEarningDto>? MonthlyEarnings { get; set; }
         public List<RecentTransactionDto> ? RecentTransactions { get; set; }
+        public List<PatientListDTO> PatientList { get; set; }
      
 
 

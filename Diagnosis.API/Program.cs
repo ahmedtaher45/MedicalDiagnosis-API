@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using Diagnosis.Application.UseCases.PhysiotherapyExercise;
 using Diagnosis.Application.UseCases.PatientDashboard;
 using Diagnosis.Application.UseCases.DiagnosisModule;
+using Diagnosis.Application.UseCases.DoctorDashboard;
 
 
 
@@ -127,6 +128,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<ToggleAiUseCase>();
             builder.Services.AddScoped<UpdateDoctorWorkHoursUseCase>();
             builder.Services.AddScoped<GetSupportTicketContentUseCase>();
+            builder.Services.AddScoped<GetPatientsUseCase>();
 
 
 
