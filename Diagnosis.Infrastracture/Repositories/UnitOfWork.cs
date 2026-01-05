@@ -64,7 +64,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             AdminDashboard = new AdminDashboardRepository(_context);
-            DoctorDashboard = new DoctorDashboardRepository(_context);
+            //DoctorDashboard = new DoctorDashboardRepository(_context);
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
             MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
@@ -84,7 +84,8 @@ namespace Diagnosis.Infrastracture.Repositories
 
 
             Treatment = new TreatmentRepository(_context, _pdfService);
-           
+
+            DoctorDashboardService = new DoctorRepository(_context);
         }
 
         public IAuth Auth { get; private set; }
@@ -106,7 +107,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
         public ISettingsRepository Settings { get; private set; }
-        public INotificationRepository Notifications { get; private set; }
+        public      INotificationRepository Notifications { get; private set; }
         /// <summary>
         /// //
         /// </summary>
@@ -124,7 +125,7 @@ namespace Diagnosis.Infrastracture.Repositories
        
 
 
-        public IDoctorDashboardService DoctorDashboard  { get; private set;}
+        public IDoctorDashboardService DoctorDashboardService { get; private set;}
 
         public async Task<int> CompleteAsync()
         {

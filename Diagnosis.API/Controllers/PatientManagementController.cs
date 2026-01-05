@@ -1,4 +1,5 @@
-﻿using Diagnosis.Application.DTOs.Dashboard;
+﻿   using Diagnosis.Application.DTOs.Dashboard;
+using Diagnosis.Application.DTOs.Dashboard.DoctorDashboar;
 using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.UseCases.DoctorDashboard;
@@ -147,9 +148,16 @@ namespace Diagnosis.API.Controllers
             //    return NoContent();
             //}
     }
-        public async Task<IActionResult>GetPatientsAsync([FromQuery]PatientSearchDTO patientSearchDTO , [FromServices] GetPatientsUseCase getPatientsUseCase)
+        [HttpPost("Get-Patients")]
+        public async Task<IActionResult>GetPatientsAsync([FromBody]PatientSearchDTO patientSearchDTO , [FromServices] GetPatientsUseCase getPatientsUseCase)
         {
             var result = await getPatientsUseCase.GetPatientsAsync(patientSearchDTO);
+            return Ok(result);
+        }
+        [HttpGet("{patientId}/Get-PatientProfile")]
+        public async Task<IActionResult> GetPatientProfileAsync([FromRoute]int patientId , [FromServices] GetPatientProfileUseCase getPatientProfileUseCase)
+        {
+            var result = await getPatientProfileUseCase.GetPatientProfileAsync(patientId);
             return Ok(result);
         }
     }

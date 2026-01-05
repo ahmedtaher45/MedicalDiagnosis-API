@@ -31,8 +31,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Request> Requests { get; set; }
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
-    public DbSet<UserSettings> UserSettings { get; set; }
-    public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
+    public DbSet<MedicalFiles> MedicalFiles { get; set; }
+    //public DbSet<UserSettings> UserSettings { get; set; }
+    //public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
     
 
     
@@ -488,9 +489,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Symptoms = "Headache, fever, and fatigue.",
                 Description = "Patient reports symptoms for 3 days.",
                 Status = ConsultationStatus.Pending,
-                Type = ConsultationType.Inquiry,
-                Date = new DateTime(2025, 1, 1),
-                ConfidenceLevel = "60%",
+                // Type = ConsultationType.Inquiry,
+                //Date = new DateTime(2025, 1, 1),
+               // ConfidenceLevel = "60%",
                 //Description = "General inquiry about symptoms"
             }
 

@@ -1,4 +1,4 @@
-﻿using Diagnosis.Application.DTOs.Dashboard;
+﻿using Diagnosis.Application.DTOs.Dashboard.DoctorDashboar;
 using Diagnosis.Application.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.UseCases.DoctorDashboard
 {
-    public class GetPatientsUseCase
+    public class GetPatientProfileUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public GetPatientsUseCase(IUnitOfWork unitOfWork)
+        public GetPatientProfileUseCase(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<PagedResultDTO<PatientListDTO>> GetPatientsAsync(PatientSearchDTO patientSearchDTO)
+        public async Task<PatientProfileDetailsDTO> GetPatientProfileAsync(int patientId)
         {
-            return await _unitOfWork.DoctorDashboardService.GetPatientsAsync(patientSearchDTO);
+            return await _unitOfWork.DoctorDashboardService.GetPatientProfileAsync(patientId);
         }
     }
 }

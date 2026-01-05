@@ -24,7 +24,7 @@ namespace Diagnosis.Application.Interfaces
         IMedicalFilesRepository MedicalFiles { get; }
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
-        IDoctorDashboardService DoctorDashboard { get; }
+        IDoctorDashboardService DoctorDashboardService { get; }
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
         INotificationRepository Notifications { get; }      
         ITreatmentRepository Treatment { get; }
