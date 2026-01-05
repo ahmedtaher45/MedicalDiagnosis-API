@@ -28,6 +28,6 @@ namespace Diagnosis.Infrastracture.Repositories
             _context = context;
         }
 
-        
+    
     }
 }

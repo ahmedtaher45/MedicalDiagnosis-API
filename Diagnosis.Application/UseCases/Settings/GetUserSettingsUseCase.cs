@@ -27,14 +27,15 @@ namespace Diagnosis.Application.UseCases.Settings
         if (role == "Patient"){
         return new SettingsDto
         {
-            ReceiveEmailNotifications = user.ReceiveEmailNotifications,
+           // ReceiveEmailNotifications = user.ReceiveEmailNotifications,
             TwoFactorEnabled = user.TwoFactorEnabled,
             ProfilePictureUrl = user.Patient.ProfileImageUrl
         };}
         else if (role == "Doctor"){
             return new SettingsDto
         {
-            ReceiveEmailNotifications = user.ReceiveEmailNotifications,
+            
+           // ReceiveEmailNotifications = user.ReceiveEmailNotifications,
             TwoFactorEnabled = user.TwoFactorEnabled,
             ProfilePictureUrl = user.Doctor.ProfileImageUrl
         };

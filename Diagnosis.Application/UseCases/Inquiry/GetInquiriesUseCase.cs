@@ -24,6 +24,7 @@ namespace Diagnosis.Application.UseCases.Inquiry
                 var patientId = await _unitOfWork.Inquiry.GetPatientAsync(userId);
                 var inquiries = await _unitOfWork.Inquiry.GetManyAsync(c => c.PatientId == patientId);
                // && c.Type == Domain.Models.Entites.ConsultationType.Inquiry);
+                var inquiries = await _unitOfWork.Inquiry.GetManyAsync(c => c.PatientId == patientId);
 
                 if (inquiries == null) throw new ArgumentNullException("Patient Id is incorrect");
                 
@@ -38,7 +39,7 @@ namespace Diagnosis.Application.UseCases.Inquiry
                             Status = "In Progress",
                             Symptoms = inquiry.Symptoms,
                             InquiryId = inquiry.Id,
-                            Date = inquiry.Date
+                            Date = inquiry.CreatedOn
                         });
                     }
                     else
@@ -48,7 +49,7 @@ namespace Diagnosis.Application.UseCases.Inquiry
                             Status = "Replied",
                             Symptoms = inquiry.Symptoms,
                             InquiryId = inquiry.Id,
-                            Date = inquiry.Date
+                            Date = inquiry.CreatedOn
                         });
                     }
                 }

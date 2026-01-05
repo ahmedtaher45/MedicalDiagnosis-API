@@ -17,5 +17,6 @@ namespace Diagnosis.Domain.Models.Entites
         public ICollection<SupportTicket>? SupportTickets { get; set; }
         public bool ReceiveEmailNotifications { get; set; } = true;
     
+
     }
 }

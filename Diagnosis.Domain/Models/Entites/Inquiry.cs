@@ -30,6 +30,9 @@ namespace Diagnosis.Domain.Models.Entites
         public string? Reply { get; set; }
         public string? RejectReason { get; set; }
         public string? RejectNotes { get; set; }
+
+        public decimal? Rating { get; set; }     //  RatingStats
+        public decimal? Price { get; set; }      // EarningsStats
         public Patient? Patient { get; set; }
         public Doctor? Doctor { get; set; }
 

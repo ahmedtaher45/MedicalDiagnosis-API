@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Diagnosis.Domain.Entites;
+﻿using Diagnosis.Domain.Entites;
+using Diagnosis.Domain.Entities;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
@@ -16,8 +17,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Faq> Faqs { get; set; }
     public DbSet<SupportTicket> SupportTickets { get; set; }
+    public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
+    //user settings
+   
+
     public DbSet<Inquiry> Inquiries { get; set; }
     public DbSet<BoneFraction> BoneFractions { get; set; }
+
     public DbSet<DoctorDiagnosis> Diagnosises { get; set; }
     public DbSet<Symptom> Symptoms { get; set; }
     public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
@@ -29,6 +35,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
     
 
+    
+    
+
+    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
+    public DbSet<Prescription> Prescriptions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -454,14 +465,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             {
                 Id = -1,
                 UserId = "user-2",
-                UserType = "Patient",
                 Title = "Appointment Confirmed",
                 Message = "Your appointment is confirmed.",
-                NotificationType = "Appointment",
+                NotificationType = NotificationType.Consultation,
                 IsRead = false,
                 RelatedId = -1,
-                RelatedType = "Appointment",
-                ReadAt = null,
                 ModifiedOn = null,
                 IsDeleted = false
             }
@@ -478,13 +486,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 PatientId = -1,
                 DoctorId = -1,
                 Symptoms = "Headache, fever, and fatigue.",
-                Notes = "Patient reports symptoms for 3 days.",
+                Description = "Patient reports symptoms for 3 days.",
                 Status = ConsultationStatus.Pending,
-                Type = ConsultationStatus.Inquiry,
+                Type = ConsultationType.Inquiry,
                 Date = new DateTime(2025, 1, 1),
                 ConfidenceLevel = "60%",
                 //Description = "General inquiry about symptoms"
             }
+
         );
 
      
@@ -553,6 +562,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         }
         );  
 
+
         modelBuilder.Entity<PhysiotherapyExercise>().HasData(
 
         // 🔹 BACK
@@ -619,9 +629,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             DurationMinutes = 5,
             YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU",
             ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg"
+        });
+
+     
+        
+
+        
+
         }
-    );
-    }
+
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -14,11 +14,16 @@ namespace Diagnosis.Application.UseCases.Treatment
 
         public async Task<TreatmentPlanResponseDto> ExecuteAsync(CreateTreatmentPlanDto dto)
         {
-            var patientExists = await _unitOfWork.Treatment.PatientExistsAsync(dto.PatientId);
+            if (string.IsNullOrWhiteSpace(dto.PatientId))
+                throw new ArgumentException("PatientId is required");
+
+            var patientExists = await _unitOfWork.Treatment
+                .PatientExistsAsync(dto.PatientId);
+
             if (!patientExists)
                 throw new KeyNotFoundException("Patient not found");
 
             return await _unitOfWork.Treatment.CreateTreatmentPlanAsync(dto);
         }
     }
-}
+    }

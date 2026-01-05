@@ -96,6 +96,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
 
             };
+
         }
 
         public Task<DoctorDashboardDto> GetDashboardAsync(int doctorId)

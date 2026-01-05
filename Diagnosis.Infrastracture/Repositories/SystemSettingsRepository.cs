@@ -203,6 +203,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
             if (doctor!.DiagnosisPerDay >= maxDiagnosis.MaxDiagnosisPerDay)
             {
+                
                 return false;
             }
 

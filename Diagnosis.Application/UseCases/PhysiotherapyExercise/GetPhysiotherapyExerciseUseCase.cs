@@ -31,8 +31,10 @@ namespace Diagnosis.Application.UseCases.PhysiotherapyExercise
                 DurationMinutes = e.DurationMinutes,
                 YoutubeUrl = e.YoutubeUrl,
                 ThumbnailUrl = e.ThumbnailUrl,
-                
+
             }).ToList();
         }
+       
+        
 
     }}

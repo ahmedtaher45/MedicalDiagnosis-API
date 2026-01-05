@@ -20,7 +20,8 @@ namespace Diagnosis.API.Controllers
             if (supportTicketDTO == null)
                 return BadRequest("SupportTicketDTO cannot be null.");
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
-            await supportTicketUseCase.CreateSupportTicketAsync(userId , supportTicketDTO);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            await supportTicketUseCase.CreateSupportTicketAsync(role, userId, supportTicketDTO);
 
             return Ok(new { Message = "Support ticket created successfully." });
 
@@ -60,6 +61,15 @@ namespace Diagnosis.API.Controllers
                 return NotFound("No reply found for this user.");
 
             return Ok(reply);
+        }
+        [Authorize(Roles = "Doctor, Patient")]
+        [HttpGet("ticket/{ticketId}")]
+        public async Task<IActionResult> GetSupportTicketAsync([FromServices] GetSupportTicketUseCase getSupportTicketUseCase, [FromRoute] int ticketId)
+        {
+            var ticket = await getSupportTicketUseCase.GetSupportTicketByIdAsync(ticketId);
+            if (ticket == null) return NotFound("Support ticket not found.");
+
+            return Ok(ticket);
         }
     }
 }

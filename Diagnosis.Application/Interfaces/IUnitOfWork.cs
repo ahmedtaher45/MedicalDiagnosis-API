@@ -16,17 +16,23 @@ namespace Diagnosis.Application.Interfaces
         ITreatmentProvider TreatmentProvider { get; }
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
+        IProfileRepository Profile { get; }
+        IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; }
+        ISettingsRepository Settings { get; }
+        IAdminDashboardRepository AdminDashboard { get; }
+        IDoctorDashboardRepository DoctorDashboard { get; }
         IMedicalFilesRepository MedicalFiles { get; }
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
         IDoctorDashboardService DoctorDashboard { get; }
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
-        ISystemSettingsRepository systemSettings { get; }
+        INotificationRepository Notifications { get; }      
         ITreatmentRepository Treatment { get; }
+        IUserRepository Users { get; }
+        ISystemSettingsRepository systemSettings { get; }
 
-        IProfileRepository Profile { get; }
-        IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; }
-        ISettingsRepository Settings { get; }
+
+
         Task<int> CompleteAsync();
         Task SaveChangesAsync();
 

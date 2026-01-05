@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class DiagnosisModuleRepository : Repository<Inquiry> , IDiagnosisModuleRepository
+    public class DiagnosisModuleRepository : Repository<BoneFraction> , IDiagnosisModuleRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileService _fileService;
@@ -64,20 +64,19 @@ namespace Diagnosis.Infrastracture.Repositories
             if (patient == null)
                 throw new Exception("Error with Id");
 
-            var consultaion = new Inquiry
+            var consultaion = new BoneFraction
             {
                 PatientId = patient.Id,
                 DoctorId = createDiagnosisDTO.DoctorId,
                 Status = ConsultationStatus.Pending,
-                Type = ConsultationType.BoneFraction,
-                Date = DateTime.UtcNow,
+                CreatedOn = DateTime.UtcNow,
                 ConfidenceLevel = Diagnosis.Confidence,
                 Prediction = Diagnosis.Prediction,
                 IncomingUrl = fileUrl,
                 ResultUrl = url
             };
 
-            await _context.Consultations.AddAsync(consultaion);
+            await _context.BoneFractions.AddAsync(consultaion);
             await _context.SaveChangesAsync();
 
             response.DiagnosisId = consultaion.Id;

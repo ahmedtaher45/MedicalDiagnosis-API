@@ -32,5 +32,14 @@ namespace Diagnosis.API.Controllers
 
             return Ok(exercises);
         }
+        [Authorize(Roles = "Patient")]
+        [HttpPost("end-session")]
+        public async Task<IActionResult> EndPhysiotherapySession(
+            [FromServices] EndPhysiotherapySessionUseCase endPhysiotherapySessionUseCase)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await endPhysiotherapySessionUseCase.EndPhysiotherapySessionAsync(userId);
+            return Ok(new { message = result });
+        }
     }
 }
