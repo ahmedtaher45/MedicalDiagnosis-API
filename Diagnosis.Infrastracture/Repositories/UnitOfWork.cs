@@ -86,6 +86,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Treatment = new TreatmentRepository(_context, _pdfService);
 
             DoctorDashboardService = new DoctorRepository(_context);
+            PatientDashboard = new PatientDasboardRepository(_context);
         }
 
         public IAuth Auth { get; private set; }
@@ -126,6 +127,8 @@ namespace Diagnosis.Infrastracture.Repositories
 
 
         public IDoctorDashboardService DoctorDashboardService { get; private set;}
+
+        public IPatientDashboardRepository PatientDashboard { get; private set; }
 
         public async Task<int> CompleteAsync()
         {
