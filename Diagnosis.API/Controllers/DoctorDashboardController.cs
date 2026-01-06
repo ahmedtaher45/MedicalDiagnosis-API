@@ -24,12 +24,12 @@ namespace Diagnosis.API.Controllers
         {
             try
             {
-                var doctorIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (string.IsNullOrEmpty(doctorIdClaim) || !int.TryParse(doctorIdClaim, out int doctorId))
-                    return Unauthorized(new { message = "Invalid doctor" });
+                    if (string.IsNullOrEmpty(userId))
+                        return Unauthorized(new { message = "Invalid user" });
 
-                var data = await _useCase.ExecuteAsync(doctorId);
+                var data = await _useCase.ExecuteAsync(userId);
                 return Ok(data);
             }
             catch (Exception ex)
