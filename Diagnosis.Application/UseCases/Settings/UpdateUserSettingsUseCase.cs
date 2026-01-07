@@ -23,10 +23,14 @@ namespace Diagnosis.Application.UseCases.Settings
             var user = await _unitOfWork.Profile.GetUserProfile(userId);
             if (user == null) return false;
 
-         //   user.ReceiveEmailNotifications = dto.ReceiveEmailNotifications;
             user.TwoFactorEnabled = dto.TwoFactorEnabled;
+            user.ReceiveEmailNotifications = dto.ReceiveEmailNotifications;
 
-            return await _unitOfWork.Settings.UpdateUserSettings(user);
+            await _unitOfWork.Settings.UpdateUserSettingsAsync(user);
+            await _unitOfWork.SaveChangesAsync(); 
+
+            return true;
         }
+
     }
 }
