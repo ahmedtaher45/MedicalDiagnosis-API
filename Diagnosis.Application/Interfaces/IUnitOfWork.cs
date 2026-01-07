@@ -31,6 +31,7 @@ namespace Diagnosis.Application.Interfaces
         IUserRepository Users { get; }
         ISystemSettingsRepository systemSettings { get; }
         IPatientDashboardRepository PatientDashboard { get; }
+        IPhysiotherapyProvider Physiotherapy { get; }
 
 
 

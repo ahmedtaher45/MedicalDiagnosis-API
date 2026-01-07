@@ -4,6 +4,6 @@ namespace Diagnosis.Application.Interfaces
 {
     public interface IDoctorDashboardRepository
     {
-        Task<DoctorDashboardDto> GetDoctorDashboardDataAsync(int doctorId);
+        Task<DoctorDashboardDto> GetDoctorDashboardDataAsync(string userId);
     }
 }

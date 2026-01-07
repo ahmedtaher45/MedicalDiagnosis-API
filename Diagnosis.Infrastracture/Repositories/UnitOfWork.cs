@@ -28,6 +28,8 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IDiagnosisModuleProvider _diagnosisModuleProvider;
+        private readonly IPhysiotherapyProvider _physiotherapyProvider;
+        
         private readonly IPdfService _pdfService;
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
@@ -38,6 +40,8 @@ namespace Diagnosis.Infrastracture.Repositories
             IConfiguration configuration,
             IFileService fileService,
             IDiagnosisModuleProvider diagnosisModuleProvider,
+            IPhysiotherapyProvider physiotherapyProvider,
+           
             IPdfService pdfService
             )
         {
@@ -49,6 +53,8 @@ namespace Diagnosis.Infrastracture.Repositories
             _httpClient = httpClient;
             _fileService = fileService;
             _diagnosisModuleProvider = diagnosisModuleProvider;
+            _physiotherapyProvider = physiotherapyProvider;
+            
             _pdfService = pdfService;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
@@ -87,6 +93,10 @@ namespace Diagnosis.Infrastracture.Repositories
 
             DoctorDashboardService = new DoctorRepository(_context);
             PatientDashboard = new PatientDasboardRepository(_context);
+            Physiotherapy = _physiotherapyProvider;
+           
+           
+
         }
 
         public IAuth Auth { get; private set; }
@@ -123,7 +133,11 @@ namespace Diagnosis.Infrastracture.Repositories
         public IUserRepository Users { get; private set; }
 
         public ISystemSettingsRepository systemSettings { get; private set; }
-       
+
+        public IPhysiotherapyProvider Physiotherapy { get; private set; }
+
+      
+
 
 
         public IDoctorDashboardService DoctorDashboardService { get; private set;}

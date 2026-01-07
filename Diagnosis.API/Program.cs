@@ -160,6 +160,8 @@ namespace Diagnosis.API
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
             builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
             builder.Services.AddScoped<GenerateTreatmentPlanPdfUseCase>();
+            builder.Services.AddScoped<SubmitPhysiotherapyVideoUseCase>();
+            
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -169,6 +171,10 @@ namespace Diagnosis.API
             builder.Services.AddHttpClient<IDiagnosisModuleProvider, DiagnosisModuleProvider>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["BoneFracture:BaseUrl"]!);
+            });
+            builder.Services.AddHttpClient<IPhysiotherapyProvider, PhysiotherapyProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["Physiotherapy:BaseUrl"]!);
             });
 
             builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>

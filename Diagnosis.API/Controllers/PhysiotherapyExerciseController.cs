@@ -41,5 +41,21 @@ namespace Diagnosis.API.Controllers
             var result = await endPhysiotherapySessionUseCase.EndPhysiotherapySessionAsync(userId);
             return Ok(new { message = result });
         }
+
+        [Authorize(Roles = "Patient")]
+        [HttpPost("submit-video")]
+        public async Task<IActionResult> SubmitPhysiotherapyVideo(
+            [FromServices] SubmitPhysiotherapyVideoUseCase submitPhysiotherapyVideoUseCase,
+            [FromForm] IFormFile videoFile,
+            [FromForm] string exerciseName)
+        {
+            if (videoFile == null || videoFile.Length == 0)
+            {
+                return BadRequest(new { message = "No video file provided" });
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await submitPhysiotherapyVideoUseCase.SubmitVideoAsync(videoFile, exerciseName, userId);
+            return Ok(new { message = result });
+        }
     }
 }
