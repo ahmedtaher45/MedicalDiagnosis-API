@@ -16,8 +16,10 @@ namespace Diagnosis.Infrastracture.Repositories
             _context = context;
         }
 
-        public async Task<DoctorDashboardDto> GetDoctorDashboardDataAsync(int doctorId)
+        public async Task<DoctorDashboardDto> GetDoctorDashboardDataAsync(string userId)
         {
+            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.UserId == userId);
+            var doctorId = doctor?.Id ?? 0;
             var today = DateTime.Today;
             var last7Days = today.AddDays(-7);
 
@@ -140,9 +142,6 @@ namespace Diagnosis.Infrastracture.Repositories
             };
         }
 
-        public Task<DoctorDashboardDto> GetDoctorDashboardDataAsync(string doctorId)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

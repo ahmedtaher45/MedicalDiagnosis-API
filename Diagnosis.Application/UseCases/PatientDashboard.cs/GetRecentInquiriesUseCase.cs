@@ -22,8 +22,8 @@ namespace Diagnosis.Application.UseCases.PatientDashboard
         }
         public async Task<List<InquiriesDto>> GetRecentInquiries(string userId)
         {
-            var patient = _unitOfWork.Inquiry.GetPatientAsync(userId);
-            var inquiries = await _unitOfWork.Inquiry.GetRecentInquiriesAsync(patient.Id);
+            var patient = await _unitOfWork.Inquiry.GetPatientAsync(userId);
+            var inquiries = await _unitOfWork.Inquiry.GetRecentInquiriesAsync(patient);
             return inquiries;
         }
 

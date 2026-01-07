@@ -23,8 +23,8 @@ namespace Diagnosis.Application.UseCases.PatientDashboard
 
         public async Task<Dictionary<string, int>> ExecuteAsync(string userId)
         {
-            var patient = _unitOfWork.Inquiry.GetPatientAsync(userId);
+            var patient = await _unitOfWork.Inquiry.GetPatientAsync(userId);
 
-            return await _unitOfWork.Consultation.GetConsultationCountByDayAsync(patient.Id);
+            return await _unitOfWork.Consultation.GetConsultationCountByDayAsync(patient);
         }
     }}

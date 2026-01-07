@@ -36,6 +36,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
+    public DbSet<MedicalFiles> MedicalFiles { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
