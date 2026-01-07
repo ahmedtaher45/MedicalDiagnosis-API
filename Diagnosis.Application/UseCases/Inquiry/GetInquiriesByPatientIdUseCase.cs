@@ -8,26 +8,25 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Application.UseCases.Inquiry
 {
-    public class GetInquiriesUseCase
+    public class GetInquiriesByPatientIdUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public GetInquiriesUseCase(IUnitOfWork unitOfWork)
+        public GetInquiriesByPatientIdUseCase(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ICollection<InquiryItemResponse>> ExecuteAsync(string userId)
+        public async Task<ICollection<InquiryItemResponse>> ExecuteAsync(int patientId)
         {
             try
             {
-                var patientId = await _unitOfWork.Inquiry.GetPatientAsync(userId);
                 var inquiries = await _unitOfWork.Inquiry.GetManyAsync(c => c.PatientId == patientId);
 
                 if (inquiries == null) throw new ArgumentNullException("Patient Id is incorrect");
-                
+
                 var dto = new List<InquiryItemResponse>();
-                
+
                 foreach (var inquiry in inquiries)
                 {
                     if (inquiry.Status == Domain.Models.Entites.ConsultationStatus.Pending)
@@ -56,7 +55,7 @@ namespace Diagnosis.Application.UseCases.Inquiry
             catch (Exception ex)
             {
 
-                throw new Exception("Error while fetching Inquiries: "+ex);
+                throw new Exception("Error while fetching Inquiries: " + ex);
             }
 
         }

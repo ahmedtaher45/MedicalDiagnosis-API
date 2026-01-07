@@ -32,8 +32,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
     public DbSet<MedicalFiles> MedicalFiles { get; set; }
-    //public DbSet<UserSettings> UserSettings { get; set; }
-    //public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
     
 
     
@@ -41,7 +39,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
-    public DbSet<MedicalFiles> MedicalFiles { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

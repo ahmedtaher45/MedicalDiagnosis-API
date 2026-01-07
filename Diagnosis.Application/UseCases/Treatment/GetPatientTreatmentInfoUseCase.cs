@@ -12,11 +12,8 @@ namespace Diagnosis.Application.UseCases.Treatment
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PatientTreatmentInfoDto> ExecuteAsync(string patientId)
+        public async Task<PatientTreatmentInfoDto> ExecuteAsync(int patientId)
         {
-            if (string.IsNullOrEmpty(patientId))
-                throw new ArgumentException("Patient ID is required");
-
             var patientExists = await _unitOfWork.Treatment.PatientExistsAsync(patientId);
             if (!patientExists)
                 throw new KeyNotFoundException("Patient not found");

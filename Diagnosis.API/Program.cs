@@ -120,7 +120,6 @@ namespace Diagnosis.API
 
 
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
-            builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();

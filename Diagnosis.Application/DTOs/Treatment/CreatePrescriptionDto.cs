@@ -9,20 +9,17 @@ namespace Diagnosis.Application.DTOs.Treatment
 {
     public class CreatePrescriptionDto
     {
-        [Required]
-        public string? PatientId { get; set; }
-        [Required]
-        public string? DoctorId { get; set; }
-        public string? TreatmentPlanId { get; set; }
-        [Required]
-        public string? MedicationName { get; set; }
-        [Required]
-        public string? Dosage { get; set; }
-        [Required]
-        public string? Frequency { get; set; }
-        [Required]
-        public string? Duration { get; set; }
+        public string PatientName { get; set; } = string.Empty;
+        public int PatientId { get; set; }
+
+        public string MedicationName { get; set; } = string.Empty;
+        public string Dosage { get; set; } = string.Empty;
+        public string Frequency { get; set; } = string.Empty;
+        public string Duration { get; set; } = string.Empty;
+
         public string? Instructions { get; set; }
         public string? Notes { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Diagnosis.Application.DTOs.Treatment;
 using Diagnosis.Application.UseCases;
 using Diagnosis.Application.UseCases.Treatment;
-using Diagnosis.Application.UseCases.TreatmentManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Diagnosis.API.Controllers
 {
@@ -15,21 +15,18 @@ namespace Diagnosis.API.Controllers
         private readonly CreateTreatmentPlanUseCase _createTreatmentPlanUseCase;
         private readonly CreatePrescriptionUseCase _createPrescriptionUseCase;
         private readonly GetTreatmentPlanDetailsUseCase _getTreatmentPlanDetailsUseCase;
-        private readonly GenerateTreatmentPlanPdfUseCase _generatePdfUseCase;
 
 
         public TreatmentController(
             GetPatientTreatmentInfoUseCase getPatientInfoUseCase,
             CreateTreatmentPlanUseCase createTreatmentPlanUseCase,
             CreatePrescriptionUseCase createPrescriptionUseCase,
-            GetTreatmentPlanDetailsUseCase getTreatmentPlanDetailsUseCase,
-            GenerateTreatmentPlanPdfUseCase generatePdfUseCase)
+            GetTreatmentPlanDetailsUseCase getTreatmentPlanDetailsUseCase)
         {
             _getPatientInfoUseCase = getPatientInfoUseCase;
             _createTreatmentPlanUseCase = createTreatmentPlanUseCase;
             _createPrescriptionUseCase = createPrescriptionUseCase;
             _getTreatmentPlanDetailsUseCase = getTreatmentPlanDetailsUseCase;
-            _generatePdfUseCase = generatePdfUseCase;
         }
 
         [Authorize("Patient")]
@@ -49,7 +46,7 @@ namespace Diagnosis.API.Controllers
 
         [Authorize(Roles = "Doctor")]
         [HttpGet("patient/{patientId}")]
-        public async Task<IActionResult> GetPatientTreatmentInfo(string patientId)
+        public async Task<IActionResult> GetPatientTreatmentInfo(int patientId)
         {
             try
             {
@@ -69,11 +66,12 @@ namespace Diagnosis.API.Controllers
         [Authorize(Roles = "Doctor")]
         [HttpPost("treatment-plan")]
         public async Task<IActionResult> CreateTreatmentPlan(
-            [FromBody] CreateTreatmentPlanDto dto)
+            [FromBody] TreatmentPlanDetailsDto dto)
         {
             try
             {
-                var result = await _createTreatmentPlanUseCase.ExecuteAsync(dto);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                var result = await _createTreatmentPlanUseCase.ExecuteAsync(dto,userId);
                 return Ok(result);
             }
             catch (KeyNotFoundException ex)
@@ -93,46 +91,9 @@ namespace Diagnosis.API.Controllers
         {
             try
             {
-                var result = await _createPrescriptionUseCase.ExecuteAsync(dto);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                var result = await _createPrescriptionUseCase.ExecuteAsync(dto, userId);
                 return Ok(result);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        [Authorize(Roles = "Doctor")]
-        [HttpGet("treatment-plan/{treatmentPlanId}")]
-        public async Task<IActionResult> GetTreatmentPlanDetails(string treatmentPlanId)
-        {
-            try
-            {
-                var result = await _getTreatmentPlanDetailsUseCase.ExecuteAsync(treatmentPlanId);
-                return Ok(result);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        [Authorize(Roles = "Doctor")]
-        [HttpGet("treatment-plan/{treatmentPlanId}/pdf")]
-        public async Task<IActionResult> DownloadTreatmentPlanPdf(string treatmentPlanId)
-        {
-            try
-            {
-                var pdfBytes = await _generatePdfUseCase.ExecuteAsync(treatmentPlanId);
-                return File(pdfBytes, "application/pdf", $"TreatmentPlan_{treatmentPlanId}.pdf");
             }
             catch (KeyNotFoundException ex)
             {

@@ -48,6 +48,28 @@ namespace Diagnosis.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("doctor/inquiries/{patientId}")]
+        public async Task<IActionResult> GetInquiries(
+            [FromRoute] int patientId,
+            [FromServices] GetInquiriesByPatientIdUseCase getInquiriesUseCase)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+            var result = await getInquiriesUseCase.ExecuteAsync(patientId);
+            return Ok(result);
+        }
+
+        [HttpGet("doctor/inquiry")]
+        public async Task<IActionResult> GetInquiry(
+            [FromQuery] int inquiryId,
+            [FromQuery] int patientId,
+            [FromServices] GetInquiryByPatientIdUseCase getInquiryUseCase)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString();
+
+            var result = await getInquiryUseCase.ExecuteAsync(patientId, inquiryId);
+            return Ok(result);
+        }
+
         [HttpGet("recent")]
         public async Task<IActionResult> GetRecentInquiries(
             [FromServices] GetRecentInquiriesUseCase getRecentInquiriesUseCase)

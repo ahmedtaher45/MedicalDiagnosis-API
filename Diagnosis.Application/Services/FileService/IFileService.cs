@@ -16,6 +16,10 @@ namespace Diagnosis.Application.Services.FileService
         Task<bool> DeleteFileAsync(string path);
         bool IsValidFile(IFormFile file);
         Task<string> SaveBase64ImageAsync(string base64String, string? fileName = null);
+        Task<string> SaveBytesAsync(
+            byte[] fileBytes,
+            string fileName,
+            string? customExtension = null);
 
 
     }
