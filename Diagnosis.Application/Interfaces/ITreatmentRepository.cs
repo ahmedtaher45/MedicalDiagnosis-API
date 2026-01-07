@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Application.DTOs.Treatment;
+using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 
 namespace Diagnosis.Application.Interfaces
@@ -7,19 +8,20 @@ namespace Diagnosis.Application.Interfaces
     {
     
        
-        Task<PatientTreatmentInfoDto> GetPatientTreatmentInfoAsync(string patientId);
+        Task<PatientTreatmentInfoDto> GetPatientTreatmentInfoAsync(int patientId);
 
      
-        Task<PrescriptionResponseDto> CreatePrescriptionAsync(CreatePrescriptionDto dto);
+        Task<TreatmentPlanResponseDto> CreatePrescriptionAsync(CreatePrescriptionDto dto, string userId);
 
         
-        Task<TreatmentPlanDetailsDto> GetTreatmentPlanDetailsAsync(string treatmentPlanId);
-        Task<TreatmentPlanResponseDto> CreateTreatmentPlanAsync(CreateTreatmentPlanDto dto);
+        Task<TreatmentPlanResponseDto> CreateTreatmentPlanAsync(TreatmentPlanDetailsDto dto, string userId);
 
-        Task<byte[]> GenerateTreatmentPlanPdfAsync(string treatmentPlanId);
+        byte[] GenerateTreatmentPlanPdfAsync(TreatmentPlanDetailsDto treatmentPlan, Doctor doctor);
+        byte[] GeneratePrescriptionPdfAsync(
+                    CreatePrescriptionDto prescription,
+                    Doctor doctor);
 
-      
-        Task<bool> PatientExistsAsync(string patientId);
-        Task<bool> TreatmentPlanExistsAsync(string treatmentPlanId);
+
+        Task<bool> PatientExistsAsync(int patientId);
     }
 }

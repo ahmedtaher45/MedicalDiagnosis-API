@@ -31,12 +31,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Request> Requests { get; set; }
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
+    public DbSet<MedicalFiles> MedicalFiles { get; set; }
+    
+
     
     
 
     public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
-    public DbSet<MedicalFiles> MedicalFiles { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -485,7 +487,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Symptoms = "Headache, fever, and fatigue.",
                 Description = "Patient reports symptoms for 3 days.",
                 Status = ConsultationStatus.Pending,
-                CreatedOn = new DateTime(2025, 1, 1),
+                // Type = ConsultationType.Inquiry,
+                //Date = new DateTime(2025, 1, 1),
+               // ConfidenceLevel = "60%",
                 //Description = "General inquiry about symptoms"
             }
 

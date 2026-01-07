@@ -8,10 +8,8 @@ namespace Diagnosis.Application.DTOs.Treatment
 {
     public class TreatmentPlanDetailsDto
     {
-        public string? Id { get; set; }
-        public string? PatientId { get; set; }
+        public int PatientId { get; set; }
         public string? PatientName { get; set; }
-        public string? DoctorName { get; set; }
         public string? Duration { get; set; }
         public string? Overview { get; set; }
         public List<KeyMedicationDto>? KeyMedications { get; set; }

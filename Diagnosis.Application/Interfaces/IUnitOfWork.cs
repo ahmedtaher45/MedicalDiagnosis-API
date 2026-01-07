@@ -24,11 +24,13 @@ namespace Diagnosis.Application.Interfaces
         IMedicalFilesRepository MedicalFiles { get; }
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
+        IDoctorDashboardService DoctorDashboardService { get; }
         IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
         INotificationRepository Notifications { get; }      
         ITreatmentRepository Treatment { get; }
         IUserRepository Users { get; }
         ISystemSettingsRepository systemSettings { get; }
+        IPatientDashboardRepository PatientDashboard { get; }
         IPhysiotherapyProvider Physiotherapy { get; }
 
 

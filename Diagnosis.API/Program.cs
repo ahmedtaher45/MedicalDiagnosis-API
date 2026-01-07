@@ -41,6 +41,8 @@ using Diagnosis.Application.UseCases.PatientDashboard;
 using Diagnosis.Application.UseCases.Notification;
 
 using Diagnosis.Application.UseCases.DiagnosisModule;
+using Diagnosis.Application.UseCases.DoctorDashboard;
+using Diagnosis.Application.UseCases.PatientDashboard.cs;
 
 
 
@@ -118,7 +120,6 @@ namespace Diagnosis.API
 
 
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
-            builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
@@ -149,8 +150,10 @@ namespace Diagnosis.API
             builder.Services.AddScoped<MarkNotificationsAsDoneUseCase>();
             builder.Services.AddScoped<EndPhysiotherapySessionUseCase>();
 
+            builder.Services.AddScoped<GetPatientsUseCase>();
+            builder.Services.AddScoped<DoctorListUseCase>();
 
-
+            builder.Services.AddScoped<GetPatientProfileUseCase>();
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
