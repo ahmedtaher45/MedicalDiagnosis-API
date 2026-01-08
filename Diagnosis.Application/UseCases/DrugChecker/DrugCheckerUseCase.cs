@@ -28,7 +28,7 @@ namespace Diagnosis.Application.UseCases.DrugChecker
                 return new DrugCheckerResponceDTO
                 {
                     Success = false,
-                    ErrorMessage = "You have reached the limit of using AI requests per day"
+                    Message = "You have reached the limit of using AI requests per day"
                 };
             }
             return await _unitOfWork.DrugChecker.CheckDrugAsync(requestDTO);

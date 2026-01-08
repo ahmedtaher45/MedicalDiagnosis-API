@@ -13,7 +13,6 @@ namespace Diagnosis.Application.Interfaces
         ISupportTicket SupportTicket { get; }
         IDiagnosisModuleRepository DiagnosisModule { get; }
         IInquiryRepository Inquiry { get; }
-        ITreatmentProvider TreatmentProvider { get; }
         IDrugCheckerProvider DrugChecker { get; }
         IConsultationRepository Consultation { get; }
         IProfileRepository Profile { get; }
@@ -25,7 +24,6 @@ namespace Diagnosis.Application.Interfaces
         IPatientManagement Patient { get; }
         IDoctorManagement Doctor { get; }
         IDoctorDashboardService DoctorDashboardService { get; }
-        IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; }
         INotificationRepository Notifications { get; }      
         ITreatmentRepository Treatment { get; }
         IUserRepository Users { get; }

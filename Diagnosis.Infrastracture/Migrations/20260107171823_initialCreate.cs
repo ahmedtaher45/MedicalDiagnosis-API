@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Diagnosis.Infrastracture.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,22 +54,26 @@ namespace Diagnosis.Infrastracture.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Diagnosises",
+                name: "Drugs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientSymptoms = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DrugName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RxOtc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DrugClasses = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Csa = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Alcohol = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GenericName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MedicalCondition = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Activity = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Diagnosises", x => x.Id);
+                    table.PrimaryKey("PK_Drugs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -106,6 +110,24 @@ namespace Diagnosis.Infrastracture.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PhysiotherapyExercises", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PregnancyRiskCategory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RiskLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RecommendedAction = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PregnancyRiskCategory", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -368,76 +390,6 @@ namespace Diagnosis.Infrastracture.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClinicalFindings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DiagnosisId = table.Column<int>(type: "int", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClinicalFindings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ClinicalFindings_Diagnosises_DiagnosisId",
-                        column: x => x.DiagnosisId,
-                        principalTable: "Diagnosises",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SuggestedMedications",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DiagnosisId = table.Column<int>(type: "int", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SuggestedMedications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SuggestedMedications_Diagnosises_DiagnosisId",
-                        column: x => x.DiagnosisId,
-                        principalTable: "Diagnosises",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Symptoms",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DiagnosisId = table.Column<int>(type: "int", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Symptoms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Symptoms_Diagnosises_DiagnosisId",
-                        column: x => x.DiagnosisId,
-                        principalTable: "Diagnosises",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -537,31 +489,6 @@ namespace Diagnosis.Infrastracture.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LabResult",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientId1 = table.Column<int>(type: "int", nullable: true),
-                    TestName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Result = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LabResult", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LabResult_Patients_PatientId1",
-                        column: x => x.PatientId1,
-                        principalTable: "Patients",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MedicalFiles",
                 columns: table => new
                 {
@@ -622,80 +549,6 @@ namespace Diagnosis.Infrastracture.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "TreatmentPlans",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientId1 = table.Column<int>(type: "int", nullable: true),
-                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TreatmentPlans", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TreatmentPlans_AspNetUsers_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TreatmentPlans_Patients_PatientId1",
-                        column: x => x.PatientId1,
-                        principalTable: "Patients",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Prescriptions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PrescriptionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientId1 = table.Column<int>(type: "int", nullable: true),
-                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TreatmentPlanId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TreatmentPlanId1 = table.Column<int>(type: "int", nullable: true),
-                    MedicationName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Duration = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Instructions = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Prescriptions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Prescriptions_AspNetUsers_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Prescriptions_Patients_PatientId1",
-                        column: x => x.PatientId1,
-                        principalTable: "Patients",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Prescriptions_TreatmentPlans_TreatmentPlanId1",
-                        column: x => x.TreatmentPlanId1,
-                        principalTable: "TreatmentPlans",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -711,20 +564,26 @@ namespace Diagnosis.Infrastracture.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ReceiveEmailNotifications", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "user-0", 0, "4689aadb-d68d-4c52-8aad-99276b94b310", "admin@diagnosis.com", true, false, null, "ADMIN@DIAGNOSIS.COM", "ADMIN@DIAGNOSIS.COM", "", null, false, true, "069a3c12-ddd0-47df-b17d-d4800751e4cf", false, "admin@diagnosis.com" },
-                    { "user-1", 0, "00fd5940-41a8-4df6-b426-eed4a66bc3fa", "doctor@test.com", true, false, null, "DOCTOR@TEST.COM", "DOCTOR@TEST.COM", "", null, false, true, "stamp1", false, "doctor@test.com" },
-                    { "user-2", 0, "0b29765d-bb0a-4b74-bac6-77bd7bb6a53a", "patient@test.com", true, false, null, "PATIENT@TEST.COM", "PATIENT@TEST.COM", "", null, false, true, "stamp2", false, "patient@test.com" }
+                    { "user-0", 0, "e1db22d9-5caa-4b08-a32b-9bc859c9afce", "admin@diagnosis.com", true, false, null, "ADMIN@DIAGNOSIS.COM", "ADMIN@DIAGNOSIS.COM", "", null, false, true, "339dc6eb-717f-45d0-8c17-d854d37e737c", false, "admin@diagnosis.com" },
+                    { "user-1", 0, "f22ce734-d427-48f0-8a10-b5e640cd3a25", "doctor@test.com", true, false, null, "DOCTOR@TEST.COM", "DOCTOR@TEST.COM", "", null, false, true, "stamp1", false, "doctor@test.com" },
+                    { "user-2", 0, "c75fb2bf-d4d5-4aae-a5c4-246d3cc4485a", "patient@test.com", true, false, null, "PATIENT@TEST.COM", "PATIENT@TEST.COM", "", null, false, true, "stamp2", false, "patient@test.com" }
                 });
 
             migrationBuilder.InsertData(
-                table: "Diagnosises",
-                columns: new[] { "Id", "CreatedOn", "Description", "IsDeleted", "ModifiedOn", "Name", "PatientSymptoms", "Title" },
+                table: "Drugs",
+                columns: new[] { "Id", "Activity", "Alcohol", "CreatedOn", "Csa", "DrugClasses", "DrugName", "GenericName", "IsDeleted", "MedicalCondition", "ModifiedOn", "RxOtc" },
                 values: new object[,]
                 {
-                    { 1, null, "Viral infection affecting upper respiratory tract", false, null, "Upper Respiratory Infection", "Fever, cough, sore throat, runny nose", "Cold & Flu" },
-                    { 2, null, "Inflammation of stomach lining", false, null, "Gastritis", "Abdominal pain, nausea, vomiting", "Stomach Pain" },
-                    { 3, null, "Chronic elevation of blood pressure", false, null, "High Blood Pressure", "Headache, dizziness, blurred vision", "Hypertension" },
-                    { 4, null, "Routine diabetes follow-up and monitoring", false, null, "Type 2 Diabetes Mellitus", "Fatigue, frequent urination", "Diabetes Follow-up" }
+                    { 1, 87, "X", null, "N", "Miscellaneous antimalarials, Tetracyclines", "doxycycline", "doxycycline", false, "Acne", null, "Rx" },
+                    { 2, 82, "X", null, "N", "Aldosterone receptor antagonists, Potassium-sparing diuretics", "spironolactone", "spironolactone", false, "Acne", null, "Rx" },
+                    { 3, 48, "Unknown", null, "N", "Tetracyclines", "minocycline", "minocycline", false, "Acne", null, "Rx" },
+                    { 4, 41, "X", null, "N", "Miscellaneous antineoplastics", "Accutane", "isotretinoin (oral)", false, "Acne", null, "Rx" },
+                    { 5, 39, "Unknown", null, "N", "Topical acne agents, Vaginal anti-infectives", "clindamycin", "clindamycin topical", false, "Acne", null, "Rx" },
+                    { 6, 35, "X", null, "N", "Aldosterone receptor antagonists, Potassium-sparing diuretics", "Aldactone", "spironolactone", false, "Acne", null, "Rx" },
+                    { 7, 30, "Unknown", null, "N", "Topical acne agents", "tretinoin", "tretinoin topical", false, "Acne", null, "Rx" },
+                    { 8, 26, "X", null, "N", "Miscellaneous antineoplastics", "isotretinoin", "isotretinoin (oral)", false, "Acne", null, "Rx" },
+                    { 9, 20, "X", null, "N", "Sulfonamides", "Bactrim", "sulfamethoxazole and trimethoprim", false, "Acne", null, "Rx" },
+                    { 10, 17, "Unknown", null, "N", "Topical acne agents", "Retin-A", "Retin-A", false, "Acne", null, "Rx" }
                 });
 
             migrationBuilder.InsertData(
@@ -756,16 +615,16 @@ namespace Diagnosis.Infrastracture.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ClinicalFindings",
-                columns: new[] { "Id", "CreatedOn", "DiagnosisId", "IsDeleted", "ModifiedOn", "Name", "Notes", "Value" },
+                table: "PregnancyRiskCategory",
+                columns: new[] { "Id", "Category", "CreatedOn", "IsDeleted", "ModifiedOn", "RecommendedAction", "RiskLevel" },
                 values: new object[,]
                 {
-                    { 1, null, 1, false, null, "Body Temperature", "Fever", "38.5°C" },
-                    { 2, null, 1, false, null, "Oxygen Saturation", "Normal", "98%" },
-                    { 3, null, 2, false, null, "Abdominal tenderness", "Epigastric area", "Present" },
-                    { 4, null, 3, false, null, "Blood Pressure", "Elevated", "150/95 mmHg" },
-                    { 5, null, 4, false, null, "HbA1c", "Above target", "7.1%" },
-                    { 6, null, 4, false, null, "Fasting Blood Glucose", "Elevated", "140 mg/dL" }
+                    { 1, "A", null, false, null, "Safe to use during pregnancy", "Very Low" },
+                    { 2, "B", null, false, null, "Use with caution and under doctor supervision", "Low" },
+                    { 3, "C", null, false, null, "Use only if benefits outweigh risks", "Moderate" },
+                    { 4, "D", null, false, null, "Use only in necessary cases and under strict monitoring", "High" },
+                    { 5, "X", null, false, null, "Contraindicated during pregnancy", "Very High" },
+                    { 6, "N", null, false, null, "Consult a doctor before use; exercise caution", "Unknown" }
                 });
 
             migrationBuilder.InsertData(
@@ -784,44 +643,9 @@ namespace Diagnosis.Infrastracture.Migrations
                 values: new object[] { -1, "Cairo", "None", "A+", new DateTime(1996, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sara", "Female", false, true, false, "Ali", null, "", "user-2" });
 
             migrationBuilder.InsertData(
-                table: "SuggestedMedications",
-                columns: new[] { "Id", "CreatedOn", "DiagnosisId", "Dosage", "Frequency", "IsDeleted", "ModifiedOn", "Name" },
-                values: new object[,]
-                {
-                    { 1, null, 1, "500 mg", "Every 8 hours", false, null, "Paracetamol" },
-                    { 2, null, 1, "10 mg", "Once daily", false, null, "Antihistamine" },
-                    { 3, null, 2, "20 mg", "Once daily before meals", false, null, "Omeprazole" },
-                    { 4, null, 2, "10 ml", "After meals", false, null, "Antacid" },
-                    { 5, null, 3, "5 mg", "Once daily", false, null, "Amlodipine" },
-                    { 6, null, 3, "-", "Low salt diet & exercise", false, null, "Lifestyle modification" },
-                    { 7, null, 4, "500 mg", "Twice daily", false, null, "Metformin" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Symptoms",
-                columns: new[] { "Id", "CreatedOn", "DiagnosisId", "IsDeleted", "ModifiedOn", "Name" },
-                values: new object[,]
-                {
-                    { 1, null, 1, false, null, "Fever" },
-                    { 2, null, 1, false, null, "Cough" },
-                    { 3, null, 1, false, null, "Sore throat" },
-                    { 4, null, 1, false, null, "Runny nose" },
-                    { 5, null, 1, false, null, "Body aches" },
-                    { 6, null, 2, false, null, "Abdominal pain" },
-                    { 7, null, 2, false, null, "Nausea" },
-                    { 8, null, 2, false, null, "Vomiting" },
-                    { 9, null, 2, false, null, "Bloating" },
-                    { 10, null, 3, false, null, "Headache" },
-                    { 11, null, 3, false, null, "Dizziness" },
-                    { 12, null, 3, false, null, "Blurred vision" },
-                    { 13, null, 4, false, null, "Fatigue" },
-                    { 14, null, 4, false, null, "Frequent urination" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Inquiries",
-                columns: new[] { "Id", "CreatedOn", "Description", "DoctorId", "InquiryFiles", "IsDeleted", "ModifiedOn", "PatientId", "PrescriptionUrl", "Price", "Rate", "Rating", "RejectNotes", "RejectReason", "Reply", "Status", "Symptoms", "TreatmentUrl" },
-                values: new object[] { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Patient reports symptoms for 3 days.", -1, null, false, null, -1, null, null, 0, null, null, null, null, "Pending", "Headache, fever, and fatigue.", null });
+                columns: new[] { "Id", "Description", "DoctorId", "InquiryFiles", "IsDeleted", "ModifiedOn", "PatientId", "PrescriptionUrl", "Price", "Rate", "Rating", "RejectNotes", "RejectReason", "Reply", "Status", "Symptoms", "TreatmentUrl" },
+                values: new object[] { 1, "Patient reports symptoms for 3 days.", -1, null, false, null, -1, null, null, 0, null, null, null, null, "Pending", "Headache, fever, and fatigue.", null });
 
             migrationBuilder.InsertData(
                 table: "Payments",
@@ -878,11 +702,6 @@ namespace Diagnosis.Infrastracture.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClinicalFindings_DiagnosisId",
-                table: "ClinicalFindings",
-                column: "DiagnosisId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Doctors_UserId",
                 table: "Doctors",
                 column: "UserId",
@@ -898,11 +717,6 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "IX_Inquiries_PatientId",
                 table: "Inquiries",
                 column: "PatientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LabResult_PatientId1",
-                table: "LabResult",
-                column: "PatientId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedicalFiles_PatientId",
@@ -937,26 +751,6 @@ namespace Diagnosis.Infrastracture.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prescriptions_DoctorId",
-                table: "Prescriptions",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Prescriptions_PatientId1",
-                table: "Prescriptions",
-                column: "PatientId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Prescriptions_TreatmentPlanId1",
-                table: "Prescriptions",
-                column: "TreatmentPlanId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SuggestedMedications_DiagnosisId",
-                table: "SuggestedMedications",
-                column: "DiagnosisId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SupportTickets_DoctorId",
                 table: "SupportTickets",
                 column: "DoctorId");
@@ -970,21 +764,6 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "IX_SupportTickets_userId",
                 table: "SupportTickets",
                 column: "userId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Symptoms_DiagnosisId",
-                table: "Symptoms",
-                column: "DiagnosisId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TreatmentPlans_DoctorId",
-                table: "TreatmentPlans",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TreatmentPlans_PatientId1",
-                table: "TreatmentPlans",
-                column: "PatientId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usages_UserId",
@@ -1016,16 +795,13 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "BoneFractions");
 
             migrationBuilder.DropTable(
-                name: "ClinicalFindings");
+                name: "Drugs");
 
             migrationBuilder.DropTable(
                 name: "Faqs");
 
             migrationBuilder.DropTable(
                 name: "Inquiries");
-
-            migrationBuilder.DropTable(
-                name: "LabResult");
 
             migrationBuilder.DropTable(
                 name: "MedicalFiles");
@@ -1040,19 +816,13 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "PhysiotherapyExercises");
 
             migrationBuilder.DropTable(
-                name: "Prescriptions");
+                name: "PregnancyRiskCategory");
 
             migrationBuilder.DropTable(
                 name: "Requests");
 
             migrationBuilder.DropTable(
-                name: "SuggestedMedications");
-
-            migrationBuilder.DropTable(
                 name: "SupportTickets");
-
-            migrationBuilder.DropTable(
-                name: "Symptoms");
 
             migrationBuilder.DropTable(
                 name: "UsageConfig");
@@ -1064,13 +834,7 @@ namespace Diagnosis.Infrastracture.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "TreatmentPlans");
-
-            migrationBuilder.DropTable(
                 name: "Doctors");
-
-            migrationBuilder.DropTable(
-                name: "Diagnosises");
 
             migrationBuilder.DropTable(
                 name: "Patients");

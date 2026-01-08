@@ -33,7 +33,7 @@ namespace Diagnosis.Application.UseCases.Auth
                 });
                 await unitOfWork.SaveChangesAsync();
             }        
-            return await unitOfWork.Auth.RegisterAsync(registerDTO); ;
+            return await unitOfWork.Auth.RegisterAsync(registerDTO); 
         }
 
     }

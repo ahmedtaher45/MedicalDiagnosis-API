@@ -13,6 +13,5 @@ namespace Diagnosis.Application.Interfaces
 public interface IDrugCheckerProvider
 {
     Task<DrugCheckerResponceDTO?> CheckDrugAsync(DrugCheckerRequestDTO requestDTO);
-    Task<List<DrugSuggestionDTO>> GetSuggestionsAsync(string keyword);
 }
 }

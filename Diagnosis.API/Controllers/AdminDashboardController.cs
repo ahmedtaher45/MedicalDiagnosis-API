@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Diagnosis.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [Authorize(Roles = "Admin")]
     public class AdminDashboardController : ControllerBase
     {

@@ -1,5 +1,4 @@
-﻿using Diagnosis.Domain.Entities;
-using Diagnosis.Domain.Models.Entites;
+﻿using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Domain.Shared;
 using Microsoft.AspNetCore.SignalR.Protocol;
 using System;
@@ -29,9 +28,6 @@ namespace Diagnosis.Domain.Entites
         public ICollection<BoneFraction>? BoneFractions { get; set; }
         public ICollection<Inquiry>? Inquiries { get; set; }
         public ICollection<SupportTicket>? SupportTickets { get; set; }
-        public ICollection<Prescription>? Prescriptions { get; set; }
-        public ICollection<LabResult>? LabResults { get; set; }
-
 
     }
 }

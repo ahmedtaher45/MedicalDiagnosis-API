@@ -1,9 +1,7 @@
 ﻿using Diagnosis.Application.DTOs.Treatment;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.Services.FileService;
-using Diagnosis.Application.Services.PdfService;
 using Diagnosis.Domain.Entites;
-using Diagnosis.Domain.Entities;
 using Diagnosis.Domain.Models.Entites;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -11,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class TreatmentRepository : Repository<TreatmentPlan> ,ITreatmentRepository
+    public class TreatmentRepository : Repository<Inquiry> ,ITreatmentRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileService _fileService;

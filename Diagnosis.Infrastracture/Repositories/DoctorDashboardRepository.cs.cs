@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Application.DTOs.Dashboard.DoctorDashboar;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
-using Diagnosis.Domain.Entities;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +27,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 .Where(c => c.DoctorId == doctorId)
                 .CountAsync();
 
-            var totalTreatmentPlans = await _context.Set<Prescription>()
+            var totalTreatmentPlans = await _context.Set<Inquiry>()
                 .Where(p => p.Id == doctorId)
                 .CountAsync();
          

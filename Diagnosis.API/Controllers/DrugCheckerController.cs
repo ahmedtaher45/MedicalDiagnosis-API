@@ -30,21 +30,7 @@ namespace Diagnosis.API.Controllers
             var result = await _drugCheckerUseCase.CheckDrugAsync(requestDTO, userId);
             if (result == null || !result.Success)
             {
-                return BadRequest(result?.ErrorMessage ?? "Error checking drug");
-            }
-            return Ok(result);
-        }
-        [Authorize(Roles = "Patient")]
-        [HttpGet("suggestions")]
-        public async Task<IActionResult> GetSearchSuggestions(
-            [FromQuery] string keyword,
-            [FromServices] DrugSuggestionUseCase _drugSuggestionUseCase
-            )
-        {
-            var result = await _drugSuggestionUseCase.GetSuggestionsAsync(keyword);
-            if (result == null || !result.Any())
-            {
-                return NotFound("No suggestions found");
+                return BadRequest(result?.Message ?? "Error checking drug");
             }
             return Ok(result);
         }

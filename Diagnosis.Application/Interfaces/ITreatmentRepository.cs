@@ -4,7 +4,7 @@ using Diagnosis.Domain.Models.Entites;
 
 namespace Diagnosis.Application.Interfaces
 {
-    public interface ITreatmentRepository: IRepository<TreatmentPlan>
+    public interface ITreatmentRepository: IRepository<Inquiry>
     {
     
        

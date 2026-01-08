@@ -2,11 +2,9 @@
 using Diagnosis.Application.Services.EmailService;
 using Diagnosis.Application.Services.FileService;
 using Diagnosis.Domain.Entites;
-using Diagnosis.Application.Services.PdfService;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Providers;
 using Diagnosis.Infrastructure.Providers;
-using Diagnosis.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -30,7 +28,6 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly IDiagnosisModuleProvider _diagnosisModuleProvider;
         private readonly IPhysiotherapyProvider _physiotherapyProvider;
         
-        private readonly IPdfService _pdfService;
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
@@ -40,10 +37,8 @@ namespace Diagnosis.Infrastracture.Repositories
             IConfiguration configuration,
             IFileService fileService,
             IDiagnosisModuleProvider diagnosisModuleProvider,
-            IPhysiotherapyProvider physiotherapyProvider,
-           
-            IPdfService pdfService
-            )
+            IPhysiotherapyProvider physiotherapyProvider
+                       )
         {
             _userManager = userManager;
             _context = context;
@@ -55,23 +50,18 @@ namespace Diagnosis.Infrastracture.Repositories
             _diagnosisModuleProvider = diagnosisModuleProvider;
             _physiotherapyProvider = physiotherapyProvider;
             
-            _pdfService = pdfService;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
             
             DiagnosisModule = new DiagnosisModuleRepository(_context, _fileService, _diagnosisModuleProvider);
             Inquiry = new InquiryRepository(_context, _fileService);
             Consultation = new ConsultationRepository(_context);
-            DrugChecker = new DrugCheckerProvider(_httpClient, _configuration);
-           // TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
+            DrugChecker = new DrugCheckerProvider(_httpClient, _context);
             Profile = new ProfileRepository(_context);
             PhysiotherapyExercise = new PhysiotherapyExerciseRepository(_context);
 
 
-            TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             AdminDashboard = new AdminDashboardRepository(_context);
-            //DoctorDashboard = new DoctorDashboardRepository(_context);
-            DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
             MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
             SupportTicket = new SupportTicketRepository(_context , _userManager);
@@ -89,7 +79,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Settings = new SettingsRepository(_context);
 
 
-            Treatment = new TreatmentRepository(_context, _pdfService);
+            Treatment = new TreatmentRepository(_context, _fileService);
 
             DoctorDashboardService = new DoctorRepository(_context);
             PatientDashboard = new PatientDasboardRepository(_context);
@@ -106,7 +96,6 @@ namespace Diagnosis.Infrastracture.Repositories
         public IConsultationRepository Consultation { get; private set; }
         public IDrugCheckerProvider DrugChecker { get; private set; }
         public IInquiryRepository Inquiry { get; private set; }
-        public ITreatmentProvider TreatmentProvider { get; private set; }
         public IProfileRepository Profile { get; private set; }
 
         public IPhysiotherapyExerciseRepository PhysiotherapyExercise { get; private set; }
@@ -116,20 +105,14 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public IDoctorDashboardRepository DoctorDashboard { get; private set; }
 
-        public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
         public ISettingsRepository Settings { get; private set; }
-        public      INotificationRepository Notifications { get; private set; }
-        /// <summary>
-        /// //
-        /// </summary>
-
+        public INotificationRepository Notifications { get; private set; }
         public IMedicalFilesRepository MedicalFiles { get; private set; }
 
         public IPatientManagement Patient { get; private set; } 
         public IDoctorManagement Doctor { get; private set; }
         public ITreatmentRepository Treatment { get; private set; }
 
-    //public ISystemSetting SystemSetting {  get; private set; }
         public IUserRepository Users { get; private set; }
 
         public ISystemSettingsRepository systemSettings { get; private set; }

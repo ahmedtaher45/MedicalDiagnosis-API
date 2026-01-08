@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Domain.Entites;
-using Diagnosis.Domain.Entities;
 using Diagnosis.Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -18,27 +17,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Faq> Faqs { get; set; }
     public DbSet<SupportTicket> SupportTickets { get; set; }
     public DbSet<PhysiotherapyExercise> PhysiotherapyExercises { get; set; }
-    //user settings
-   
-
+    public DbSet<Drug> Drugs { get; set; }
     public DbSet<Inquiry> Inquiries { get; set; }
     public DbSet<BoneFraction> BoneFractions { get; set; }
-
-    public DbSet<DoctorDiagnosis> Diagnosises { get; set; }
-    public DbSet<Symptom> Symptoms { get; set; }
-    public DbSet<ClinicalFinding> ClinicalFindings { get; set; }
-    public DbSet<SuggestedMedication> SuggestedMedications { get; set; }
     public DbSet<Request> Requests { get; set; }
     public DbSet<UserAIUsage> Usages { get; set; }
     public DbSet<UsageConfig> UsageConfig { get; set; }
     public DbSet<MedicalFiles> MedicalFiles { get; set; }
-    
+    public DbSet<PregnancyRiskCategory> PregnancyRiskCategory { get; set; }
 
-    
-    
-
-    public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
-    public DbSet<Prescription> Prescriptions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -130,220 +117,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Faq>()
             .Property(p => p.Type)
             .HasConversion<string>();
-
-        modelBuilder.Entity<DoctorDiagnosis>(d =>
-        {
-            d.HasMany(c => c.Symptoms)
-            .WithOne(c => c.Diagnosis)
-            .HasForeignKey(c => c.DiagnosisId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-            d.HasMany(d => d.SuggestedMedications)
-            .WithOne(c => c.Diagnosis)
-            .HasForeignKey(c => c.DiagnosisId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-            d.HasMany(d => d.ClinicalFindings)
-            .WithOne(c => c.Diagnosis)
-            .HasForeignKey(d => d.DiagnosisId)
-            .OnDelete(DeleteBehavior.NoAction);
-        });
-
-
-        // ================== 1 ====================
-        modelBuilder.Entity<DoctorDiagnosis>().HasData(
-            new DoctorDiagnosis
-            {
-                Id = 1,
-                Title = "Cold & Flu",
-                Name = "Upper Respiratory Infection",
-                Description = "Viral infection affecting upper respiratory tract",
-                PatientSymptoms = "Fever, cough, sore throat, runny nose"
-            }
-            );
-
-        modelBuilder.Entity<Symptom>().HasData(
-            new Symptom { Id = 1, Name = "Fever", DiagnosisId = 1 },
-            new Symptom { Id = 2, Name = "Cough", DiagnosisId = 1 },
-            new Symptom { Id = 3, Name = "Sore throat", DiagnosisId = 1 },
-            new Symptom { Id = 4, Name = "Runny nose", DiagnosisId = 1 },
-            new Symptom { Id = 5, Name = "Body aches", DiagnosisId = 1 }
-        );
-
-        modelBuilder.Entity<ClinicalFinding>().HasData(
-
-            new ClinicalFinding { Id = 1, Name = "Body Temperature", Value = "38.5°C", Notes = "Fever", DiagnosisId = 1 },
-            new ClinicalFinding { Id = 2, Name = "Oxygen Saturation", Value = "98%", Notes = "Normal", DiagnosisId = 1 }
-
-        );
-
-        modelBuilder.Entity<SuggestedMedication>().HasData(
-            new SuggestedMedication
-            {
-                Id = 1,
-                Name = "Paracetamol",
-                Dosage = "500 mg",
-                Frequency = "Every 8 hours",
-                DiagnosisId = 1
-            },
-            new SuggestedMedication
-            {
-                Id = 2,
-                Name = "Antihistamine",
-                Dosage = "10 mg",
-                Frequency = "Once daily",
-                DiagnosisId = 1
-            }
-
-        );
-
-        //============== 2 ================
-
-        modelBuilder.Entity<DoctorDiagnosis>().HasData(
-            new DoctorDiagnosis
-            {
-                Id = 2,
-                Title = "Stomach Pain",
-                Name = "Gastritis",
-                Description = "Inflammation of stomach lining",
-                PatientSymptoms = "Abdominal pain, nausea, vomiting"
-            }
-         );
-
-        modelBuilder.Entity<Symptom>().HasData(
-            new Symptom { Id = 6, Name = "Abdominal pain", DiagnosisId = 2 },
-            new Symptom { Id = 7, Name = "Nausea", DiagnosisId = 2 },
-            new Symptom { Id = 8, Name = "Vomiting", DiagnosisId = 2 },
-            new Symptom { Id = 9, Name = "Bloating", DiagnosisId = 2 }
-
-        );
-
-        modelBuilder.Entity<ClinicalFinding>().HasData(
-
-           new ClinicalFinding { Id = 3, Name = "Abdominal tenderness", Value = "Present", Notes = "Epigastric area", DiagnosisId = 2 }
-        );
-
-        modelBuilder.Entity<SuggestedMedication>().HasData(
-            new SuggestedMedication
-            {
-                Id = 3,
-                Name = "Omeprazole",
-                Dosage = "20 mg",
-                Frequency = "Once daily before meals",
-                DiagnosisId = 2
-            },
-            new SuggestedMedication
-            {
-                Id = 4,
-                Name = "Antacid",
-                Dosage = "10 ml",
-                Frequency = "After meals",
-                DiagnosisId = 2
-            }
-        );
-
-
-        // =============== 3 ===============
-
-        modelBuilder.Entity<DoctorDiagnosis>().HasData(
-            new DoctorDiagnosis
-            {
-                Id = 3,
-                Title = "Hypertension",
-                Name = "High Blood Pressure",
-                Description = "Chronic elevation of blood pressure",
-                PatientSymptoms = "Headache, dizziness, blurred vision"
-            }
-
-         );
-
-        modelBuilder.Entity<Symptom>().HasData(
-            new Symptom { Id = 10, Name = "Headache", DiagnosisId = 3 },
-            new Symptom { Id = 11, Name = "Dizziness", DiagnosisId = 3 },
-            new Symptom { Id = 12, Name = "Blurred vision", DiagnosisId = 3 }
-        );
-
-        modelBuilder.Entity<ClinicalFinding>().HasData(
-
-            new ClinicalFinding
-            {
-                Id = 4,
-                Name = "Blood Pressure",
-                Value = "150/95 mmHg",
-                Notes = "Elevated",
-                DiagnosisId = 3
-            }
-        );
-
-        modelBuilder.Entity<SuggestedMedication>().HasData(
-            new SuggestedMedication
-            {
-                Id = 5,
-                Name = "Amlodipine",
-                Dosage = "5 mg",
-                Frequency = "Once daily",
-                DiagnosisId = 3
-            },
-            new SuggestedMedication
-            {
-                Id = 6,
-                Name = "Lifestyle modification",
-                Dosage = "-",
-                Frequency = "Low salt diet & exercise",
-                DiagnosisId = 3
-            }
-        );
-
-        // ================= 4 =================
-
-        modelBuilder.Entity<DoctorDiagnosis>().HasData(
-            new DoctorDiagnosis
-            {
-                Id = 4,
-                Title = "Diabetes Follow-up",
-                Name = "Type 2 Diabetes Mellitus",
-                Description = "Routine diabetes follow-up and monitoring",
-                PatientSymptoms = "Fatigue, frequent urination"
-            }
-
-         );
-
-        modelBuilder.Entity<Symptom>().HasData(
-        new Symptom { Id = 13, Name = "Fatigue", DiagnosisId = 4 },
-        new Symptom { Id = 14, Name = "Frequent urination", DiagnosisId = 4 }
-
-        );
-
-        modelBuilder.Entity<ClinicalFinding>().HasData(
-            new ClinicalFinding
-            {
-                Id = 5,
-                Name = "HbA1c",
-                Value = "7.1%",
-                Notes = "Above target",
-                DiagnosisId = 4
-            },
-            new ClinicalFinding
-            {
-                Id = 6,
-                Name = "Fasting Blood Glucose",
-                Value = "140 mg/dL",
-                Notes = "Elevated",
-                DiagnosisId = 4
-            }
-
-        );
-
-        modelBuilder.Entity<SuggestedMedication>().HasData(
-            new SuggestedMedication
-            {
-                Id = 7,
-                Name = "Metformin",
-                Dosage = "500 mg",
-                Frequency = "Twice daily",
-                DiagnosisId = 4
-            }
-        );
 
 
         // ----------------------
@@ -486,16 +259,178 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 DoctorId = -1,
                 Symptoms = "Headache, fever, and fatigue.",
                 Description = "Patient reports symptoms for 3 days.",
-                Status = ConsultationStatus.Pending,
-                // Type = ConsultationType.Inquiry,
-                //Date = new DateTime(2025, 1, 1),
-               // ConfidenceLevel = "60%",
-                //Description = "General inquiry about symptoms"
+                Status = ConsultationStatus.Pending
             }
-
         );
 
-     
+        modelBuilder.Entity<PregnancyRiskCategory>().HasData(
+            new PregnancyRiskCategory
+            {
+                Id = 1,
+                Category = "A",
+                RiskLevel = "Very Low",
+                RecommendedAction = "Safe to use during pregnancy"
+            },
+            new PregnancyRiskCategory
+            {
+                Id = 2,
+                Category = "B",
+                RiskLevel = "Low",
+                RecommendedAction = "Use with caution and under doctor supervision"
+            },
+            new PregnancyRiskCategory
+            {
+                Id = 3,
+                Category = "C",
+                RiskLevel = "Moderate",
+                RecommendedAction = "Use only if benefits outweigh risks"
+            },
+            new PregnancyRiskCategory
+            {
+                Id = 4,
+                Category = "D",
+                RiskLevel = "High",
+                RecommendedAction = "Use only in necessary cases and under strict monitoring"
+            },
+            new PregnancyRiskCategory
+            {
+                Id = 5,
+                Category = "X",
+                RiskLevel = "Very High",
+                RecommendedAction = "Contraindicated during pregnancy"
+            },
+            new PregnancyRiskCategory
+            {
+                Id = 6,
+                Category = "N",
+                RiskLevel = "Unknown",
+                RecommendedAction = "Consult a doctor before use; exercise caution"
+            }
+        );
+
+        modelBuilder.Entity<Drug>().HasData(
+        new Drug
+        {
+            Id = 1,
+            DrugName = "doxycycline",
+            RxOtc = "Rx",
+            DrugClasses = "Miscellaneous antimalarials, Tetracyclines",
+            Csa = "N",
+            Alcohol = "X",
+            GenericName = "doxycycline",
+            MedicalCondition = "Acne",
+            Activity = 87
+        },
+        new Drug
+        {
+            Id = 2,
+            DrugName = "spironolactone",
+            RxOtc = "Rx",
+            DrugClasses = "Aldosterone receptor antagonists, Potassium-sparing diuretics",
+            Csa = "N",
+            Alcohol = "X",
+            GenericName = "spironolactone",
+            MedicalCondition = "Acne",
+            Activity = 82
+        },
+        new Drug
+        {
+            Id = 3,
+            DrugName = "minocycline",
+            RxOtc = "Rx",
+            DrugClasses = "Tetracyclines",
+            Csa = "N",
+            Alcohol = "Unknown",
+            GenericName = "minocycline",
+            MedicalCondition = "Acne",
+            Activity = 48
+        },
+        new Drug
+        {
+            Id = 4,
+            DrugName = "Accutane",
+            RxOtc = "Rx",
+            DrugClasses = "Miscellaneous antineoplastics",
+            Csa = "N",
+            Alcohol = "X",
+            GenericName = "isotretinoin (oral)",
+            MedicalCondition = "Acne",
+            Activity = 41
+        },
+        new Drug
+        {
+            Id = 5,
+            DrugName = "clindamycin",
+            RxOtc = "Rx",
+            DrugClasses = "Topical acne agents, Vaginal anti-infectives",
+            Csa = "N",
+            Alcohol = "Unknown",
+            GenericName = "clindamycin topical",
+            MedicalCondition = "Acne",
+            Activity = 39
+        },
+        new Drug
+        {
+            Id = 6,
+            DrugName = "Aldactone",
+            RxOtc = "Rx",
+            DrugClasses = "Aldosterone receptor antagonists, Potassium-sparing diuretics",
+            Csa = "N",
+            Alcohol = "X",
+            GenericName = "spironolactone",
+            MedicalCondition = "Acne",
+            Activity = 35
+        },
+        new Drug
+        {
+            Id = 7,
+            DrugName = "tretinoin",
+            RxOtc = "Rx",
+            DrugClasses = "Topical acne agents",
+            Csa = "N",
+            Alcohol = "Unknown",
+            GenericName = "tretinoin topical",
+            MedicalCondition = "Acne",
+            Activity = 30
+        },
+        new Drug
+        {
+            Id = 8,
+            DrugName = "isotretinoin",
+            RxOtc = "Rx",
+            DrugClasses = "Miscellaneous antineoplastics",
+            Csa = "N",
+            Alcohol = "X",
+            GenericName = "isotretinoin (oral)",
+            MedicalCondition = "Acne",
+            Activity = 26
+        },
+        new Drug
+        {
+            Id = 9,
+            DrugName = "Bactrim",
+            RxOtc = "Rx",
+            DrugClasses = "Sulfonamides",
+            Csa = "N",
+            Alcohol = "X",
+            GenericName = "sulfamethoxazole and trimethoprim",
+            MedicalCondition = "Acne",
+            Activity = 20
+        },
+        new Drug
+        {
+            Id = 10,
+            DrugName = "Retin-A",
+            RxOtc = "Rx",
+            DrugClasses = "Topical acne agents",
+            Csa = "N",
+            Alcohol = "Unknown",
+            GenericName = "Retin-A",
+            MedicalCondition = "Acne",
+            Activity = 17
+        }
+    );
+
         // --------------------
         // Faq
         // --------------------
@@ -629,13 +564,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             YoutubeUrl = "https://www.youtube.com/watch?v=R1rYz6k2KpU",
             ThumbnailUrl = "https://img.youtube.com/vi/R1rYz6k2KpU/hqdefault.jpg"
         });
-
-     
-        
-
-        
-
-        }
+    }
 
 
 

@@ -8,41 +8,24 @@ using System.Security.Claims;
 namespace Diagnosis.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class TreatmentController : ControllerBase
     {
         private readonly GetPatientTreatmentInfoUseCase _getPatientInfoUseCase;
         private readonly CreateTreatmentPlanUseCase _createTreatmentPlanUseCase;
         private readonly CreatePrescriptionUseCase _createPrescriptionUseCase;
-        private readonly GetTreatmentPlanDetailsUseCase _getTreatmentPlanDetailsUseCase;
 
 
         public TreatmentController(
             GetPatientTreatmentInfoUseCase getPatientInfoUseCase,
             CreateTreatmentPlanUseCase createTreatmentPlanUseCase,
-            CreatePrescriptionUseCase createPrescriptionUseCase,
-            GetTreatmentPlanDetailsUseCase getTreatmentPlanDetailsUseCase)
+            CreatePrescriptionUseCase createPrescriptionUseCase)
         {
             _getPatientInfoUseCase = getPatientInfoUseCase;
             _createTreatmentPlanUseCase = createTreatmentPlanUseCase;
             _createPrescriptionUseCase = createPrescriptionUseCase;
-            _getTreatmentPlanDetailsUseCase = getTreatmentPlanDetailsUseCase;
         }
 
-        [Authorize("Patient")]
-        [HttpGet("ai-plan/{DiagnosisId}")]
-        public async Task<IActionResult> CreateAITreatment(
-            [FromRoute] int DiagnosisId,
-            [FromServices] CreateAITreatmentUseCase createAITreatmentUseCase)
-        {
-            var result = await createAITreatmentUseCase.ExecuteAsync(DiagnosisId);
-
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
 
         [Authorize(Roles = "Doctor")]
         [HttpGet("patient/{patientId}")]
