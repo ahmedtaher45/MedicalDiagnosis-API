@@ -28,7 +28,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 .CountAsync();
 
             var totalTreatmentPlans = await _context.Set<Inquiry>()
-                .Where(p => p.Id == doctorId)
+                .Where(p => p.DoctorId== doctorId)
                 .CountAsync();
          
 
@@ -115,12 +115,12 @@ namespace Diagnosis.Infrastracture.Repositories
                 });
             }
 
-            // Common Diagnoses 
-            //var commonDiagnoses = await _context.Set<Inquiry>()
+            // //Common Diagnoses 
+            // var commonDiagnoses = await _context.Set<Inquiry>()
             //    .Where(c => c.DoctorId == doctorId &&
             //               c.CreatedOn >= today.AddMonths(-1) &&
             //               !string.IsNullOrEmpty(c.))
-            //    .GroupBy(c => c.DiagnosisName)
+            //    .GroupBy(c => c.Reply)
             //    .Select(g => new CommonDiagnosisDto
             //    {
             //        DiagnosisName = g.Key,

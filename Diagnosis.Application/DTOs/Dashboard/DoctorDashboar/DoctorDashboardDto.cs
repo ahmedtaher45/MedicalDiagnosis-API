@@ -8,6 +8,6 @@ namespace Diagnosis.Application.DTOs.Dashboard.DoctorDashboar
         public List<PatientStatDto>? NewVsReturningPatients { get; set; }
         public List<RatingStatDto>? RatingStats { get; set; }
         public List<EarningStatDto>? EarningsStats { get; set; }
-        public List<CommonDiagnosisDto>? CommonDiagnoses { get; set; }
+       // public List<CommonDiagnosisDto>? CommonDiagnoses { get; set; }
     }
 }

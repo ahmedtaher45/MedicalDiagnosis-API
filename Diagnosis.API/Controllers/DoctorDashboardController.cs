@@ -22,8 +22,8 @@ namespace Diagnosis.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDashboard()
         {
-            try
-            {
+            
+            
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                     if (string.IsNullOrEmpty(userId))
@@ -31,11 +31,7 @@ namespace Diagnosis.API.Controllers
 
                 var data = await _useCase.ExecuteAsync(userId);
                 return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
+            
         }
     }
 }

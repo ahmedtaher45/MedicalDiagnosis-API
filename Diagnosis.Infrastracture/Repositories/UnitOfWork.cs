@@ -81,7 +81,8 @@ namespace Diagnosis.Infrastracture.Repositories
 
             Treatment = new TreatmentRepository(_context, _fileService);
 
-            DoctorDashboardService = new DoctorRepository(_context);
+           DoctorDashboard = new DoctorDashboardRepository(_context);
+
             PatientDashboard = new PatientDasboardRepository(_context);
             Physiotherapy = _physiotherapyProvider;
            
