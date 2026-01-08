@@ -13,9 +13,9 @@ namespace Diagnosis.Application.UseCases.Dashboard.DoctorDashboard
                 _unitOfWork = unitOfWork;
             }
 
-            public async Task<DoctorDashboardDto> ExecuteAsync(int doctorId)
+            public async Task<DoctorDashboardDto> ExecuteAsync(string userId)
             {
-                return await _unitOfWork.DoctorDashboard.GetDoctorDashboardDataAsync(doctorId);
+                return await _unitOfWork.DoctorDashboard.GetDoctorDashboardDataAsync(userId);
             }
         }
     }

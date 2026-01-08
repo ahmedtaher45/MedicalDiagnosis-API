@@ -32,9 +32,10 @@ namespace Diagnosis.Infrastracture.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdateUserSettings(ApplicationUser user)
+       public async Task UpdateUserSettingsAsync(ApplicationUser user)
         {
-            _context.Users.Update(user);
-            return await _context.SaveChangesAsync() > 0;
+         
+            _context.Users.Attach(user);
+            _context.Entry(user).Property(u => u.TwoFactorEnabled).IsModified = true;
         }
     }}

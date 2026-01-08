@@ -28,6 +28,8 @@ namespace Diagnosis.Infrastracture.Repositories
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IDiagnosisModuleProvider _diagnosisModuleProvider;
+        private readonly IPhysiotherapyProvider _physiotherapyProvider;
+        
         private readonly IPdfService _pdfService;
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
@@ -38,6 +40,8 @@ namespace Diagnosis.Infrastracture.Repositories
             IConfiguration configuration,
             IFileService fileService,
             IDiagnosisModuleProvider diagnosisModuleProvider,
+            IPhysiotherapyProvider physiotherapyProvider,
+           
             IPdfService pdfService
             )
         {
@@ -49,6 +53,8 @@ namespace Diagnosis.Infrastracture.Repositories
             _httpClient = httpClient;
             _fileService = fileService;
             _diagnosisModuleProvider = diagnosisModuleProvider;
+            _physiotherapyProvider = physiotherapyProvider;
+            
             _pdfService = pdfService;
 
             Auth = new AuthRepository(_userManager, _jwtTokenGenerator, _emailSender, _context);
@@ -69,7 +75,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
             TreatmentProvider = new TreatmentProvider(_httpClient, _configuration, _context);
             AdminDashboard = new AdminDashboardRepository(_context);
-            DoctorDashboard = new DoctorDashboardRepository(_context);
+            //DoctorDashboard = new DoctorDashboardRepository(_context);
             DoctorDiagnosisProvider = new DoctorDiagnosisProvider(_httpClient, _configuration, _context);
             MedicalFiles = new MedicalFilesRepository(_context);
             Faq = new FaqRepository(_context);
@@ -89,7 +95,13 @@ namespace Diagnosis.Infrastracture.Repositories
 
 
             Treatment = new TreatmentRepository(_context, _pdfService);
+
+            DoctorDashboardService = new DoctorRepository(_context);
+            PatientDashboard = new PatientDasboardRepository(_context);
+            Physiotherapy = _physiotherapyProvider;
            
+           
+
         }
 
         public IAuth Auth { get; private set; }
@@ -111,7 +123,7 @@ namespace Diagnosis.Infrastracture.Repositories
 
         public IDoctorDiagnosisProvider DoctorDiagnosisProvider { get; private set; }
         public ISettingsRepository Settings { get; private set; }
-        public INotificationRepository Notifications { get; private set; }
+        public      INotificationRepository Notifications { get; private set; }
         /// <summary>
         /// //
         /// </summary>
@@ -126,9 +138,16 @@ namespace Diagnosis.Infrastracture.Repositories
         public IUserRepository Users { get; private set; }
 
         public ISystemSettingsRepository systemSettings { get; private set; }
-       
+
+        public IPhysiotherapyProvider Physiotherapy { get; private set; }
+
+      
 
 
+
+        public IDoctorDashboardService DoctorDashboardService { get; private set;}
+
+        public IPatientDashboardRepository PatientDashboard { get; private set; }
 
         public async Task<int> CompleteAsync()
         {

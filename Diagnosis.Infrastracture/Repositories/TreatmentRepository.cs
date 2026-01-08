@@ -1,9 +1,12 @@
 ﻿using Diagnosis.Application.DTOs.Treatment;
 using Diagnosis.Application.Interfaces;
+using Diagnosis.Application.Services.FileService;
 using Diagnosis.Application.Services.PdfService;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Entities;
 using Diagnosis.Domain.Models.Entites;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.EntityFrameworkCore;
 
 namespace Diagnosis.Infrastracture.Repositories
@@ -11,19 +14,18 @@ namespace Diagnosis.Infrastracture.Repositories
     public class TreatmentRepository : Repository<TreatmentPlan> ,ITreatmentRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IPdfService _pdfService;
+        private readonly IFileService _fileService;
 
-        // Constructor واحد بس
-        public TreatmentRepository(ApplicationDbContext context, IPdfService pdfService): base(context) 
+        public TreatmentRepository(ApplicationDbContext context, IFileService fileService) : base(context)
         {
             _context = context;
-            _pdfService = pdfService;
+            _fileService = fileService;
         }
 
-        public async Task<PatientTreatmentInfoDto> GetPatientTreatmentInfoAsync(string patientId)
+        public async Task<PatientTreatmentInfoDto> GetPatientTreatmentInfoAsync(int patientId)
         {
             var patient = await _context.Patients
-                .Where(p => p.UserId == patientId)
+                .Where(p => p.Id == patientId)
                 .Select(p => new PatientTreatmentInfoDto
                 {
                     PatientId = p.UserId,
@@ -36,149 +38,222 @@ namespace Diagnosis.Infrastracture.Repositories
             return patient;
         }
 
-        public async Task<TreatmentPlanResponseDto> CreateTreatmentPlanAsync(CreateTreatmentPlanDto dto)
+        public async Task<TreatmentPlanResponseDto> CreateTreatmentPlanAsync(TreatmentPlanDetailsDto dto, string userId)
         {
-            var treatmentPlan = new TreatmentPlan
-            {
-                PatientId = dto.PatientId,
-                DoctorId = dto.DoctorId,
-                Description = dto.Description,
-                StartDate = dto.StartDate,
-                EndDate = dto.EndDate,
-            };
+            if (dto == null)
+                throw new KeyNotFoundException("Treatment plan data is null");
 
-            _context.TreatmentPlans.Add(treatmentPlan);
+            var doctor = await _context.Doctors
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var pdfBytes = GenerateTreatmentPlanPdfAsync(dto, doctor!);
+
+            var pdfPath = await _fileService.SaveBytesAsync(
+                pdfBytes,
+                $"treatment_plan_{dto.PatientId}_{DateTime.UtcNow:yyyyMMdd}",
+                ".pdf" 
+            );
+
+            var inquiy = await _context.Inquiries.FirstOrDefaultAsync(x => x.DoctorId == doctor.Id && x.PatientId == dto.PatientId);
+
+            if (inquiy == null)
+            {
+                return new TreatmentPlanResponseDto
+                {
+                    Success = false,
+                    Message = "Not inquiry found for this patient"
+                };
+            }
+            inquiy.TreatmentUrl = pdfPath;
+             _context.Inquiries.Update(inquiy);
             await _context.SaveChangesAsync();
 
-            var response = await _context.TreatmentPlans
-                .Where(t => t.Id == treatmentPlan.Id)
-                .Include(t => t.Patient)
-                .Include(t => t.Doctor)
-                .Select(t => new TreatmentPlanResponseDto
-                {
-                    PatientId = t.PatientId,
-                    PatientName = t.Patient.FName + " " + t.Patient.LName,
-                    DoctorId = t.DoctorId,
-                    DoctorName = t.Doctor.UserName,
-                    Description = t.Description,
-                    StartDate = t.StartDate,
-                    EndDate = t.EndDate,
-                })
-                .FirstOrDefaultAsync();
-
-            return response;
+            return new TreatmentPlanResponseDto
+            {
+                Success = true,
+                Message = "Treatment plan file saved successfully"
+            };
         }
 
-        public async Task<PrescriptionResponseDto> CreatePrescriptionAsync(CreatePrescriptionDto dto)
+        public async Task<TreatmentPlanResponseDto> CreatePrescriptionAsync(CreatePrescriptionDto dto, string userId)
         {
-            var prescription = new Prescription
-            {
-                PrescriptionId = Guid.NewGuid().ToString(),
-                PatientId = dto.PatientId,
-                DoctorId = dto.DoctorId,
-                TreatmentPlanId = dto.TreatmentPlanId,
-                MedicationName = dto.MedicationName,
-                Dosage = dto.Dosage,
-                Frequency = dto.Frequency,
-                Duration = dto.Duration,
-                Instructions = dto.Instructions,
-                Notes = dto.Notes,
-                CreatedAt = DateTime.UtcNow
-            };
+            if (dto == null)
+                throw new KeyNotFoundException("Treatment plan data is null");
 
-            _context.Prescriptions.Add(prescription);
+            var doctor = await _context.Doctors
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var pdfBytes = GeneratePrescriptionPdfAsync(dto, doctor!);
+
+            var pdfPath = await _fileService.SaveBytesAsync(
+                     pdfBytes,
+                     $"treatment_plan_{dto.PatientId}_{DateTime.UtcNow:yyyyMMdd}",
+                     ".pdf"
+                 );
+
+            var inquiy = await _context.Inquiries.FirstOrDefaultAsync(x => x.DoctorId == doctor.Id && x.PatientId == dto.PatientId);
+
+            if (inquiy == null)
+            {
+                return new TreatmentPlanResponseDto
+                {
+                    Success = false,
+                    Message = "Not inquiry found for this patient"
+                };
+            }
+            inquiy.PrescriptionUrl = pdfPath;
+            _context.Inquiries.Update(inquiy);
             await _context.SaveChangesAsync();
 
-            var response = await _context.Prescriptions
-                .Where(p => p.PrescriptionId == prescription.PrescriptionId)
-                .Include(p => p.Patient)
-                .Include(p => p.Doctor)
-                .Select(p => new PrescriptionResponseDto
-                {
-                    Id = p.PrescriptionId,
-                    PatientId = p.PatientId,
-                    PatientName = p.Patient.FName + " " + p.Patient.LName,
-                    PatientIdentifier = p.Patient.UserId ?? "",
-                    DoctorId = p.DoctorId,
-                    DoctorName = p.Doctor.UserName,
-                    TreatmentPlanId = p.TreatmentPlanId,
-                    MedicationName = p.MedicationName,
-                    Dosage = p.Dosage,
-                    Frequency = p.Frequency,
-                    Duration = p.Duration,
-                    Instructions = p.Instructions,
-                    Notes = p.Notes,
-                    CreatedAt = p.CreatedAt,
-                    LastModifiedBy = p.Doctor.NormalizedUserName,
-                })
-                .FirstOrDefaultAsync();
-
-            return response;
+            return new TreatmentPlanResponseDto
+            {
+                Success = true,
+                Message = "Prescription file saved successfully"
+            };
         }
 
-        public async Task<TreatmentPlanDetailsDto> GetTreatmentPlanDetailsAsync(string treatmentPlanId)
-        {
-            var treatmentPlan = await _context.TreatmentPlans
-                .Include(t => t.Patient)
-                .Include(t => t.Doctor)
-                .Where(t => t.PatientId == treatmentPlanId)
-                .Select(t => new TreatmentPlanDetailsDto
-                {
-                    PatientId = t.PatientId,
-                    PatientName = t.Patient.FName + " " + t.Patient.LName,
-                    DoctorName = t.Doctor.UserName,
-                    Duration = CalculateDuration(t.StartDate, t.EndDate),
-                    Overview = t.Description ?? "",
-                    KeyMedications = _context.Prescriptions
-                        .Where(p => p.TreatmentPlanId == t.PatientId)
-                        .Select(p => new KeyMedicationDto
-                        {
-                            MedicationName = p.MedicationName,
-                            Dosage = p.Dosage
-                        }).ToList(),
-                    Hydration = new HydrationDto
-                    {
-                        Amount = "2.5 L water daily"
-                    },
-                    Restrictions = new RestrictionsDto
-                    {
-                        Description = "No Grapefruit"
-                    },
-                })
-                .FirstOrDefaultAsync();
 
-            return treatmentPlan;
+        public byte[] GenerateTreatmentPlanPdfAsync(TreatmentPlanDetailsDto treatmentPlan, Doctor doctor)
+        {
+
+            using (var memoryStream = new MemoryStream())
+            {
+                // Create document
+                var document = new iTextSharp.text.Document(PageSize.A4, 50, 50, 25, 25);
+                var writer = PdfWriter.GetInstance(document, memoryStream);
+                document.Open();
+
+                // Title
+                var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
+                var title = new Paragraph("Treatment Plan", titleFont)
+                {
+                    Alignment = Element.ALIGN_CENTER,
+                    SpacingAfter = 20
+                };
+                document.Add(title);
+
+                // Patient Info
+                var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+                var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+
+                document.Add(new Paragraph($"Patient: {treatmentPlan.PatientName}", headerFont));
+                document.Add(new Paragraph($"Doctor: {doctor.User.UserName}", normalFont));
+                document.Add(new Paragraph($"Duration: {treatmentPlan.Duration}", normalFont));
+                document.Add(new Paragraph($"Date: {treatmentPlan.CreatedAt:dd/MM/yyyy}", normalFont));
+                document.Add(new Paragraph("\n"));
+
+                // Overview Section
+                document.Add(new Paragraph("Overview", headerFont));
+                document.Add(new Paragraph(treatmentPlan.Overview, normalFont));
+                document.Add(new Paragraph("\n"));
+
+                // Key Medications
+                document.Add(new Paragraph("Key Medications", headerFont));
+                foreach (var medication in treatmentPlan.KeyMedications)
+                {
+                    document.Add(new Paragraph($"• {medication.MedicationName} - {medication.Dosage}", normalFont));
+                }
+                document.Add(new Paragraph("\n"));
+
+                // Hydration
+                if (treatmentPlan.Hydration != null)
+                {
+                    document.Add(new Paragraph("Hydration", headerFont));
+                    document.Add(new Paragraph(treatmentPlan.Hydration.Amount, normalFont));
+                    document.Add(new Paragraph("\n"));
+                }
+
+                // Restrictions
+                if (treatmentPlan.Restrictions != null)
+                {
+                    document.Add(new Paragraph("Restrictions", headerFont));
+                    document.Add(new Paragraph(treatmentPlan.Restrictions.Description, normalFont));
+                }
+
+                document.Close();
+                writer.Close();
+
+                return memoryStream.ToArray();
+            }
         }
 
-        public async Task<byte[]> GenerateTreatmentPlanPdfAsync(string treatmentPlanId)
+        public byte[] GeneratePrescriptionPdfAsync(
+            CreatePrescriptionDto prescription,
+            Doctor doctor)
         {
-            return await _pdfService.GenerateTreatmentPlanPdfAsync(treatmentPlanId);
+            using (var memoryStream = new MemoryStream())
+            {
+                // Create document
+                var document = new iTextSharp.text.Document(PageSize.A4, 50, 50, 25, 25);
+                var writer = PdfWriter.GetInstance(document, memoryStream);
+                document.Open();
+
+                // Fonts
+                var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
+                var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+                var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+
+                // Title
+                var title = new Paragraph("Prescription", titleFont)
+                {
+                    Alignment = Element.ALIGN_CENTER,
+                    SpacingAfter = 20
+                };
+                document.Add(title);
+
+                // Patient Info
+                document.Add(new Paragraph($"Patient: {prescription.PatientName}", headerFont));
+                document.Add(new Paragraph($"Patient ID: {prescription.PatientId}", normalFont));
+                document.Add(new Paragraph($"Doctor: {doctor.User.UserName}", normalFont));
+                document.Add(new Paragraph($"Date: {prescription.CreatedAt:dd/MM/yyyy}", normalFont));
+                document.Add(new Paragraph("\n"));
+
+                // Medication Section
+                document.Add(new Paragraph("Medication Details", headerFont));
+                document.Add(new Paragraph($"Medication: {prescription.MedicationName}", normalFont));
+                document.Add(new Paragraph($"Dosage: {prescription.Dosage}", normalFont));
+                document.Add(new Paragraph($"Frequency: {prescription.Frequency}", normalFont));
+                document.Add(new Paragraph($"Duration: {prescription.Duration}", normalFont));
+                document.Add(new Paragraph("\n"));
+
+                // Instructions
+                if (!string.IsNullOrWhiteSpace(prescription.Instructions))
+                {
+                    document.Add(new Paragraph("Instructions", headerFont));
+                    document.Add(new Paragraph(prescription.Instructions, normalFont));
+                    document.Add(new Paragraph("\n"));
+                }
+
+                // Notes
+                if (!string.IsNullOrWhiteSpace(prescription.Notes))
+                {
+                    document.Add(new Paragraph("Notes", headerFont));
+                    document.Add(new Paragraph(prescription.Notes, normalFont));
+                }
+
+                // Footer
+                document.Add(new Paragraph("\n\n"));
+                document.Add(new Paragraph(
+                    $"Last modified by Dr. {doctor.User.UserName}",
+                    FontFactory.GetFont(FontFactory.HELVETICA_OBLIQUE, 9)
+                ));
+
+                document.Close();
+                writer.Close();
+
+                return memoryStream.ToArray();
+            }
         }
 
         // Validation Methods
-        public async Task<bool> PatientExistsAsync(string patientId)
+        public async Task<bool> PatientExistsAsync(int patientId)
         {
-            return await _context.Patients.AnyAsync(p => p.UserId == patientId);
+            return await _context.Patients.AnyAsync(p => p.Id == patientId);
         }
 
-        public async Task<bool> TreatmentPlanExistsAsync(string treatmentPlanId)
-        {
-            return await _context.TreatmentPlans.AnyAsync(t => t.PatientId == treatmentPlanId);
-        }
 
-        // Helper Method
-        private string CalculateDuration(DateTime startDate, DateTime? endDate)
-        {
-            if (!endDate.HasValue)
-                return "Ongoing";
 
-            var duration = (endDate.Value - startDate).Days;
-            var weeks = duration / 7;
-
-            if (weeks == 0)
-                return $"{duration} days";
-
-            return $"{weeks} weeks";
-        }
     }
 }

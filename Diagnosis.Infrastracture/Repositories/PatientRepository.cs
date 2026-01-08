@@ -125,6 +125,6 @@ namespace Diagnosis.Infrastracture.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
-        
+
     }
 }

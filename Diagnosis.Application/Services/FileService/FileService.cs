@@ -96,6 +96,48 @@ namespace Diagnosis.Application.Services.FileService
             }
             return $"uploads/diagnosis/{fileName}";
         }
+        public async Task<string> SaveBytesAsync(
+            byte[] fileBytes,
+            string fileName,
+            string? customExtension = null)
+        {
+            try
+            {
+                if (fileBytes == null || fileBytes.Length == 0)
+                    throw new ArgumentException("File bytes are null or empty");
+
+                string extension = customExtension!.StartsWith(".")
+                        ? customExtension
+                        : $".{customExtension}";
+                
+
+                var cleanFileName = SanitizeFileName(fileName);
+
+                var finalFileName = Path.HasExtension(cleanFileName)
+                    ? cleanFileName
+                    : $"{cleanFileName}{extension}";
+
+                var filePath = Path.Combine(_templateFolderPath, finalFileName);
+                if (File.Exists(filePath))
+                {
+                    var nameWithoutExt = Path.GetFileNameWithoutExtension(finalFileName);
+                    finalFileName = $"{nameWithoutExt}_{Guid.NewGuid()}{extension}";
+                    filePath = Path.Combine(_templateFolderPath, finalFileName);
+                }
+                await File.WriteAllBytesAsync(filePath, fileBytes);
+
+                return $"uploads/diagnosis/{finalFileName}";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        private string SanitizeFileName(string fileName)
+        {
+            var invalidChars = Path.GetInvalidFileNameChars();
+            return string.Join("_", fileName.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
+        }
 
         public async Task<ICollection<string>> UploadMultipleFilesAsync(ICollection<IFormFile> files)
         {

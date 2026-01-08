@@ -44,6 +44,8 @@ using Diagnosis.Application.UseCases.PatientDashboard;
 using Diagnosis.Application.UseCases.Notification;
 
 using Diagnosis.Application.UseCases.DiagnosisModule;
+using Diagnosis.Application.UseCases.DoctorDashboard;
+using Diagnosis.Application.UseCases.PatientDashboard.cs;
 
 
 
@@ -131,7 +133,6 @@ namespace Diagnosis.API
 
 
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
-            builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
             builder.Services.AddScoped<GetTemplateUseCase>();
             builder.Services.AddScoped<GetAllTemplatesUseCase>();
             builder.Services.AddScoped<GetDoctorDiagnosisUseCase>();
@@ -162,13 +163,17 @@ namespace Diagnosis.API
             builder.Services.AddScoped<MarkNotificationsAsDoneUseCase>();
             builder.Services.AddScoped<EndPhysiotherapySessionUseCase>();
 
+            builder.Services.AddScoped<GetPatientsUseCase>();
+            builder.Services.AddScoped<DoctorListUseCase>();
 
-
+            builder.Services.AddScoped<GetPatientProfileUseCase>();
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
             builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
             builder.Services.AddScoped<GenerateTreatmentPlanPdfUseCase>();
+            builder.Services.AddScoped<SubmitPhysiotherapyVideoUseCase>();
+            
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>
             {
@@ -178,6 +183,10 @@ namespace Diagnosis.API
             builder.Services.AddHttpClient<IDiagnosisModuleProvider, DiagnosisModuleProvider>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["BoneFracture:BaseUrl"]!);
+            });
+            builder.Services.AddHttpClient<IPhysiotherapyProvider, PhysiotherapyProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["Physiotherapy:BaseUrl"]!);
             });
 
             builder.Services.AddHttpClient<ITreatmentProvider, TreatmentProvider>(client =>
