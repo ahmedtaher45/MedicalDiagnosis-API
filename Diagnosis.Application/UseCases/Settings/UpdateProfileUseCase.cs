@@ -18,7 +18,7 @@ namespace Diagnosis.Application.UseCases.Settings
             _unitOfWork = unitOfWork;
          
         }
-        public async Task<bool> UpdatePatientProfile(string id, ProfileDto profileDto, string role)
+        public async Task<bool> UpdatePatientProfile(string id, UpdateProfileDto profileDto, string role)
         {
             var user = await _unitOfWork.Profile.GetUserProfile(id);
 
@@ -31,7 +31,6 @@ namespace Diagnosis.Application.UseCases.Settings
             {
                 user.Doctor.FName = profileDto.FullName.Split(' ')[0];
                 user.Doctor.LName = profileDto.FullName.Split(' ')[1];
-                user.Email = profileDto.Email;
                 user.PhoneNumber = profileDto.PhoneNumber;
                 _unitOfWork.Profile.Update(user);
 
@@ -40,10 +39,14 @@ namespace Diagnosis.Application.UseCases.Settings
             {
                 user.Patient.FName = profileDto.FullName.Split(' ')[0];
                 user.Patient.LName = profileDto.FullName.Split(' ')[1];
-                user.Email = profileDto.Email;
                 user.PhoneNumber = profileDto.PhoneNumber;
-
                 _unitOfWork.Profile.Update(user);
+            }
+            else
+            {
+                user.PhoneNumber = profileDto.PhoneNumber;
+                _unitOfWork.Profile.Update(user);
+                
             }
 
             await _unitOfWork.CompleteAsync();
