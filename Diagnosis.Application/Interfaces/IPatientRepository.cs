@@ -1,5 +1,4 @@
-﻿using Diagnosis.Application.DTOs.PatientDashboard;
-using Diagnosis.Domain.Entites;
+﻿using Diagnosis.Domain.Entites;
 
 namespace Diagnosis.Application.Interfaces
 {
@@ -15,6 +14,5 @@ namespace Diagnosis.Application.Interfaces
         Task<int> CountAsync();
         Task<int> CountNewPatientsAsync();
         Task<int> CountUrgentPatientsAsync();
-        
     }
 }

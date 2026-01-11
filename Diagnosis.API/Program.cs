@@ -36,6 +36,7 @@ using Diagnosis.Application.UseCases.Notification;
 using Diagnosis.Application.UseCases.DiagnosisModule;
 using Diagnosis.Application.UseCases.DoctorDashboard;
 using Diagnosis.Application.UseCases.PatientDashboard.cs;
+using Diagnosis.Application.UseCases.Profile;
 
 namespace Diagnosis.API
 {
@@ -143,6 +144,13 @@ namespace Diagnosis.API
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
             builder.Services.AddScoped<SubmitPhysiotherapyVideoUseCase>();
+            builder.Services.AddScoped<ChangeDoctorStatusUseCase>();
+            builder.Services.AddScoped<ChangePatientStatusUseCase>();
+            builder.Services.AddScoped<GetDoctorsListUseCase>();
+            builder.Services.AddScoped<GetDoctorUseCase>();
+            builder.Services.AddScoped<GetPatientsListUseCase>();
+            builder.Services.AddScoped<GetPatientUseCase>();
+            builder.Services.AddScoped<ResetDoctorPasswordUseCase>();
             
 
             builder.Services.AddHttpClient<IDrugCheckerProvider, DrugCheckerProvider>(client =>

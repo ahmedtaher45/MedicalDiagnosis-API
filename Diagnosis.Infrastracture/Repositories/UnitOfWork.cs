@@ -68,7 +68,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Settings  = new SettingsRepository(_context);
             Notifications = new NotificationRepository(_context);
             Patient = new PatientRepository(_context);
-            Doctor = new DoctorRepository(_context);
+            Doctor = new DoctorRepository(_context, _userManager);
 
             systemSettings = new SystemSettingsRepository(_context , _emailSender);
             Users = new UserRepository(_context , _userManager);

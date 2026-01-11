@@ -44,7 +44,7 @@ namespace Diagnosis.API.Controllers
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile(
             [FromServices] UpdateProfileUseCase updateProfileUseCase,
-            [FromBody] ProfileDto ProfileDto)
+            [FromBody] UpdateProfileDto ProfileDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

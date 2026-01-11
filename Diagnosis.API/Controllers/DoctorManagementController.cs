@@ -4,6 +4,7 @@ using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.DTOs;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.UseCases.Auth;
+using Diagnosis.Application.UseCases.Profile;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Infrastracture.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +18,7 @@ namespace Diagnosis.API.Controllers
     public class DoctorManagementController : ControllerBase
     {
 
-
+        
         private readonly ILogger<DoctorManagementController> _logger;
         public DoctorManagementController(ILogger<DoctorManagementController> logger)
         {
@@ -45,7 +46,7 @@ namespace Diagnosis.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDoctorProfileAsync(int id,
          [FromServices] GetDoctorUseCase Doctor)
-
+        
         {
             try
             {
@@ -78,14 +79,14 @@ namespace Diagnosis.API.Controllers
             return Ok(doctors);
         }
 
-
+      
         // 4) تفعيل / إلغاء تفعيل دكتور
         [HttpPatch("status/{id:int}")]
         public async Task<IActionResult> ChangeStatus(
             int id,
             [FromServices] ChangeDoctorStatusUseCase useCase)
         {
-            var success = await useCase.ExecuteAsync(id, isActive: false);
+            var success = await useCase.ExecuteAsync(id, isActive:false);
             if (!success)
                 return NotFound(new { message = "الطبيب غير موجود" });
 
@@ -108,4 +109,4 @@ namespace Diagnosis.API.Controllers
     }
 
 
-}
+} 
