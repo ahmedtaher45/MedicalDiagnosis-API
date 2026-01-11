@@ -1,9 +1,10 @@
-﻿   using Diagnosis.Application.DTOs.Dashboard;
-using Diagnosis.Application.DTOs.Dashboard.DoctorDashboar;
+﻿using Diagnosis.Application.DTOs.DiagnosisModule;
 using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
-using Diagnosis.Application.UseCases.DoctorDashboard;
+using Diagnosis.Application.UseCases.DiagnosisModule;
+using Diagnosis.Application.UseCases.Profile;
 using Diagnosis.Domain.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,27 +13,46 @@ namespace Diagnosis.API.Controllers
 
     [Route("[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class PatientManagementController: ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<PatientManagementController> _logger;
 
-        public PatientManagementController(IUnitOfWork unitOfWork)
+        public PatientManagementController( ILogger<PatientManagementController> logger)
         {
-            _unitOfWork = unitOfWork;
+          //  _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(PatientProfileDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPatientProfile(int id)
+        // 1) Patient Table (قائمة المرضى)
+        [HttpGet]
+        public async Task<IActionResult> GetPatients(
+            [FromServices] GetPatientsListUseCase useCase,
+            [FromQuery] string? search,
+            [FromQuery] string? status)   // "All" / "Active" / "Deleted"
         {
+            var patients = await useCase.ExecuteAsync(search, status);
+            return Ok(patients);
+        }
+
+
+        /// <summary>
+        /// احصل على بروفايل مريض
+        /// GET: api/patient/{id}
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetPatientProfileAsync(int id,   [FromServices] GetPatientUseCase useCase)
+    
+ 
+        {
+
             try
             {
-                var patient = await _unitOfWork.Patient.GetPatientProfileAsync(id);
+                var patient = await useCase.GetPatientProfileAsync(id);
 
                 if (patient == null)
                 {
+                    _logger.LogWarning("Patient with ID {Id} not found", id);
                     return NotFound(new { message = "المريض غير موجود" });
                 }
 
@@ -40,21 +60,21 @@ namespace Diagnosis.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error retrieving patient profile for ID {Id}", id);
                 return StatusCode(500, new { message = "حدث خطأ في النظام" });
             }
         }
-        [HttpPost("Get-Patients")]
-        public async Task<IActionResult>GetPatientsAsync([FromBody]PatientSearchDTO patientSearchDTO , [FromServices] GetPatientsUseCase getPatientsUseCase)
+        // 3) Delete Patient (تحويله لحالة Deleted)
+        [HttpPatch("status/{id:int}")]
+        public async Task<IActionResult> DeletePatient(
+            int id,
+            [FromServices] ChangePatientStatusUseCase useCase)
         {
-            var result = await getPatientsUseCase.GetPatientsAsync(patientSearchDTO);
-            return Ok(result);
-        }
-        [HttpGet("{patientId}/Get-PatientProfile")]
-        public async Task<IActionResult> GetPatientProfileAsync([FromRoute]int patientId , [FromServices] GetPatientProfileUseCase getPatientProfileUseCase)
-        {
-            var result = await getPatientProfileUseCase.GetPatientProfileAsync(patientId);
-            return Ok(result);
+            var ok = await useCase.ExecuteAsync(id, isDeleted: true);
+            if (!ok)
+                return NotFound(new { message = "المريض غير موجود" });
+
+            return NoContent();
         }
     }
-
 }

@@ -46,7 +46,9 @@ namespace Diagnosis.Infrastracture.Repositories
                              FullName = request.Name,
                              Email = request.Email,
                              Message = request.Message,
-                             Status = "Replied"
+                             Status = "Replied",
+                             Date = request.CreatedOn
+
                          });
                 }
                 else
@@ -57,7 +59,8 @@ namespace Diagnosis.Infrastracture.Repositories
                              FullName = request.Name,
                              Email = request.Email,
                              Message = request.Message,
-                             Status = "Pending"
+                             Status = "Pending",
+                             Date = request.CreatedOn
                          });
                 }
             }
@@ -72,6 +75,7 @@ namespace Diagnosis.Infrastracture.Repositories
                 Name = contactMessageDTO.FullName,
                 Email = contactMessageDTO.Email,
                 Message = contactMessageDTO.Message,
+                CreatedOn = DateTime.Now,
                 
             };
             await _context.AddAsync(request);

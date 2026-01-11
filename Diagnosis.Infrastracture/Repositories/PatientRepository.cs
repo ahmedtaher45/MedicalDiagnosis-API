@@ -1,4 +1,5 @@
-﻿using Diagnosis.Application.DTOs.Profile;
+﻿using Diagnosis.Application.DTOs.Consultation;
+using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
@@ -24,61 +25,57 @@ namespace Diagnosis.Infrastracture.Repositories
 
         }
 
-        //public IQueryable<Patient> Query()
-        //=> _context.Set<Patient>().AsQueryable();
+        // 1) Patient Table
+        public async Task<IEnumerable<PatientListItemDto>> GetPatientsAsync(string? search, string? status)
+            
+           
+        {
+            var query = _context.Patients
+                .Include(p => p.Inquiries)
+                .Include(p => p.BoneFractions)   
+                .AsQueryable();
 
-        //public async Task<List<Patient>> GetAllAsync()
-        //    => await _context.Set<Patient>().ToListAsync();
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(p =>
+                    (p.FName + " " + p.LName).Contains(search));
 
-        //public async Task<HashSet<Patient>> GetAllPagedAsync(
-        //    int pageSize,
-        //    int pageNumber,
-        //    Expression<Func<Patient, object>> orderBy)
-        //{
-        //    var data = await _context.Set<Patient>()
-        //        .OrderBy(orderBy)
-        //        .Skip((pageNumber - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(status) && status != "All")
+            {
+                bool isDeleted = status == "Deleted";
+                query = query.Where(p => p.IsDeleted == isDeleted);
+            }
 
-        //    return data.ToHashSet();
-        //}
+            return await query
+                .Select(p => new PatientListItemDto
+                {
+                    Id = p.Id,
+                    FullName = p.FName + " " + p.LName,
+                    BirthDate = p.DateOfBirth,
+                    Gender = p.Gender,
+                    ProfileImageUrl= p.ProfileImageUrl,
+                    DiagnosesCount = p.Inquiries.Count + p.BoneFractions.Count, // Changed from Diagnoses to Consultations
+                    LastDiagnosisDate = 
+                    p.Inquiries
+                        .Select(i => i.CreatedOn)
+                        .Concat(
+                            p.BoneFractions.Select(b =>b.CreatedOn)
+                        )
+                        .OrderByDescending(x => x)
+                        .FirstOrDefault(),
+                    Status = p.IsDeleted ? "Deleted" : "Active"
+                })
+                .ToListAsync();
+        }
 
-        //public async Task<List<Patient>> GetManyAsync(
-        //    Expression<Func<Patient, bool>> predicate)
-        //    => await _context.Set<Patient>().Where(predicate).ToListAsync();
 
-        //public async Task<Patient?> GetAsync(
-        //    Expression<Func<Patient, bool>> predicate)
-        //    => await _context.Set<Patient>().FirstOrDefaultAsync(predicate);
-
-        //public async Task<Patient?> GetByIdAsync(object[] keyValues)
-        //    => await _context.Set<Patient>().FindAsync(keyValues);
-
-        //public async Task AddAsync(Patient entity)
-        //{
-        //    await _context.Set<Patient>().AddAsync(entity);
-        //    await _context.SaveChangesAsync();
-        //}
-
-        //public void Update(Patient entity)
-        //{
-        //    _context.Set<Patient>().Update(entity);
-        //    _context.SaveChanges();
-        //}
-
-        //public async Task<bool> DeleteAsync(params object[] id)
-        //{
-        //    var entity = await _context.Set<Patient>().FindAsync(id);
-        //    if (entity is null) return false;
-
-        //    _context.Set<Patient>().Remove(entity);
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
         public async Task<PatientProfileDto?> GetPatientProfileAsync(int patientId)
         {
-            var patient = await _context.Set<Patient>()
+            var patient = await _context.Patients
+                .Include(p => p.User)
+                .Include(p => p.BoneFractions)
+                    .ThenInclude(b => b.Doctor)
+                .Include(p => p.Inquiries)
+                    .ThenInclude(i => i.Doctor)
                 .FirstOrDefaultAsync(p => p.Id == patientId);
 
             if (patient == null) return null;
@@ -90,11 +87,44 @@ namespace Diagnosis.Infrastracture.Repositories
                 LName = patient.LName,
                 Email = patient.User.Email,
                 Gender = patient.Gender,
-
-
-
+                ProfileImageUrl = patient.ProfileImageUrl,
+                ConsultationHistory =
+                patient.Inquiries
+                    .Select(c => new PatientProfileConsultationsDto
+                    {
+                        ConsultationId = c.Id,
+                        DoctorName ="Dr. " + c.Doctor.FName + " " + c.Doctor.LName,
+                        Specialization = c.Doctor.Specialization,
+                        ConsultationType = "inquiry",
+                        ConsultationDate = c.CreatedOn
+                    })
+                    .Concat(
+                    patient.BoneFractions
+                        .Select(b => new PatientProfileConsultationsDto
+                        {
+                            ConsultationId = b.Id,
+                            DoctorName = b.Doctor.FName + " " + b.Doctor.LName,
+                            Specialization = b.Doctor.Specialization,
+                            ConsultationType = "Bone Fracture", // أو enum
+                            ConsultationDate = b.CreatedOn
+                        })
+                )
+                .OrderByDescending(x => x.ConsultationDate)
+                .ToList()
             };
         }
+        // 3) تغيير حالة المريض (Active / Deleted)
+        public async Task<bool> SetPatientStatusAsync(int patientId, bool isDeleted)
+        {
+            var patient = await _context.Patients
+                .FirstOrDefaultAsync(p => p.Id == patientId);
 
+            if (patient == null) return false;
+
+            patient.IsDeleted = isDeleted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        
     }
 }
