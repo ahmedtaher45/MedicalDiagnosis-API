@@ -327,12 +327,16 @@ namespace Diagnosis.Infrastracture.Repositories
             }
      
             var (token, expiresAt) = await jwtTokenGenerator.GenerateTokenAsync(user, roles);
+            //get user role
+            
 
 
             return new LoginResponseDTO
             {
                 Token = token,
-                ExpiresAt = expiresAt
+                ExpiresAt = expiresAt,
+                Role = roles[0]
+
             };
 
         }

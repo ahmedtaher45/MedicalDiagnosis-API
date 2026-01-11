@@ -19,6 +19,7 @@ namespace Diagnosis.Application.DTOs.Auth
         public string Token { get; set; }
         public string ErrorMessage { get; set; }
         public DateTime? ExpiresAt { get; set; }
+        public string Role { get; set; }
         
     }
 }
