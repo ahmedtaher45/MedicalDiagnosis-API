@@ -3,6 +3,7 @@ using Diagnosis.Application.DTOs.Dashboard.DoctorDashboar;
 using Diagnosis.Application.DTOs.Profile;
 using Diagnosis.Application.Interfaces;
 using Diagnosis.Application.UseCases.DoctorDashboard;
+using Diagnosis.Application.UseCases.Profile;
 using Diagnosis.Domain.Entites;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,15 +65,15 @@ namespace Diagnosis.API.Controllers
                 return StatusCode(500, new { message = "حدث خطأ في النظام" });
             }
         }
-        // 3) Delete Patient (تحويله لحالة Deleted)
-        [HttpPatch("status/{id:int}")]
-        public async Task<IActionResult> DeletePatient(
-            int id,
-            [FromServices] ChangePatientStatusUseCase useCase)
-        {
-            var ok = await useCase.ExecuteAsync(id, isDeleted: true);
-            if (!ok)
-                return NotFound(new { message = "المريض غير موجود" });
+        ////// 3) Delete Patient (تحويله لحالة Deleted)
+        ////[HttpPatch("status/{id:int}")]
+        ////public async Task<IActionResult> DeletePatient(
+        ////    int id,
+        ////    [FromServices] ChangePatientStatusUseCase useCase)
+        ////{
+        ////    var ok = await useCase.ExecuteAsync(id, isDeleted: true);
+        ////    if (!ok)
+        ////        return NotFound(new { message = "المريض غير موجود" });
 
             //public PatientsController(IRepository<Patient> patientRepository)
             //{

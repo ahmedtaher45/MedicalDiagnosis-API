@@ -21,7 +21,7 @@ using Diagnosis.Application.UseCases.MedicalFiles;
 using Diagnosis.Application.UseCases.SupportTicket;
 using Diagnosis.Application.UseCases.SystemSittings;
 using Diagnosis.Application.UseCases.Treatment;
-using Diagnosis.Application.UseCases.TreatmentManagement;
+//using Diagnosis.Application.UseCases.TreatmentManagement;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture.Identity;
 using Diagnosis.Infrastracture.Providers;
@@ -171,7 +171,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
             builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
-            builder.Services.AddScoped<GenerateTreatmentPlanPdfUseCase>();
+          //  builder.Services.AddScoped<GenerateTreatmentPlanPdfUseCase>();
             builder.Services.AddScoped<SubmitPhysiotherapyVideoUseCase>();
             
 

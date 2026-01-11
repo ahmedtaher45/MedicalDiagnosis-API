@@ -5,7 +5,7 @@ using Diagnosis.Application.Interfaces;
 using Diagnosis.Domain.Entites;
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture; // <-- Ensure this matches the actual namespace where AppDbContext is defined
-using Diagnosis.Infrastracture; 
+//using Diagnosis.Infrastracture; 
 using Diagnosis.Domain.Models.Entites;
 using Diagnosis.Infrastracture;
 using Microsoft.AspNetCore.Identity;
@@ -20,8 +20,9 @@ using DoctorDashboardDto = Diagnosis.Application.DTOs.Dashboard.DoctorDashboar.D
 
 namespace Diagnosis.Infrastracture.Repositories
 {
-    public class DoctorRepository : IRepository<Doctor>, IDoctorManagement, IDoctorDashboardService
-    public class DoctorRepository : Repository<Doctor>, IDoctorManagement
+    
+    //public class DoctorRepository : IRepository<Doctor>, IDoctorManagement, IDoctorDashboardService
+    public class DoctorRepository : Repository<Doctor>,IDoctorRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -138,26 +139,26 @@ namespace Diagnosis.Infrastracture.Repositories
             return true;
 
         }
-        public async Task<bool> ResetPasswordAsync(int doctorId, string newPassword)
-        {
-            var doctor = await _context.Doctors
-                .Include(d => d.User)
-                .FirstOrDefaultAsync(d => d.Id == doctorId);
+        ////public async Task<bool> ResetPasswordAsync(int doctorId, string newPassword)
+        ////{
+        ////    var doctor = await _context.Doctors
+        ////        .Include(d => d.User)
+        ////        .FirstOrDefaultAsync(d => d.Id == doctorId);
 
-            if (doctor == null || doctor.User == null) return false;
-            var user = doctor.User;
+        ////    if (doctor == null || doctor.User == null) return false;
+        ////    var user = doctor.User;
 
-           
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+        ////    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-        }
+        ////    var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
 
-        Task<Application.DTOs.Dashboard.DoctorDashboardDto> IDoctorDashboardService.GetDashboardAsync(int doctorId)
-        {
-            throw new NotImplementedException();
-        }
+        ////}
+
+        ////Task<Application.DTOs.Dashboard.DoctorDashboardDto> IDoctorDashboardService.GetDashboardAsync(int doctorId)
+        ////{
+        ////    throw new NotImplementedException();
+        ////}
 
 
         public async Task<PagedResultDTO<PatientListDTO>> GetPatientsAsync(PatientSearchDTO patientSearchDTO)
