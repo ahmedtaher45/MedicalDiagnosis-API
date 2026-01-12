@@ -12,6 +12,9 @@ namespace Diagnosis.Application.DTOs.DoctorManagement
         [Required(ErrorMessage = "UserName is required")]
         public string? UserName { get; set; }
 
+        public string? FName { get; set; }
+        public string? LName { get; set; }
+
         [Required(ErrorMessage = "Email is required")]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
          ErrorMessage = "Invalid email format")]

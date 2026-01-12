@@ -147,6 +147,8 @@ namespace Diagnosis.Infrastracture.Repositories
                 var doctor = new Doctor
                 {
                     UserId = user.Id,
+                    FName = addDoctorDTO.FName,
+                    LName = addDoctorDTO.LName,
                     ExperienceYears = addDoctorDTO.ExperienceYears,
                     NationalId = addDoctorDTO.NationalId,
                     BirhDate = addDoctorDTO.BirhDate,
