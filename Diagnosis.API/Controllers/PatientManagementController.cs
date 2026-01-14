@@ -170,7 +170,7 @@ namespace Diagnosis.API.Controllers
 
             //    return NoContent();
             //}
-    }
+    
         [HttpPost("Get-Patients")]
         public async Task<IActionResult>GetPatientsAsync([FromBody]PatientSearchDTO patientSearchDTO , [FromServices] GetPatientsUseCase getPatientsUseCase)
         {

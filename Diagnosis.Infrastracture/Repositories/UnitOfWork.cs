@@ -94,7 +94,7 @@ namespace Diagnosis.Infrastracture.Repositories
             Settings = new SettingsRepository(_context);
 
 
-            Treatment = new TreatmentRepository(_context, _pdfService);
+            Treatment = new TreatmentRepository(_context, _fileService);
 
             DoctorDashboardService = new DoctorRepository(_context);
             PatientDashboard = new PatientDasboardRepository(_context);
