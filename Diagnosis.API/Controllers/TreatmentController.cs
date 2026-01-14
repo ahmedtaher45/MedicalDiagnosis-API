@@ -12,21 +12,21 @@ namespace Diagnosis.API.Controllers
     public class TreatmentController : ControllerBase
     {
         private readonly GetPatientTreatmentInfoUseCase _getPatientInfoUseCase;
-        private readonly CreateTreatmentPlanUseCase _createTreatmentPlanUseCase;
+       // private readonly CreateTreatmentPlanUseCase _createTreatmentPlanUseCase;
         private readonly CreatePrescriptionUseCase _createPrescriptionUseCase;
-        private readonly GetTreatmentPlanDetailsUseCase _getTreatmentPlanDetailsUseCase;
+      // private readonly GetTreatmentPlanDetailsUseCase _getTreatmentPlanDetailsUseCase;
 
 
         public TreatmentController(
             GetPatientTreatmentInfoUseCase getPatientInfoUseCase,
-            CreateTreatmentPlanUseCase createTreatmentPlanUseCase,
-            CreatePrescriptionUseCase createPrescriptionUseCase,
-            GetTreatmentPlanDetailsUseCase getTreatmentPlanDetailsUseCase)
+           // CreateTreatmentPlanUseCase createTreatmentPlanUseCase,
+            CreatePrescriptionUseCase createPrescriptionUseCase)
+           // GetTreatmentPlanDetailsUseCase getTreatmentPlanDetailsUseCase)
         {
             _getPatientInfoUseCase = getPatientInfoUseCase;
-            _createTreatmentPlanUseCase = createTreatmentPlanUseCase;
+           // _createTreatmentPlanUseCase = createTreatmentPlanUseCase;
             _createPrescriptionUseCase = createPrescriptionUseCase;
-            _getTreatmentPlanDetailsUseCase = getTreatmentPlanDetailsUseCase;
+           // _getTreatmentPlanDetailsUseCase = getTreatmentPlanDetailsUseCase;
         }
 
         [Authorize("Patient")]
@@ -65,24 +65,24 @@ namespace Diagnosis.API.Controllers
 
         [Authorize(Roles = "Doctor")]
         [HttpPost("treatment-plan")]
-        public async Task<IActionResult> CreateTreatmentPlan(
-            [FromBody] TreatmentPlanDetailsDto dto)
-        {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                var result = await _createTreatmentPlanUseCase.ExecuteAsync(dto,userId);
-                return Ok(result);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        //public async Task<IActionResult> CreateTreatmentPlan(
+        //    [FromBody] TreatmentPlanDetailsDto dto)
+        //{
+            //try
+            //{
+            //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            //    //var result = await _createTreatmentPlanUseCase.ExecuteAsync(dto,userId);
+            //    return Ok(result);
+            //}
+            //catch (KeyNotFoundException ex)
+            //{
+            //    return NotFound(new { message = ex.Message });
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest(new { message = ex.Message });
+            //}
+        //}
 
         [Authorize(Roles = "Doctor")]
         [HttpPost("prescription")]

@@ -127,7 +127,7 @@ namespace Diagnosis.API
             builder.Services.AddScoped<GetAdminDashboardUseCase>();
             builder.Services.AddScoped<GetDoctorDashboardUseCase>();           
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
-            builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
+          //  builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
 
             builder.Services.AddScoped<CreateDiagnosisUseCase>();
 
@@ -168,9 +168,9 @@ namespace Diagnosis.API
 
             builder.Services.AddScoped<GetPatientProfileUseCase>();
             builder.Services.AddScoped<GetPatientTreatmentInfoUseCase>();
-            builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
+            //builder.Services.AddScoped<CreateTreatmentPlanUseCase>();
             builder.Services.AddScoped<CreatePrescriptionUseCase>();
-            builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
+            ////builder.Services.AddScoped<GetTreatmentPlanDetailsUseCase>();
           //  builder.Services.AddScoped<GenerateTreatmentPlanPdfUseCase>();
             builder.Services.AddScoped<SubmitPhysiotherapyVideoUseCase>();
             

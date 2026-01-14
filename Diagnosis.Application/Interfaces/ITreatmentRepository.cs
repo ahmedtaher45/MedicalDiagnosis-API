@@ -23,5 +23,8 @@ namespace Diagnosis.Application.Interfaces
 
 
         Task<bool> PatientExistsAsync(int patientId);
+        ///
+        // جديدة:
+       // Task<bool> TreatmentPlanExistsAsync(string treatmentPlanId);
     }
 }
